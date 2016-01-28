@@ -1,0 +1,19 @@
+basic.png
+size: 144, 72
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+enemy
+  rotate: false
+  xy: 0, 0
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
+player
+  rotate: false
+  xy: 72, 0
+  size: 72, 72
+  orig: 72, 72
+  offset: 0, 0
+  index: -1
