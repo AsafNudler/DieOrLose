@@ -7,6 +7,7 @@ import com.retrom.ggj2016.GGJ2016;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = config.height = 540;
 		new LwjglApplication(new GGJ2016(), config);
 	}
 }

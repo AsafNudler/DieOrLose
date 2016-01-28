@@ -10,14 +10,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.game.World;
+import com.retrom.ggj2016.game.WorldRenderer;
 
 
 public class GameScreen extends ScreenAdapter implements Screen {
-	static final public float FRUSTUM_WIDTH = 1000;
-	static final public float FRUSTUM_HEIGHT = 1000;
+	static final public float FRUSTUM_WIDTH = 1080;
+	static final public float FRUSTUM_HEIGHT = 1080;
 	
 	SpriteBatch batch_ = new SpriteBatch();
-	OrthographicCamera cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);;
+	OrthographicCamera cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
+	WorldRenderer renderer = new WorldRenderer(batch_);
 	
 	World world_;
 	
@@ -26,18 +28,20 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	@Override
 	public void show() {
 		world_ = new World();
-		batch_.setTransformMatrix(cam.combined);
-//		worldRenderer_ = new WorldRenderer(batch_, world_);
 	}
 
 	@Override
 	public void render(float delta) {
+		cam.update();
+		batch_.setProjectionMatrix(cam.combined);
+		
 		Gdx.graphics.getGL20().glClearColor(0, 0, 0, 1);
 		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		Sprite s = Assets.player;
+		
+		batch_.enableBlending();
 		batch_.begin();
-		batch_.draw(s, 100, 100);
+		world_.render(batch_);
 		batch_.end();
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
@@ -50,9 +54,10 @@ public class GameScreen extends ScreenAdapter implements Screen {
 		}
 		update(delta);
 	}
-
-	private void update(float delta) {
-		delta = Math.min(1/30f, delta);
+	
+	private void update(float deltaTime) {
+		deltaTime = Math.min(1/30f, deltaTime);
+		world_.update(deltaTime);
 		
 //		checkPause();
 		
