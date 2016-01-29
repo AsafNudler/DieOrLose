@@ -1,4 +1,4 @@
-package com.retrom.ggj2016;
+package com.retrom.ggj2016.game;
 
 /**
  * Created by Asaf on 28/01/2016.
@@ -8,13 +8,13 @@ public class PaintingTreeNode {
     {
         left = null;
         right = null;
-        x = -1;
-        y = -1;
+        x = 0;
+        y = 0;
         obj = null;
     }
     public PaintingTreeNode left;
     public PaintingTreeNode right;
-    int x;
-    int y;
+    float x;
+    float y;
     public PaintingNode obj;
 }
