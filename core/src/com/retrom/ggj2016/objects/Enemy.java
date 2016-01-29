@@ -6,7 +6,7 @@ import com.retrom.ggj2016.utils.utils;
 
 public class Enemy extends DynamicGameObject {
 	
-	private static final float ENEMY_SIZE = 50;
+	private static final float ENEMY_SIZE = 108;
 
 	public Enemy(float x, float y) {
 		super(x, y, ENEMY_SIZE, ENEMY_SIZE);

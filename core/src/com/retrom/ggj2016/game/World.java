@@ -23,8 +23,12 @@ public class World {
 	}
 	
 	private static final float BLOOD_SEGMENT_LENGTH = 5f;
+
+	private static final float BLOOD_LOSE_RATE = 1e-4f;
 	
 	private Player player = new Player();
+	
+	private LifeBar lifebar = new LifeBar();
 
 	private Painting painting;
 	
@@ -62,6 +66,8 @@ public class World {
 
 	public void update(float deltaTime) {
 		player.update(deltaTime);
+		lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
+		
 		painting.step();
 		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
 			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
@@ -72,10 +78,14 @@ public class World {
 			lastPosition = player.position.cpy();
 		}
 		for (Enemy enemy : enemies) {
-			if (enemy.bounds.overlaps(player.bounds)) {
-				listener_.restart();
-			}
 			enemy.update(deltaTime);
+			if (enemy.bounds.overlaps(player.bounds)) {
+				lifebar.life -= deltaTime * 0.4;
+				splashBlood();
+			}
+		}
+		if (lifebar.life <= 0) {
+			listener_.restart();
 		}
 		
 
@@ -91,6 +101,17 @@ public class World {
 		}
 	}
 	
+	private void splashBlood() {
+		Vector2 newPos = utils.randomDir((float) (Math.random()*100));
+		newPos.add(player.position);
+		
+		PaintingLineGlow lineGlow = new PaintingLineGlow(player.position.x, player.position.y, newPos.x, newPos.y);
+		PaintingLine line = new PaintingLine(player.position.x, player.position.y, newPos.x, newPos.y, lineGlow);
+//		painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+		bloodLines.add(line);
+		glowLines.add(lineGlow);
+	}
+
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
@@ -120,6 +141,8 @@ public class World {
 			enemy.render(batch);
 		}
 		batch.end();
+		
+		lifebar.render(shapeRenderer);
 	}
 
 	private void renderLineSegment(ShapeRenderer renderer, LineSegment line) {

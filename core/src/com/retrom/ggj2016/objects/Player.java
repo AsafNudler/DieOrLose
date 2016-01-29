@@ -14,7 +14,7 @@ public class Player extends DynamicGameObject {
 	private static final float ACCEL = 2000f;
 
 	public Player() {
-		super(0, 0, 108, 108);
+		super(0, 0, 1, 1);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -62,19 +62,19 @@ public class Player extends DynamicGameObject {
 	}
 	
 	public void render(SpriteBatch batch) {
-		Sprite s;
-		if (velocity.y > 0) {
-			s = Assets.playerBack;
-		} else if (velocity.y < 0) {
-			s = Assets.playerFront;
+		Sprite s = Assets.playerFront;
+		if (Math.abs(velocity.y) > Math.abs(velocity.x)) {
+			if (velocity.y > 0) {
+				s = Assets.playerBack;
+			} else if (velocity.y < 0) {
+				s = Assets.playerFront;
+			}
 		} else if (velocity.x > 0) {
 			s = Assets.playerSide;
 			s.setFlip(false, false);
 		} else if (velocity.x < 0) {
 			s = Assets.playerSide;
 			s.setFlip(true, false);
-		} else {
-			s = Assets.playerFront;
 		}
 		utils.drawCenter(batch, s, position.x, position.y);
 		utils.drawCenter(batch, Assets.playerHead, position.x, position.y + 57);

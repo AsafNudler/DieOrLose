@@ -7,7 +7,7 @@ import com.retrom.ggj2016.utils.utils;
 
 public class Levels {
 	
-	private static float RADIUS = 400;
+	private static float RADIUS = 350;
 	
 	ArrayList<LineSegment> path = new ArrayList<LineSegment>();
 	private final int level;
