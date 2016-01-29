@@ -10,6 +10,9 @@ public class BouncingBallEnemy extends Enemy {
 	public BouncingBallEnemy(float x, float y) {
 		super(x, y);
 		velocity = utils.randomDir(VEL);
+		if (velocity.dot(position) < 0) {
+			velocity.scl(-1);
+		}
 	}
 	
 	@Override
