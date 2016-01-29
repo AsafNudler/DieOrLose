@@ -2,6 +2,7 @@ package com.retrom.ggj2016.assets;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.utils.Array;
 
 public class Assets {
 	
@@ -12,11 +13,16 @@ public class Assets {
 	public static Sprite playerSide;
 	public static Sprite playerBack;
 	public static Sprite enemy;
-	public static Sprite target;
 	public static Sprite taken;
 	public static Sprite logo;
 
 	public static Sprite centerGlow;
+
+	public static Sprite targetWithCandle;
+	public static Sprite targetNoCandle;
+	
+	public static Array<Sprite> blood;
+	public static Array<Sprite> smallBlood;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -29,11 +35,13 @@ public class Assets {
 		playerBack = basicSheet.createSprite("Player_body_back");
 		
 		enemy = basicSheet.createSprite("enemy");
-		target = basicSheet.createSprite("target");
 		taken = basicSheet.createSprite("taken");
 		
 		logo = basicSheet.createSprite("title");
 		
-		centerGlow = basicSheet.createSprite("center_glow"); 
+		centerGlow = basicSheet.createSprite("center_glow");
+		
+		blood = basicSheet.createSprites("blood");
+		smallBlood = basicSheet.createSprites("blood_small");
 	}
 }

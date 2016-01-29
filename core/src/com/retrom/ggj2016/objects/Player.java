@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.game.World;
 import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
 
