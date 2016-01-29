@@ -6,12 +6,15 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
 
 public class Player extends DynamicGameObject {
 	
 	private static final float VEL = 200f;
 	private static final float ACCEL = 2000f;
+
+	private static TouchToPoint ttp = TouchToPoint.create();
 
 	public Player() {
 		super(0, 0, 1, 1);
@@ -31,7 +34,7 @@ public class Player extends DynamicGameObject {
 		}
 		if (Gdx.input.isTouched())
 		{
-			Vector2 touch = new Vector2(Gdx.input.getX(), Gdx.input.getY());
+			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
 			float ang = touch.angle();
 			if ((ang >= 0 && ang <= 60) || (ang >= 300))
 			{

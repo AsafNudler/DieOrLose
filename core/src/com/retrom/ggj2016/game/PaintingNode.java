@@ -11,5 +11,5 @@ public class PaintingNode {
     public float startY;
     public float endX;
     public float endY;
-    public ArrayList<LineSegment> relatedTo;
+    public ArrayList<SegmentStatus> relatedTo;
 }
