@@ -19,7 +19,15 @@ public class PaintingLine {
 	
 	public void render(ShapeRenderer renderer) {
 		renderer.begin(ShapeType.Line);
-		renderer.setColor(1, 1, 0, 1);
+		
+		if (pathDone) {
+			renderer.setColor(1, 1, 0, 1);
+		} else if (onPath) {
+			renderer.setColor(1, 0, 0, 1);
+		} else {
+			renderer.setColor(0.5f, 0, 0, 1);
+		}
+		
 		renderer.line(pt1.x, pt1.y, pt2.x, pt2.y);
 		renderer.end();
 	}
