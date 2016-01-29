@@ -11,6 +11,8 @@ public class Levels {
 	
 	ArrayList<LineSegment> path = new ArrayList<LineSegment>();
 	private final int level;
+
+	public int RandomWalkEnemy;
 	
 	Levels(int level) {
 		this.level = level;
@@ -18,23 +20,27 @@ public class Levels {
 		switch(level) {
 		case 0:
 			path.add(GetLineSegment(0, 180));
+			RandomWalkEnemy = 0;
 			break;
 		case 1:
 			path.add(GetLineSegment(135,45));
 			path.add(GetLineSegment(315,225));
 			path.add(GetLineSegment(90,270));
+			RandomWalkEnemy = 1;
 			break;
 		case 2:
 			path.add(GetLineSegment(45,135));
 			path.add(GetLineSegment(90,270));
 			path.add(GetLineSegment(135,270));
 			path.add(GetLineSegment(270,45));
+			RandomWalkEnemy = 2;
 			break;
 		case 3:
 			path.add(GetLineSegment(45,135));
 			path.add(GetLineSegment(135,315));
 			path.add(GetLineSegment(45,225));
 			path.add(GetLineSegment(225,315));
+			RandomWalkEnemy = 2;
 			break;
 		case 4:
 			path.add(GetLineSegment(22.5f,157.5f));
@@ -45,6 +51,7 @@ public class Levels {
 			path.add(GetLineSegment(67.5f,112.5f));
 			path.add(GetLineSegment(157.5f,202.5f));
 			path.add(GetLineSegment(247.5f,292.5f));
+			RandomWalkEnemy = 3;
 			break;
 		case 5:
 			path.add(GetLineSegment(90,0));
@@ -55,6 +62,7 @@ public class Levels {
 			path.add(GetLineSegment(135,225));
 			path.add(GetLineSegment(225,315));
 			path.add(GetLineSegment(45,315));
+			RandomWalkEnemy = 3;
 			break;
 		case 6:
 			path.add(GetLineSegment(0,120));
@@ -63,6 +71,7 @@ public class Levels {
 			path.add(GetLineSegment(60,180));
 			path.add(GetLineSegment(180,300));
 			path.add(GetLineSegment(300,60));
+			RandomWalkEnemy = 3;
 			break;
 		case 7:
 			path.add(GetLineSegment(90,0));
@@ -78,6 +87,7 @@ public class Levels {
 			path.add(GetLineSegment(270,180));
 			path.add(GetLineSegment(270,225));
 			path.add(GetLineSegment(270,315));
+			RandomWalkEnemy = 4;
 			break;
 		default:
 			for (int i=0; i < level; i++) {

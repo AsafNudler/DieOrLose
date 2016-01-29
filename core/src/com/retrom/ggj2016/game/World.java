@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -15,6 +16,7 @@ import com.retrom.ggj2016.objects.Enemy;
 import com.retrom.ggj2016.objects.FollowerEnemy;
 import com.retrom.ggj2016.objects.Player;
 import com.retrom.ggj2016.objects.RandomWalkEnemy;
+import com.retrom.ggj2016.screens.GameScreen;
 import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
@@ -30,9 +32,11 @@ public class World {
 
 	private static final float BLOOD_LOSE_RATE = 15e-5f;
 
+	private static final int WALL_WIDTH = 67;
+
 	public static final float BOUNDS = 450;
 	
-	private final Player player = new Player();
+	private Player player = new Player();
 	
 	private LifeBar lifebar = new LifeBar();
 
@@ -50,6 +54,19 @@ public class World {
 	private final WorldListener listener_;
 
 	private final int level;
+
+	private void restartLevel()
+	{
+		enemies = new ArrayList<Enemy>();
+		buildLevel();
+		for (PaintingLine bloodLine : bloodLines) {
+			bloodLine.pathDone = false;
+			bloodLine.onPath = false;
+		}
+		lifebar = new LifeBar();
+		player = new Player();
+		lastPosition = player.position.cpy();
+	}
 	
 	public World(WorldListener listener, int level) {
 		this.listener_ = listener;
@@ -57,14 +74,39 @@ public class World {
 		lastPosition = player.position.cpy();
 		buildLevel();
 	}
+
+	private Vector2 getEnemyRandomPos()
+	{
+		double wallLength = (GameScreen.FRUSTUM_HEIGHT - 2 * WALL_WIDTH);
+		double pos = Math.random() * (wallLength * 4);
+		Vector2 res;
+		if (pos < wallLength)
+		{
+			res =  new Vector2((float)pos, WALL_WIDTH);
+		}
+		else if (pos < 2 * wallLength)
+		{
+			res =  new Vector2((float)pos - (float)wallLength, (float)GameScreen.FRUSTUM_HEIGHT - (float)WALL_WIDTH);
+		}
+		else if (pos < 3 * wallLength)
+		{
+			res =  new Vector2(WALL_WIDTH, (float)pos - (float)wallLength*2);
+		}
+		else {
+			res = new Vector2((float) GameScreen.FRUSTUM_HEIGHT - (float) WALL_WIDTH, (float) pos - (float) wallLength * 3);
+		}
+		res.sub(new Vector2(GameScreen.FRUSTUM_HEIGHT/2, GameScreen.FRUSTUM_HEIGHT/2));
+		return res;
+	}
 	
 	private void buildLevel() {
-		for (int i=0; i < level; i++) {
-			Vector2 pos = utils.randomDir(400);
+		Levels lvl = new Levels(level);
+		for (int i=0; i < lvl.RandomWalkEnemy; i++) {
+			Vector2 pos = getEnemyRandomPos();
 			enemies.add(new RandomWalkEnemy(pos.x, pos.y));
 		}
 		
-		path = new Levels(level).getPath();
+		path = lvl.getPath();
 		painting = new Painting(path, 17);
 		// TODO Auto-generated method stub
 		
@@ -91,7 +133,7 @@ public class World {
 			}
 		}
 		if (lifebar.life <= 0) {
-			listener_.restart();
+			restartLevel();
 		}
 		
 
