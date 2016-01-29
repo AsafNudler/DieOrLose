@@ -78,7 +78,7 @@ public class WorldRenderer {
 		batch.enableBlending();
 		batch.begin();
 		
-		drawCenter(Assets.player, 100, 100);
+//		drawCenter(Assets.player, 100, 100);
 		batch.end();
 	}
 

@@ -27,12 +27,12 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	
 	World world_;
 	
-	int level_ = 0;
+	final int level_;
 	
 	boolean isPaused_ = false;
-	private int level;
 	
 	public GameScreen(int level) {
+		System.out.println("GameScreen level="+level);
 		level_ = level;
 	}
 
@@ -42,15 +42,15 @@ public class GameScreen extends ScreenAdapter implements Screen {
 			
 			@Override
 			public void restart() {
-				level = 0;
-				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(level));
+				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(0));
 			}
 
 			@Override
 			public void nextLevel() {
-				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(level+1));
+				System.out.println("level+1="+(level_+1));
+				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(level_+1));
 			}
-		}, level);
+		}, level_);
 	}
 
 	@Override

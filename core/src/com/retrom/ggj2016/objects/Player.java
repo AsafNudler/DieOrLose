@@ -40,13 +40,23 @@ public class Player extends DynamicGameObject {
 		bounds.y = position.y - bounds.height / 2;
 	}
 	
-	@Override
-	public Sprite getSprite() {
-		return Assets.player;
-	}
-
 	public void render(SpriteBatch batch) {
-		utils.drawCenter(batch, Assets.player, position.x, position.y);
+		Sprite s;
+		if (velocity.y > 0) {
+			s = Assets.playerBack;
+		} else if (velocity.y < 0) {
+			s = Assets.playerFront;
+		} else if (velocity.x > 0) {
+			s = Assets.playerSide;
+			s.setFlip(false, false);
+		} else if (velocity.x < 0) {
+			s = Assets.playerSide;
+			s.setFlip(true, false);
+		} else {
+			s = Assets.playerFront;
+		}
+		utils.drawCenter(batch, s, position.x, position.y);
+		utils.drawCenter(batch, Assets.playerHead, position.x, position.y + 57);
 	}
 
 }

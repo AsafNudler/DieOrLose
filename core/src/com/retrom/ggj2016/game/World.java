@@ -8,9 +8,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.objects.BouncingBallEnemy;
 import com.retrom.ggj2016.objects.Enemy;
 import com.retrom.ggj2016.objects.Player;
+import com.retrom.ggj2016.objects.Target;
 import com.retrom.ggj2016.utils.utils;
 
 public class World {
@@ -20,13 +22,15 @@ public class World {
 		public void nextLevel();
 	}
 	
-	private static final float BLOOD_SEGMENT_LENGTH = 50f;
+	private static final float BLOOD_SEGMENT_LENGTH = 20f;
 	
 	private Player player = new Player();
 	
 	private List<PaintingLine> bloodLines = new ArrayList<PaintingLine>();
 	
 	private List<Enemy> enemies = new ArrayList<Enemy>();
+	
+	private List<Target> targets = new ArrayList<Target>();
 	
 	private Vector2 lastPosition;
 
@@ -47,6 +51,10 @@ public class World {
 			Vector2 pos = utils.randomDir(400);
 			enemies.add(new BouncingBallEnemy(pos.x, pos.y));
 		}
+		for (int i=0; i < level + 1; i++) {
+			Vector2 pos = utils.randomDir(400);
+			targets.add(new Target(pos.x, pos.y));
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -60,9 +68,19 @@ public class World {
 		for (Enemy enemy : enemies) {
 			if (enemy.bounds.overlaps(player.bounds)) {
 				listener_.restart();
-				System.out.println("HIT");
 			}
 			enemy.update(deltaTime);
+		}
+		
+		for (Target target : targets) {
+			if (target.bounds.overlaps(player.bounds)) {
+				System.out.println("target taken");
+				target.take();
+			}
+		}
+		
+		if (allTargetsTaken()) {
+			listener_.nextLevel();
 		}
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
@@ -73,11 +91,27 @@ public class World {
 		}
 	}
 	
+	private boolean allTargetsTaken() {
+		for (Target target : targets) {
+			if (!target.taken()) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		batch.begin();
+		utils.drawCenter(batch, Assets.bg, 0, 0);
+		batch.end();
+		
 		for (PaintingLine line : bloodLines) {
 			line.render(shapeRenderer);
 		}
 		batch.begin();
+		for (Target target : targets) {
+			target.render(batch);
+		}
 		player.render(batch);
 		for (Enemy enemy : enemies) {
 			enemy.render(batch);
