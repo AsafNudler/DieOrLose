@@ -55,6 +55,8 @@ public class GameScreen extends ScreenAdapter implements Screen {
 
 	@Override
 	public void render(float delta) {
+		System.out.println("fps="+(1/delta));
+		
 		cam.update();
 		batch_.setProjectionMatrix(cam.combined);
 		shapeRenderer_.setProjectionMatrix(cam.combined);
@@ -78,7 +80,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	}
 	
 	private void update(float deltaTime) {
-		deltaTime = Math.min(1/30f, deltaTime);
+//		deltaTime = Math.min(1/30f, deltaTime);
 		world_.update(deltaTime);
 		
 //		checkPause();
