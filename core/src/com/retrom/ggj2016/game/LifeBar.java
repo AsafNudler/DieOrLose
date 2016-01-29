@@ -15,7 +15,7 @@ public class LifeBar {
 	public float life = 1;
 	public void render(ShapeRenderer renderer) {
 		renderer.begin(ShapeType.Filled);
-		renderer.setColor(1, 0, 0, 1);
+		renderer.setColor(0.33f, 0, 0, 1);
 		renderer.rect(X, Y, MAX_WIDTH * life, HEIGHT);
 		renderer.end();
 	}

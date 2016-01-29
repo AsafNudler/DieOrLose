@@ -9,6 +9,7 @@ public class Assets {
 	public static Sprite bg;
 	
 	public static Sprite playerHead;
+	public static Sprite playerHeadBack;
 	public static Sprite playerFront;
 	public static Sprite playerSide;
 	public static Sprite playerBack;
@@ -23,6 +24,9 @@ public class Assets {
 	
 	public static Array<Sprite> blood;
 	public static Array<Sprite> smallBlood;
+
+	public static Array<Sprite> candle;
+
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -30,11 +34,12 @@ public class Assets {
 		bg = basicSheet.createSprite("bg");
 		
 		playerHead = basicSheet.createSprite("Player_head_front");
+		playerHeadBack = basicSheet.createSprite("Player_head_back");
 		playerFront = basicSheet.createSprite("Player_body_front");
 		playerSide = basicSheet.createSprite("Player_body_side");
 		playerBack = basicSheet.createSprite("Player_body_back");
 		
-		enemy = basicSheet.createSprite("enemy");
+		enemy = basicSheet.createSprite("enemies_roamer_frame1");
 		taken = basicSheet.createSprite("taken");
 		
 		logo = basicSheet.createSprite("title");
@@ -43,5 +48,7 @@ public class Assets {
 		
 		blood = basicSheet.createSprites("blood");
 		smallBlood = basicSheet.createSprites("blood_small");
+		
+		candle = basicSheet.createSprites("items_candle");;
 	}
 }
