@@ -12,7 +12,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.objects.Candle;
+import com.retrom.ggj2016.objects.CandlePoint;
 import com.retrom.ggj2016.objects.Enemy;
+import com.retrom.ggj2016.objects.FollowerEnemy;
 import com.retrom.ggj2016.objects.Player;
 import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
@@ -21,10 +23,17 @@ import com.retrom.ggj2016.utils.utils;
 
 public class World {
 	
+	private enum GameState {
+		BEFORE_CANDLES,
+		AFTER_CANDLES;
+	}
+	
 	public interface WorldListener {
 		public void restart();
 		public void nextLevel();
 	}
+	
+	GameState state = GameState.BEFORE_CANDLES;
 	
 	private static final float BLOOD_SEGMENT_LENGTH = 5f;
 
@@ -44,6 +53,7 @@ public class World {
 	private List<PaintingLineGlow> glowLines = new ArrayList<PaintingLineGlow>();
 	
 	private List<Candle> candles = new ArrayList<Candle>();
+	private List<CandlePoint> candlePoints = new ArrayList<CandlePoint>();
 	
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	
@@ -59,8 +69,9 @@ public class World {
 
 	private void restartLevel()
 	{
-		enemies = new ArrayList<Enemy>();
-		buildLevel();
+		state = GameState.BEFORE_CANDLES;
+		enemies.clear();
+		candles.clear();
 		for (PaintingLine bloodLine : bloodLines) {
 			bloodLine.pathDone = false;
 			bloodLine.onPath = false;
@@ -68,6 +79,7 @@ public class World {
 		lifebar = new LifeBar();
 		player = new Player();
 		lastPosition = player.position.cpy();
+		buildLevel();
 	}
 	
 	public World(WorldListener listener, int level) {
@@ -114,32 +126,55 @@ public class World {
 		
 		path = lvl.getPath();
 		painting = new Painting(path, 17);
-		// TODO Auto-generated method stub
 		
-		spawnCandle();
+		initCandlePoints(path);
+		System.out.println("candlePoints.size()="+candlePoints.size());
+		// TODO Auto-generated method stub
 	}
 	
+	private void initCandlePoints(ArrayList<LineSegment> path) {
+		candlePoints.clear();
+		for (LineSegment segment : path) {
+			tryAddCandlePoint(segment.startX, segment.startY);
+			tryAddCandlePoint(segment.endX, segment.endY);
+		}
+		
+	}
+	
+	private void tryAddCandlePoint(float x, float y) {
+		System.out.println("trying to add at " + x + "," + y);
+		for (CandlePoint cp : candlePoints) {
+			if (utils.floatEquals(x, cp.position.x, 1f) && utils.floatEquals(y, cp.position.y, 1f)) {
+				System.out.println("cant add...");
+				return;
+			}
+		}
+		System.out.println("Adding!");
+		candlePoints.add(new CandlePoint(x, y));
+		System.out.println("candlePoints.size()="+candlePoints.size());
+	}
+
 	private void spawnCandle() {
-		float x = 380;
-		float y = 380;
+		float x ,y; 
+		x = y = 380 * (Math.random() > 0.5 ? 1 : -1);
 		candles.add(new Candle(x, y, player));
 	}
 
 	public void update(float deltaTime) {
 		gameTime += deltaTime;
 		
+		if (candles.isEmpty() && state == GameState.BEFORE_CANDLES) {
+			spawnCandle();
+			System.out.println("spawning");
+		}
+		
 		player.update(deltaTime);
-		lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
+		if (state == GameState.AFTER_CANDLES) {
+			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
+		}
 		
 		painting.step();
-		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
-			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
-			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y, lineGlow);
-			painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
-			bloodLines.add(line);
-			glowLines.add(lineGlow);
-			lastPosition = player.position.cpy();
-		}
+		dropBlood();
 		
 		for (PaintingLine bloodLine : bloodLines) {
 			bloodLine.update(deltaTime);
@@ -150,6 +185,7 @@ public class World {
 				it.remove();
 			}
 		}
+		updateCandlePoints(deltaTime);
 		
 		for (Enemy enemy : enemies) {
 			enemy.update(deltaTime);
@@ -160,6 +196,10 @@ public class World {
 		}
 		
 		for (Candle candle : candles) {
+			if (!candle.taken && candle.bounds.overlaps(player.bounds)) {
+				candle.taken = true;
+				player.candle = candle;
+			}
 			candle.update(deltaTime);
 		}
 		
@@ -180,6 +220,57 @@ public class World {
 			listener_.nextLevel();
 		}
 	}
+
+	private void dropBlood() {
+		if (state == GameState.BEFORE_CANDLES) {
+			return;
+		}
+		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
+			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y, lineGlow);
+			painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			bloodLines.add(line);
+			glowLines.add(lineGlow);
+			lastPosition = player.position.cpy();
+		}
+	}
+
+	private void updateCandlePoints(float deltaTime) {
+		boolean allHaveCandles = true;
+		for (CandlePoint cp : candlePoints) {
+			cp.update(deltaTime);
+			if (cp.state == CandlePoint.State.NOCANDLE) {
+				allHaveCandles = false;
+			}
+			if (cp.bounds.overlaps(player.bounds)) {
+				if (player.candle != null && cp.state == CandlePoint.State.NOCANDLE) {
+					cp.putCandle();
+					removeCandle(player.candle);
+					player.candle = null;
+				}
+			}
+		}
+		if (allHaveCandles) {
+			startCandlePhase();
+		}
+	}
+
+	private void startCandlePhase() {
+		state = GameState.AFTER_CANDLES;
+		candles.clear();
+		for (CandlePoint cp : candlePoints) {
+			cp.turnOnCandle();
+		}
+		player.startBlood();
+	}
+
+	private void removeCandle(Candle c) {
+		for (Iterator<Candle> it = candles.iterator(); it.hasNext();) {
+			if (it.next() == c) {
+				it.remove();
+			}
+		}
+	}
 	
 	private void splashBlood() {
 		Vector2 newPos = utils.randomDir((float) (Math.random()*100));
@@ -198,13 +289,19 @@ public class World {
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
 
-		for (LineSegment line : path) {
-			renderLineSegment(shapeRenderer, line);
+		if (state == GameState.AFTER_CANDLES) {
+			for (LineSegment line : path) {
+				renderLineSegment(shapeRenderer, line);
+			}
 		}
 //		PaintBloodPath(shapeRenderer);
 		batch.begin();
 		for (PaintingLine line : bloodLines) {
 			line.render(batch);
+		}
+		
+		for (CandlePoint cp : candlePoints) {
+			cp.render(batch);
 		}
 		
 		for (Candle candle : candles) {
@@ -231,7 +328,7 @@ public class World {
 		}
 		batch.end();
 		
-		lifebar.render(shapeRenderer);
+		lifebar.render(shapeRenderer, batch);
 		
 	}
 

@@ -21,4 +21,8 @@ public class utils {
 		vec.y = (float) (Math.sin(dir) * size);
 		return vec;
 	}
+
+	public static boolean floatEquals(float a, float b, float epsilon) {
+		return Math.abs(a-b) < epsilon;
+	}
 }
