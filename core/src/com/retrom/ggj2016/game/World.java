@@ -29,6 +29,7 @@ public class World {
 	private Painting painting;
 	
 	private List<PaintingLine> bloodLines = new ArrayList<PaintingLine>();
+	private List<PaintingLineGlow> glowLines = new ArrayList<PaintingLineGlow>();
 	
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	
@@ -71,7 +72,7 @@ public class World {
 		ArrayList<LineSegment> path = new ArrayList<LineSegment>();
 		path.add(s1);
 		path.add(s2);
-		painting = new Painting(path, 10);
+		painting = new Painting(path, 17);
 		// TODO Auto-generated method stub
 		
 	}
@@ -80,9 +81,11 @@ public class World {
 		player.update(deltaTime);
 		painting.step();
 		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
-			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y, lineGlow);
 			painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
 			bloodLines.add(line);
+			glowLines.add(lineGlow);
 			lastPosition = player.position.cpy();
 		}
 		for (Enemy enemy : enemies) {
@@ -124,9 +127,21 @@ public class World {
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
-		
+
 		for (PaintingLine line : bloodLines) {
+			if (!line.onPath) {
+				line.render(shapeRenderer);
+			}
+		}
+
+		for (PaintingLineGlow line : glowLines) {
 			line.render(shapeRenderer);
+		}
+
+		for (PaintingLine line : bloodLines) {
+			if (line.onPath) {
+				line.render(shapeRenderer);
+			}
 		}
 		batch.begin();
 		for (Target target : targets) {

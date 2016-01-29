@@ -7,30 +7,42 @@ import com.badlogic.gdx.math.Vector2;
 
 public class PaintingLine {
 	
-	public PaintingLine(float x1, float y1, float x2, float y2) {
+	public PaintingLine(float x1, float y1, float x2, float y2, PaintingLineGlow glow) {
 		pt1 = new Vector2(x1, y1);
 		pt2 = new Vector2(x2, y2);
+		myGlow = glow;
 	}
 	
 	public boolean onPath;
 	public boolean pathDone;
+
+	private PaintingLineGlow myGlow;
 	
 	final public Vector2 pt1;
 	final public Vector2 pt2;
 	
 	public void render(ShapeRenderer renderer) {
-		Gdx.gl.glLineWidth(2);
-		renderer.begin(ShapeType.Line);
-		
-		if (pathDone) {
-			renderer.setColor(1, 1, 0, 1);
-		} else if (onPath) {
+
+		int circles = (int)Math.floor(Math.max(Math.abs(pt1.x - pt2.x)/10, Math.abs(pt1.y - pt2.y)/10))+1;
+		renderer.begin(ShapeType.Filled);
+		if (onPath) {
 			renderer.setColor(1, 0, 0, 1);
 		} else {
 			renderer.setColor(0.5f, 0, 0, 1);
 		}
-		
-		renderer.line(pt1.x, pt1.y, pt2.x, pt2.y);
+		for (int i = 0; i < circles; i++) {
+			renderer.circle(pt1.x + (pt2.x - pt1.x)*(((float)i)/((float)circles)), pt1.y + (pt2.y - pt1.y)*(((float)i)/((float)circles)), 4f);
+		}
 		renderer.end();
+
+
+		if (pathDone)
+		{
+			myGlow.display = true;
+		}
+		else
+		{
+			myGlow.display = false;
+		}
 	}
 }

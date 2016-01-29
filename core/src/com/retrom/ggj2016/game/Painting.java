@@ -16,7 +16,7 @@ public class Painting {
 
     private final float MAX_X = 1080;
     private final float MAX_Y = 1080;
-    private final float MAX_GAP = 7;
+    private final float MAX_GAP = 11;
 
     public Painting(ArrayList<LineSegment> target, float precision)
     {
@@ -35,21 +35,10 @@ public class Painting {
     {
         boolean isRelated = false;
         for (LineSegment lineSegment : m_target) {
-            System.out.print("(");
-            System.out.print(lineSegment.startX);
-            System.out.print(",");
-            System.out.print(lineSegment.startY);
-            System.out.print(")(");
-            System.out.print(startX);
-            System.out.print(",");
-            System.out.print(endY);
-            System.out.print(")");
-            System.out.println(dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, startX, startY));
             if (dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, startX, startY) <= m_precision ||
                     dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, endX, endY) <= m_precision)
             {
                 obj.onPath = true;
-                System.out.print("A");
                 isRelated = true;
                 break;
             }
