@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.game.World;
 import com.retrom.ggj2016.game.World.WorldListener;
@@ -24,6 +26,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	ShapeRenderer shapeRenderer_ = new ShapeRenderer();
 	OrthographicCamera cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 	WorldRenderer renderer = new WorldRenderer(batch_);
+	private Viewport viewport;
 	
 	World world_;
 	
@@ -34,6 +37,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	public GameScreen(int level) {
 		System.out.println("GameScreen level="+level);
 		level_ = level;
+		viewport = new FitViewport(FRUSTUM_WIDTH, FRUSTUM_HEIGHT, cam);
 	}
 
 	@Override
@@ -55,7 +59,6 @@ public class GameScreen extends ScreenAdapter implements Screen {
 
 	@Override
 	public void render(float delta) {
-		System.out.println("fps="+(1/delta));
 		
 		cam.update();
 		batch_.setProjectionMatrix(cam.combined);
@@ -97,6 +100,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
+		viewport.update(width, height);
 	}
 
 //	@Override

@@ -10,9 +10,7 @@ import java.util.ArrayList;
 public class Painting {
     private PaintingTreeNode m_pt;
     private ArrayList<PaintingNode> m_allLines;
-    private ArrayList<LineSegment> m_target;
-    private ArrayList<Boolean> m_targetStatus;
-    private ArrayList<ArrayList<PaintingNode>> m_pathFound;
+    private ArrayList<SegmentStatus> m_target;
     private float m_precision;
 
 
@@ -24,11 +22,12 @@ public class Painting {
     {
         m_pt = new PaintingTreeNode();
         m_allLines = new ArrayList<PaintingNode>();
-        m_target = new ArrayList<LineSegment>();
-        m_targetStatus = new ArrayList<Boolean>();
+        m_target = new ArrayList<SegmentStatus>();
         for (LineSegment lineSegment : target) {
-            m_target.add(lineSegment);
-            m_targetStatus.add(false);
+            SegmentStatus seg = new SegmentStatus();
+            seg.segment = lineSegment;
+            seg.isDone = false;
+            m_target.add(seg);
         }
         m_precision = precision;
     }
@@ -37,10 +36,10 @@ public class Painting {
     {
         boolean isRelated = false;
         obj.pathDone = false;
-        ArrayList<LineSegment> relatedTo = new ArrayList<LineSegment>();
-        for (LineSegment lineSegment : m_target) {
-            if (dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, startX, startY) <= m_precision ||
-                    dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, endX, endY) <= m_precision)
+        ArrayList<SegmentStatus> relatedTo = new ArrayList<SegmentStatus>();
+        for (SegmentStatus lineSegment : m_target) {
+            if (dist(lineSegment.segment.startX, lineSegment.segment.startY, lineSegment.segment.endX, lineSegment.segment.endY, startX, startY) <= m_precision ||
+                    dist(lineSegment.segment.startX, lineSegment.segment.startY, lineSegment.segment.endX, lineSegment.segment.endY, endX, endY) <= m_precision)
             {
                 obj.onPath = true;
                 isRelated = true;
@@ -62,6 +61,20 @@ public class Painting {
         m_allLines.add(pn);
         addLine(pn, startX, startY);
         addLine(pn, endX, endY);
+
+        for (SegmentStatus segmentStatus : relatedTo) {
+            if ( !segmentStatus.isDone)
+            {
+                LineSegment line = segmentStatus.segment;
+                ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, segmentStatus, null, null);
+                if (!path.isEmpty()) {
+                    segmentStatus.isDone = true;
+                    for (PaintingNode paintingNode : path) {
+                        paintingNode.obj.pathDone = true;
+                    }
+                }
+            }
+        }
     }
 
 
@@ -213,27 +226,27 @@ public class Painting {
     public void step()
     {
 
-        for (int i = 0; i < m_target.size(); i++) {
-            if ( !m_targetStatus.get(i))
+        /*for (int i = 0; i < m_target.size(); i++) {
+            if ( !m_target.get(i).isDone)
             {
-                LineSegment line = m_target.get(i);
+                LineSegment line = m_target.get(i).segment;
                 ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, line, null, null);
                 if (path.isEmpty()) {
-                    m_targetStatus.set(i, false);
+                    m_target.get(i).isDone = false;
                 } else {
-                    m_targetStatus.set(i, true);
+                    m_target.get(i).isDone = true;
                     for (PaintingNode paintingNode : path) {
                         paintingNode.obj.pathDone = true;
                     }
                 }
             }
-        }
+        }*/
     }
 
     public boolean isDone()
     {
-        for (Boolean targetStatus : m_targetStatus) {
-            if (!targetStatus)
+        for (SegmentStatus targetStatus : m_target) {
+            if (!targetStatus.isDone)
             {
                 return false;
             }
@@ -241,7 +254,7 @@ public class Painting {
         return true;
     }
 
-    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, LineSegment relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end)
+    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, SegmentStatus relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end)
     {
         if (null == used) {
             used = new ArrayList<PaintingNode>();

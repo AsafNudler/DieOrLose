@@ -4,14 +4,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
-import com.retrom.ggj2016.game.World;
+import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
 
 public class Player extends DynamicGameObject {
 	
 	private static final float VEL = 200f;
 	private static final float ACCEL = 2000f;
+
+	private static TouchToPoint ttp = TouchToPoint.create();
 
 	public Player() {
 		super(0, 0, 50, 50);
@@ -28,6 +31,27 @@ public class Player extends DynamicGameObject {
 			velocity.x -= ACCEL * deltaTime;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			velocity.x += ACCEL * deltaTime;
+		}
+		if (Gdx.input.isTouched())
+		{
+			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
+			float ang = touch.angle();
+			if ((ang >= 0 && ang <= 60) || (ang >= 300))
+			{
+				velocity.x += ACCEL * deltaTime;
+			}
+			else if (ang >= 120 && ang <= 240)
+			{
+				velocity.x -= ACCEL * deltaTime;
+			}
+			if (ang >= 30 && ang <= 150)
+			{
+				velocity.y += ACCEL * deltaTime;
+			}
+			else if (ang >= 210 && ang <= 330)
+			{
+				velocity.y -= ACCEL * deltaTime;
+			}
 		}
 		velocity.clamp(0, VEL);
 		velocity.x *= Math.pow(0.01, deltaTime);

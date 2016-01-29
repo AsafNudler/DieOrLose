@@ -17,7 +17,7 @@ public class GGJ2016 extends Game {
 		
 		setScreen(new GameScreen(0));
 		
-		batch = new SpriteBatch();
+		//batch = new SpriteBatch();
 	}
 
 //	@Override
