@@ -66,7 +66,7 @@ public class Painting {
             if ( !segmentStatus.isDone)
             {
                 LineSegment line = segmentStatus.segment;
-                ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, segmentStatus, null, null);
+                ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, segmentStatus, null, null, 350);
                 if (!path.isEmpty()) {
                     segmentStatus.isDone = true;
                     for (PaintingNode paintingNode : path) {
@@ -254,8 +254,12 @@ public class Painting {
         return true;
     }
 
-    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, SegmentStatus relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end)
+    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, SegmentStatus relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end, int maxDepth)
     {
+        if (maxDepth <= 0)
+        {
+            return new ArrayList<PaintingNode>();
+        }
         if (null == used) {
             used = new ArrayList<PaintingNode>();
         }
@@ -273,12 +277,12 @@ public class Painting {
                 continue;
             }
             used.add(potentioal);
-            ArrayList<PaintingNode> try1 = isBloodedPath(potentioal.startX, potentioal.startY, endX, endY, relatedTo, used, end);
+            ArrayList<PaintingNode> try1 = isBloodedPath(potentioal.startX, potentioal.startY, endX, endY, relatedTo, used, end, maxDepth-1);
             if (!try1.isEmpty()) {
                 try1.add(potentioal);
                 return try1;
             }
-            try1 = isBloodedPath(potentioal.endX, potentioal.endY, endX, endY, relatedTo, used, end);
+            try1 = isBloodedPath(potentioal.endX, potentioal.endY, endX, endY, relatedTo, used, end, maxDepth-1);
             if (!try1.isEmpty()) {
                 try1.add(potentioal);
                 return try1;

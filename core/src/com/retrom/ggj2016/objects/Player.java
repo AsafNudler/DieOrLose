@@ -35,7 +35,13 @@ public class Player extends DynamicGameObject {
 		if (Gdx.input.isTouched())
 		{
 			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
-			float ang = touch.angle();
+			touch.sub(position);
+			touch.scl(ACCEL * deltaTime);
+			velocity.x += touch.x;
+			velocity.y += touch.y;
+
+			/*float ang = touch.angle();
+
 			if ((ang >= 0 && ang <= 60) || (ang >= 300))
 			{
 				velocity.x += ACCEL * deltaTime;
@@ -51,7 +57,7 @@ public class Player extends DynamicGameObject {
 			else if (ang >= 210 && ang <= 330)
 			{
 				velocity.y -= ACCEL * deltaTime;
-			}
+			}*/
 		}
 		velocity.clamp(0, VEL);
 		velocity.x *= Math.pow(0.01, deltaTime);
