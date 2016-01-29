@@ -105,6 +105,10 @@ public class World {
 			Vector2 pos = getEnemyRandomPos();
 			enemies.add(new RandomWalkEnemy(pos.x, pos.y));
 		}
+		for (int i=0; i < lvl.FollowerEnemy; i++) {
+			Vector2 pos = getEnemyRandomPos();
+			enemies.add(new FollowerEnemy(pos.x, pos.y, player));
+		}
 		
 		path = lvl.getPath();
 		painting = new Painting(path, 17);
