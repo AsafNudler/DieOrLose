@@ -7,10 +7,10 @@ import com.retrom.ggj2016.screens.GameScreen;
 public class LifeBar {
 	
 	private static final float MAX_WIDTH = GameScreen.FRUSTUM_WIDTH - 200;
-	private static final float HEIGHT = 50;
+	private static final float HEIGHT = 20;
 	
 	private static final float X = -GameScreen.FRUSTUM_WIDTH/2 + 100;
-	private static final float Y = GameScreen.FRUSTUM_HEIGHT/2 - 100;
+	private static final float Y = - GameScreen.FRUSTUM_HEIGHT/2 + 30;
 	
 	public float life = 1;
 	public void render(ShapeRenderer renderer) {

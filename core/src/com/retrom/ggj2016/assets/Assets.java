@@ -14,6 +14,9 @@ public class Assets {
 	public static Sprite enemy;
 	public static Sprite target;
 	public static Sprite taken;
+	public static Sprite logo;
+
+	public static Sprite centerGlow;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -28,5 +31,9 @@ public class Assets {
 		enemy = basicSheet.createSprite("enemy");
 		target = basicSheet.createSprite("target");
 		taken = basicSheet.createSprite("taken");
+		
+		logo = basicSheet.createSprite("title");
+		
+		centerGlow = basicSheet.createSprite("center_glow"); 
 	}
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.game.World;
 import com.retrom.ggj2016.utils.utils;
 
 public class Player extends DynamicGameObject {
@@ -13,7 +14,7 @@ public class Player extends DynamicGameObject {
 	private static final float ACCEL = 2000f;
 
 	public Player() {
-		super(0, 0, 1, 1);
+		super(0, 0, 50, 50);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -34,6 +35,19 @@ public class Player extends DynamicGameObject {
 		
 		position.x += velocity.x * deltaTime;
 		position.y += velocity.y * deltaTime;
+		
+		if (position.x > World.BOUNDS) {
+			position.x = World.BOUNDS;
+		} else if (position.x < -World.BOUNDS) {
+			position.x = -World.BOUNDS;
+		}
+		
+		if (position.y > World.BOUNDS) {
+			position.y = World.BOUNDS;
+		} else if (position.y < -World.BOUNDS) {
+			position.y = -World.BOUNDS;
+		}
+		
 		
 		bounds.x = position.x - bounds.width / 2;
 		bounds.y = position.y - bounds.height / 2;

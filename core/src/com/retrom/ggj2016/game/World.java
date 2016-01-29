@@ -12,7 +12,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.objects.BouncingBallEnemy;
 import com.retrom.ggj2016.objects.Enemy;
+import com.retrom.ggj2016.objects.FollowerEnemy;
 import com.retrom.ggj2016.objects.Player;
+import com.retrom.ggj2016.objects.RandomWalkEnemy;
+import com.retrom.ggj2016.utils.BatchUtils;
+import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
 
 public class World {
@@ -24,9 +28,11 @@ public class World {
 	
 	private static final float BLOOD_SEGMENT_LENGTH = 5f;
 
-	private static final float BLOOD_LOSE_RATE = 1e-4f;
+	private static final float BLOOD_LOSE_RATE = 15e-5f;
+
+	public static final float BOUNDS = 450;
 	
-	private Player player = new Player();
+	private final Player player = new Player();
 	
 	private LifeBar lifebar = new LifeBar();
 
@@ -55,7 +61,7 @@ public class World {
 	private void buildLevel() {
 		for (int i=0; i < level; i++) {
 			Vector2 pos = utils.randomDir(400);
-			enemies.add(new BouncingBallEnemy(pos.x, pos.y));
+			enemies.add(new RandomWalkEnemy(pos.x, pos.y));
 		}
 		
 		path = new Levels(level).getPath();
@@ -90,7 +96,8 @@ public class World {
 		
 
 		if (painting.isDone()) {
-			listener_.nextLevel();
+			if (player.position.len() < 30)
+				listener_.nextLevel();
 		}
 		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
@@ -113,6 +120,7 @@ public class World {
 	}
 
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
@@ -140,9 +148,20 @@ public class World {
 		for (Enemy enemy : enemies) {
 			enemy.render(batch);
 		}
+		if (level == 0) {
+			utils.drawCenter(batch, Assets.logo, 0, 350);
+		}
+		batch.end();
+		
+		BatchUtils.setBlendFuncAdd(batch);
+		batch.begin();
+		if (painting.isDone()) {
+		utils.drawCenter(batch, Assets.centerGlow, 0, 0);
+		}
 		batch.end();
 		
 		lifebar.render(shapeRenderer);
+		
 	}
 
 	private void renderLineSegment(ShapeRenderer renderer, LineSegment line) {
