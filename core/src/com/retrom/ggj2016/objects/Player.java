@@ -9,7 +9,7 @@ import com.retrom.ggj2016.utils.utils;
 
 public class Player extends DynamicGameObject {
 	
-	private static final float VEL = 100f;
+	private static final float VEL = 200f;
 	private static final float ACCEL = 2000f;
 
 	public Player() {
