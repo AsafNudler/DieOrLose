@@ -11,6 +11,9 @@ public class TouchToPoint {
 	
 	final int screenWidth;
 	final int screenHeight;
+
+	private int left;
+	private int right;
 	
 	public TouchToPoint(int screenWidth, int screenHeight, float camWidth,
 			float camHeight) {
@@ -18,10 +21,21 @@ public class TouchToPoint {
 		this.screenHeight = screenHeight;
 		this.camWidth = camWidth;
 		this.camHeight = camHeight;
+		right = (screenWidth - screenHeight) / 2;
+		left = this.screenWidth - right;
 	}
 	
 	public Vector2 toPoint(int x, int y) {
-		float rel_x = (float)x / screenWidth;
+		x -= right;
+		if (x < 0)
+		{
+			x = 0;
+		}
+		if (x > screenHeight)
+		{
+			x = screenHeight;
+		}
+		float rel_x = (float)x / screenHeight;
 		float rel_y = (float)y / screenHeight;
 		
 		float res_x = (rel_x - 0.5f) * camWidth;
