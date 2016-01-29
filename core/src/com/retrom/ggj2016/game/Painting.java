@@ -12,7 +12,9 @@ public class Painting {
     private ArrayList<PaintingNode> m_allLines;
     private ArrayList<LineSegment> m_target;
     private ArrayList<Boolean> m_targetStatus;
+    private ArrayList<ArrayList<PaintingNode>> m_pathFound;
     private float m_precision;
+
 
     private final float MAX_X = 1080;
     private final float MAX_Y = 1080;
@@ -34,13 +36,15 @@ public class Painting {
     public void addLine(PaintingLine obj, float startX, float startY, float endX, float endY)
     {
         boolean isRelated = false;
+        obj.pathDone = false;
+        ArrayList<LineSegment> relatedTo = new ArrayList<LineSegment>();
         for (LineSegment lineSegment : m_target) {
             if (dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, startX, startY) <= m_precision ||
                     dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, endX, endY) <= m_precision)
             {
                 obj.onPath = true;
                 isRelated = true;
-                break;
+                relatedTo.add(lineSegment);
             }
         }
         if (!isRelated)
@@ -54,6 +58,7 @@ public class Painting {
         pn.endX = endX;
         pn.startY = startY;
         pn.endY = endY;
+        pn.relatedTo = relatedTo;
         m_allLines.add(pn);
         addLine(pn, startX, startY);
         addLine(pn, endX, endY);
@@ -200,21 +205,19 @@ public class Painting {
     
     public void step()
     {
-        for (PaintingNode line : m_allLines) {
-            line.obj.pathDone = false;
-        }
+
         for (int i = 0; i < m_target.size(); i++) {
-            LineSegment line = m_target.get(i);
-            ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, null, null);
-            if (path.isEmpty())
+            if ( !m_targetStatus.get(i))
             {
-                m_targetStatus.set(i, false);
-            }
-            else
-            {
-                m_targetStatus.set(i, true);
-                for (PaintingNode paintingNode : path) {
-                    paintingNode.obj.pathDone = true;
+                LineSegment line = m_target.get(i);
+                ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, line, null, null);
+                if (path.isEmpty()) {
+                    m_targetStatus.set(i, false);
+                } else {
+                    m_targetStatus.set(i, true);
+                    for (PaintingNode paintingNode : path) {
+                        paintingNode.obj.pathDone = true;
+                    }
                 }
             }
         }
@@ -231,7 +234,7 @@ public class Painting {
         return true;
     }
     
-    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end)
+    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, LineSegment relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end)
     {
         if (null == used)
         {
@@ -249,18 +252,18 @@ public class Painting {
                 res.add(potentioal);
                 return res;
             }
-            if (used.contains(potentioal))
+            if (used.contains(potentioal) || !potentioal.relatedTo.contains(relatedTo))
             {
                 continue;
             }
             used.add(potentioal);
-            ArrayList<PaintingNode> try1 = isBloodedPath(potentioal.startX, potentioal.startY, endX, endY, used, end);
+            ArrayList<PaintingNode> try1 = isBloodedPath(potentioal.startX, potentioal.startY, endX, endY, relatedTo, used, end);
             if (!try1.isEmpty())
             {
                 try1.add(potentioal);
                 return try1;
             }
-            try1 = isBloodedPath(potentioal.endX, potentioal.endY, endX, endY, used, end);
+            try1 = isBloodedPath(potentioal.endX, potentioal.endY, endX, endY, relatedTo, used, end);
             if (!try1.isEmpty())
             {
                 try1.add(potentioal);
