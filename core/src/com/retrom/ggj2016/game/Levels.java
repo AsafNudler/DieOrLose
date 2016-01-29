@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.utils.utils;
 
@@ -31,11 +33,12 @@ public class Levels {
 		{
 			try {
 				levels = new ArrayList<Levels>();
+				FileHandle fl = Gdx.files.internal("levels.txt");
+				String cont = fl.readString();
+				String[] lines = cont.replace("\r", "").split("\n");
 				BufferedReader reader = new BufferedReader(new FileReader("levels.txt"));
-				String line;
 				Levels nextLevel = null;
-				while ((line = reader.readLine()) != null)
-				{
+				for (String line : lines) {
 					if (line.trim().equals(""))
 					{
 						if (null != nextLevel)
