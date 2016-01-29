@@ -22,8 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
-import javax.swing.event.ListSelectionEvent;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -62,7 +60,6 @@ public class WorldRenderer {
 		this.cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
 		cam_position = this.cam.position.y = FRUSTUM_HEIGHT / 3f;
 		this.batch = batch;
-		System.out.println("FRUSTUM_HEIGHT=" + FRUSTUM_HEIGHT);
 	}
 	
 	public static final float CAM_SPEED = 40f;

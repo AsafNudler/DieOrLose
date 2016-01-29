@@ -46,7 +46,6 @@ public class World {
 	private final int level;
 	
 	public World(WorldListener listener, int level) {
-		System.out.println("level="+level);
 		this.listener_ = listener;
 		this.level = level;
 		lastPosition = player.position.cpy();
