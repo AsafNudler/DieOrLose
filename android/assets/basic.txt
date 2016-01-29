@@ -1,67 +1,172 @@
 basic.png
-size: 1080, 1473
+size: 2048, 2048
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Player_body_back
   rotate: false
-  xy: 0, 0
+  xy: 2, 2
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 Player_body_front
   rotate: false
-  xy: 57, 0
+  xy: 61, 2
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 Player_body_side
   rotate: false
-  xy: 114, 0
+  xy: 120, 2
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 Player_head_back
   rotate: false
-  xy: 171, 0
+  xy: 179, 2
   size: 126, 89
   orig: 126, 89
   offset: 0, 0
   index: -1
 Player_head_front
   rotate: false
-  xy: 297, 0
+  xy: 307, 2
   size: 126, 89
   orig: 126, 89
   offset: 0, 0
   index: -1
 bg
   rotate: false
-  xy: 0, 89
+  xy: 435, 2
   size: 1080, 1080
   orig: 1080, 1080
   offset: 0, 0
   index: -1
+blood
+  rotate: false
+  xy: 1517, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 1
+blood
+  rotate: false
+  xy: 1619, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 2
+blood
+  rotate: false
+  xy: 1721, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 3
+blood
+  rotate: false
+  xy: 1823, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 4
+blood
+  rotate: false
+  xy: 1925, 2
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 5
+blood
+  rotate: false
+  xy: 2, 1084
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 6
+blood
+  rotate: false
+  xy: 104, 1084
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: 7
+blood_small
+  rotate: false
+  xy: 206, 1084
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: 1
+blood_small
+  rotate: false
+  xy: 233, 1084
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: 2
+blood_small
+  rotate: false
+  xy: 260, 1084
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: 3
+blood_small
+  rotate: false
+  xy: 287, 1084
+  size: 25, 25
+  orig: 25, 25
+  offset: 0, 0
+  index: 4
 center_glow
   rotate: false
-  xy: 0, 1169
+  xy: 314, 1084
   size: 240, 240
   orig: 240, 240
   offset: 0, 0
   index: -1
 enemy
   rotate: false
-  xy: 240, 1169
+  xy: 556, 1084
   size: 108, 108
   orig: 108, 108
   offset: 0, 0
   index: -1
+items_candle
+  rotate: false
+  xy: 666, 1084
+  size: 45, 65
+  orig: 45, 65
+  offset: 0, 0
+  index: 1
+items_candle_1_glow
+  rotate: false
+  xy: 713, 1084
+  size: 45, 65
+  orig: 45, 65
+  offset: 0, 0
+  index: -1
+items_candle
+  rotate: false
+  xy: 760, 1084
+  size: 41, 56
+  orig: 41, 56
+  offset: 0, 0
+  index: 2
+items_candle_2_glow
+  rotate: false
+  xy: 803, 1084
+  size: 41, 56
+  orig: 41, 56
+  offset: 0, 0
+  index: -1
 title
   rotate: false
-  xy: 348, 1169
+  xy: 846, 1084
   size: 686, 304
   orig: 686, 304
   offset: 0, 0

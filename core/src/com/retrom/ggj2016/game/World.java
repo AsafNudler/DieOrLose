@@ -109,7 +109,7 @@ public class World {
 	}
 	
 	private void splashBlood() {
-		Vector2 newPos = utils.randomDir((float) (Math.random()*100));
+		Vector2 newPos = utils.randomDir((float) (Math.random()*200));
 		newPos.add(player.position);
 		
 		PaintingLineGlow lineGlow = new PaintingLineGlow(player.position.x, player.position.y, newPos.x, newPos.y);
@@ -128,22 +128,27 @@ public class World {
 		for (LineSegment line : path) {
 			renderLineSegment(shapeRenderer, line);
 		}
-		for (PaintingLine line : bloodLines) {
-			if (!line.onPath) {
-				line.render(shapeRenderer);
-			}
-		}
-
-		for (PaintingLineGlow line : glowLines) {
-			line.render(shapeRenderer);
-		}
-
-		for (PaintingLine line : bloodLines) {
-			if (line.onPath) {
-				line.render(shapeRenderer);
-			}
-		}
+//		for (PaintingLine line : bloodLines) {
+//			if (!line.onPath) {
+//				line.render(shapeRenderer);
+//			}
+//		}
+//
+//		for (PaintingLineGlow line : glowLines) {
+//			line.render(shapeRenderer);
+//		}
+//
+//		for (PaintingLine line : bloodLines) {
+//			if (line.onPath) {
+//				line.render(shapeRenderer);
+//			}
+//		}
 		batch.begin();
+		for (PaintingLine line : bloodLines) {
+//			if (!line.onPath) {
+				line.render(batch);
+//			}
+		}
 		player.render(batch);
 		for (Enemy enemy : enemies) {
 			enemy.render(batch);
@@ -156,7 +161,7 @@ public class World {
 		BatchUtils.setBlendFuncAdd(batch);
 		batch.begin();
 		if (painting.isDone()) {
-		utils.drawCenter(batch, Assets.centerGlow, 0, 0);
+			utils.drawCenter(batch, Assets.centerGlow, 0, 0);
 		}
 		batch.end();
 		

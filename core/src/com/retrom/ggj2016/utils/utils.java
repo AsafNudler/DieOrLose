@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 public class utils {
-	public static void drawCenter(SpriteBatch batch, Sprite keyFrame, float x, float y) {
-		batch.draw(keyFrame, x - keyFrame.getRegionWidth()/2, y - keyFrame.getRegionHeight()/2);
+	public static void drawCenter(SpriteBatch batch, Sprite sprite, float x, float y) {
+		sprite.setPosition(x - sprite.getRegionWidth()/2, y - sprite.getRegionHeight()/2);
+		sprite.draw(batch);
 	}
 	
 	public static Vector2 randomDir(float size) {

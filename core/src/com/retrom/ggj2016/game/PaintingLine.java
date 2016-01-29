@@ -1,6 +1,7 @@
 package com.retrom.ggj2016.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -23,6 +24,11 @@ public class PaintingLine {
 	
 	final public Vector2 pt1;
 	final public Vector2 pt2;
+	
+	Sprite sprite = setupSprite();
+	Vector2 offset = utils.randomDir(14);
+	float scale = (float) (Math.random() * 1f + 0.5f);
+	float rotation = (float) (Math.random() * 360);
 	
 	public void render(ShapeRenderer renderer) {
 
@@ -49,21 +55,34 @@ public class PaintingLine {
 		}
 	}
 	
+	private Sprite setupSprite() {
+		Sprite s = Assets.smallBlood.random();
+		if (Math.random() < 0.05) {
+			s = Assets.blood.random();
+			scale = 1;
+		}
+		return s;
+	}
+
 	public void render(SpriteBatch batch) {
 
-		int circles = (int)Math.floor(Math.max(Math.abs(pt1.x - pt2.x)/10, Math.abs(pt1.y - pt2.y)/10))+1;
-		if (onPath) {
-			batch.setColor(1, 0, 0, 1);
-		} else {
-			batch.setColor(0.5f, 0, 0, 1);
-		}
-		batch.begin();
-		for (int i = 0; i < circles; i++) {
-			final float x = pt1.x + (pt2.x - pt1.x)*(((float)i)/((float)circles));
-			float y = pt1.y + (pt2.y - pt1.y)*(((float)i)/((float)circles));
-			utils.drawCenter(batch, Assets.blood.get(0), x, y);
-		}
-		batch.end();
+//		int circles = (int)Math.floor(Math.max(Math.abs(pt1.x - pt2.x)/30, Math.abs(pt1.y - pt2.y)/30))+1;
+//		if (onPath) {
+//			batch.setColor(1, 1, 1, 1);
+//		} else {
+//			batch.setColor(0.5f, 0, 0, 1);
+//		}
+//		for (int i = 0; i < circles; i++) {
+//			final float x = pt1.x + (pt2.x - pt1.x)*(((float)i)/((float)circles));
+//			float y = pt1.y + (pt2.y - pt1.y)*(((float)i)/((float)circles));
+			
+			final float x = pt1.x;
+			float y = pt1.y;
+			sprite.setScale(scale);
+			sprite.setRotation(rotation);
+			utils.drawCenter(batch, sprite, x + offset.x, y + offset.y);
+//		}
+//		batch.setColor(1, 1, 1, 1);
 
 
 		if (pathDone)
