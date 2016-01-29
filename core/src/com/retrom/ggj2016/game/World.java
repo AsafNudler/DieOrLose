@@ -1,24 +1,22 @@
 package com.retrom.ggj2016.game;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
-import com.retrom.ggj2016.objects.BouncingBallEnemy;
+import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.Enemy;
-import com.retrom.ggj2016.objects.FollowerEnemy;
 import com.retrom.ggj2016.objects.Player;
 import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
 import com.retrom.ggj2016.utils.BatchUtils;
-import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
 
 public class World {
@@ -45,6 +43,8 @@ public class World {
 	private List<PaintingLine> bloodLines = new ArrayList<PaintingLine>();
 	private List<PaintingLineGlow> glowLines = new ArrayList<PaintingLineGlow>();
 	
+	private List<Candle> candles = new ArrayList<Candle>();
+	
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	
 	ArrayList<LineSegment> path = new ArrayList<LineSegment>();
@@ -54,6 +54,8 @@ public class World {
 	private final WorldListener listener_;
 
 	private final int level;
+	
+	private float gameTime = 0;
 
 	private void restartLevel()
 	{
@@ -114,9 +116,18 @@ public class World {
 		painting = new Painting(path, 17);
 		// TODO Auto-generated method stub
 		
+		spawnCandle();
+	}
+	
+	private void spawnCandle() {
+		float x = 380;
+		float y = 380;
+		candles.add(new Candle(x, y, player));
 	}
 
 	public void update(float deltaTime) {
+		gameTime += deltaTime;
+		
 		player.update(deltaTime);
 		lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
 		
@@ -129,6 +140,17 @@ public class World {
 			glowLines.add(lineGlow);
 			lastPosition = player.position.cpy();
 		}
+		
+		for (PaintingLine bloodLine : bloodLines) {
+			bloodLine.update(deltaTime);
+		}
+		for (Iterator<PaintingLine> it = bloodLines.iterator(); it.hasNext();) {
+			PaintingLine line = it.next();
+			if (line.offTime < 0) {
+				it.remove();
+			}
+		}
+		
 		for (Enemy enemy : enemies) {
 			enemy.update(deltaTime);
 			if (enemy.bounds.overlaps(player.bounds)) {
@@ -136,6 +158,11 @@ public class World {
 				splashBlood();
 			}
 		}
+		
+		for (Candle candle : candles) {
+			candle.update(deltaTime);
+		}
+		
 		if (lifebar.life <= 0) {
 			restartLevel();
 		}
@@ -155,7 +182,7 @@ public class World {
 	}
 	
 	private void splashBlood() {
-		Vector2 newPos = utils.randomDir((float) (Math.random()*200));
+		Vector2 newPos = utils.randomDir((float) (Math.random()*100));
 		newPos.add(player.position);
 		
 		PaintingLineGlow lineGlow = new PaintingLineGlow(player.position.x, player.position.y, newPos.x, newPos.y);
@@ -174,32 +201,25 @@ public class World {
 		for (LineSegment line : path) {
 			renderLineSegment(shapeRenderer, line);
 		}
-//		for (PaintingLine line : bloodLines) {
-//			if (!line.onPath) {
-//				line.render(shapeRenderer);
-//			}
-//		}
-//
-//		for (PaintingLineGlow line : glowLines) {
-//			line.render(shapeRenderer);
-//		}
-//
-//		for (PaintingLine line : bloodLines) {
-//			if (line.onPath) {
-//				line.render(shapeRenderer);
-//			}
-//		}
+//		PaintBloodPath(shapeRenderer);
 		batch.begin();
 		for (PaintingLine line : bloodLines) {
-//			if (!line.onPath) {
-				line.render(batch);
-//			}
+			line.render(batch);
+		}
+		
+		for (Candle candle : candles) {
+			if (!candle.overPlayer()) candle.render(batch);
 		}
 		player.render(batch);
+		for (Candle candle : candles) {
+			if (candle.overPlayer()) candle.render(batch);
+		}
+		
 		for (Enemy enemy : enemies) {
 			enemy.render(batch);
 		}
 		if (level == 0) {
+			Assets.logo.setAlpha(Math.max(0, 1 - gameTime / 10));
 			utils.drawCenter(batch, Assets.logo, 0, 350);
 		}
 		batch.end();
@@ -213,6 +233,24 @@ public class World {
 		
 		lifebar.render(shapeRenderer);
 		
+	}
+
+	private void PaintBloodPath(ShapeRenderer shapeRenderer) {
+		for (PaintingLine line : bloodLines) {
+			if (!line.onPath) {
+				line.render(shapeRenderer);
+			}
+		}
+
+		for (PaintingLineGlow line : glowLines) {
+			line.render(shapeRenderer);
+		}
+
+		for (PaintingLine line : bloodLines) {
+			if (line.onPath) {
+				line.render(shapeRenderer);
+			}
+		}
 	}
 
 	private void renderLineSegment(ShapeRenderer renderer, LineSegment line) {

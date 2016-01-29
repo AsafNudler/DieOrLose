@@ -85,22 +85,28 @@ public class Player extends DynamicGameObject {
 	}
 	
 	public void render(SpriteBatch batch) {
-		Sprite s = Assets.playerFront;
+		Sprite body = Assets.playerFront;
+		Sprite head = Assets.playerHead;
+		if (velocity.y > 0) {
+			head = Assets.playerHeadBack;
+		} else {
+			head = Assets.playerHead;
+		}
 		if (Math.abs(velocity.y) > Math.abs(velocity.x)) {
 			if (velocity.y > 0) {
-				s = Assets.playerBack;
+				body = Assets.playerBack;
 			} else if (velocity.y < 0) {
-				s = Assets.playerFront;
+				body = Assets.playerFront;
 			}
 		} else if (velocity.x > 0) {
-			s = Assets.playerSide;
-			s.setFlip(false, false);
+			body = Assets.playerSide;
+			body.setFlip(false, false);
 		} else if (velocity.x < 0) {
-			s = Assets.playerSide;
-			s.setFlip(true, false);
+			body = Assets.playerSide;
+			body.setFlip(true, false);
 		}
-		utils.drawCenter(batch, s, position.x, position.y);
-		utils.drawCenter(batch, Assets.playerHead, position.x, position.y + 57);
+		utils.drawCenter(batch, body, position.x, position.y);
+		utils.drawCenter(batch, head, position.x, position.y + 57);
 	}
 
 }

@@ -129,44 +129,44 @@ center_glow
   orig: 240, 240
   offset: 0, 0
   index: -1
-enemy
+enemies_roamer_frame1
   rotate: false
   xy: 556, 1084
-  size: 108, 108
-  orig: 108, 108
+  size: 71, 115
+  orig: 71, 115
   offset: 0, 0
   index: -1
 items_candle
   rotate: false
-  xy: 666, 1084
+  xy: 629, 1084
   size: 45, 65
   orig: 45, 65
   offset: 0, 0
   index: 1
 items_candle_1_glow
   rotate: false
-  xy: 713, 1084
+  xy: 676, 1084
   size: 45, 65
   orig: 45, 65
   offset: 0, 0
   index: -1
 items_candle
   rotate: false
-  xy: 760, 1084
+  xy: 723, 1084
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: 2
 items_candle_2_glow
   rotate: false
-  xy: 803, 1084
+  xy: 766, 1084
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 846, 1084
+  xy: 809, 1084
   size: 686, 304
   orig: 686, 304
   offset: 0, 0
