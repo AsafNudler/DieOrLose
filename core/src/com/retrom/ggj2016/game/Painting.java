@@ -18,7 +18,7 @@ public class Painting {
 
     private final float MAX_X = 1080;
     private final float MAX_Y = 1080;
-    private final float MAX_GAP = 11;
+    private final float MAX_GAP = 18;
 
     public Painting(ArrayList<LineSegment> target, float precision)
     {
