@@ -64,6 +64,7 @@ public class Painting {
         addLine(pn, endX, endY);
     }
 
+
     private void addLine(PaintingNode obj, float x, float y)
     {
         PaintingTreeNode curr = m_pt;
@@ -72,8 +73,14 @@ public class Painting {
         float maxX = MAX_X/2;
         float minY = -MAX_Y/2;
         float maxY = MAX_Y/2;
+        int depth = 0;
         while (true)
         {
+            depth++;
+            if (depth >= 15) // a little bug to make the game faster
+            {
+                return;
+            }
             if (curr.obj == null)
             {
                 curr.x = x;
@@ -233,39 +240,33 @@ public class Painting {
         }
         return true;
     }
-    
+
     private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, LineSegment relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end)
     {
-        if (null == used)
-        {
+        if (null == used) {
             used = new ArrayList<PaintingNode>();
         }
-        if (null == end)
-        {
+        if (null == end) {
             end = findLines(endX, endY, MAX_GAP);
         }
         ArrayList<PaintingNode> potentioals = findLines(startX, startY, MAX_GAP);
         for (PaintingNode potentioal : potentioals) {
-            if (end.contains(potentioal))
-            {
+            if (end.contains(potentioal)) {
                 ArrayList<PaintingNode> res = new ArrayList<PaintingNode>();
                 res.add(potentioal);
                 return res;
             }
-            if (used.contains(potentioal) || !potentioal.relatedTo.contains(relatedTo))
-            {
+            if (used.contains(potentioal) || !potentioal.relatedTo.contains(relatedTo)) {
                 continue;
             }
             used.add(potentioal);
             ArrayList<PaintingNode> try1 = isBloodedPath(potentioal.startX, potentioal.startY, endX, endY, relatedTo, used, end);
-            if (!try1.isEmpty())
-            {
+            if (!try1.isEmpty()) {
                 try1.add(potentioal);
                 return try1;
             }
             try1 = isBloodedPath(potentioal.endX, potentioal.endY, endX, endY, relatedTo, used, end);
-            if (!try1.isEmpty())
-            {
+            if (!try1.isEmpty()) {
                 try1.add(potentioal);
                 return try1;
             }
