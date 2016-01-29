@@ -5,11 +5,14 @@ import com.retrom.ggj2016.utils.utils;
 
 public class BouncingBallEnemy extends Enemy {
 	
-	private final float VEL = 600;
+	private final float VEL = 90;
 
 	public BouncingBallEnemy(float x, float y) {
 		super(x, y);
 		velocity = utils.randomDir(VEL);
+		if (velocity.dot(position) < 0) {
+			velocity.scl(-1);
+		}
 	}
 	
 	@Override

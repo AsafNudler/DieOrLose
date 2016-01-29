@@ -10,7 +10,11 @@ public class utils {
 	}
 	
 	public static Vector2 randomDir(float size) {
-		double dir = Math.random() * Math.PI * 2;
+		float dir = (float) (Math.random() * Math.PI * 2);
+		return dirVec(dir, size);
+	}
+	
+	public static Vector2 dirVec(float dir, float size) {
 		Vector2 vec = new Vector2();
 		vec.x = (float) (Math.cos(dir) * size);
 		vec.y = (float) (Math.sin(dir) * size);

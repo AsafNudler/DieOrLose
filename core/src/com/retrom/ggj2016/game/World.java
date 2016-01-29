@@ -7,12 +7,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.objects.BouncingBallEnemy;
 import com.retrom.ggj2016.objects.Enemy;
 import com.retrom.ggj2016.objects.Player;
-import com.retrom.ggj2016.objects.Target;
 import com.retrom.ggj2016.utils.utils;
 
 public class World {
@@ -33,7 +33,7 @@ public class World {
 	
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	
-	private List<Target> targets = new ArrayList<Target>();
+	ArrayList<LineSegment> path = new ArrayList<LineSegment>();
 	
 	private Vector2 lastPosition;
 
@@ -54,24 +54,8 @@ public class World {
 			Vector2 pos = utils.randomDir(400);
 			enemies.add(new BouncingBallEnemy(pos.x, pos.y));
 		}
-		for (int i=0; i < level + 1; i++) {
-			Vector2 pos = utils.randomDir(400);
-			targets.add(new Target(pos.x, pos.y));
-		}
-
-		LineSegment s1 = new LineSegment();
-		s1.startX = 0;
-		s1.startY = 0;
-		s1.endX = 500;
-		s1.endY = 500;
-		LineSegment s2 = new LineSegment();
-		s2.startX = 500;
-		s2.startY = 500;
-		s2.endX = 500;
-		s2.endY = -500;
-		ArrayList<LineSegment> path = new ArrayList<LineSegment>();
-		path.add(s1);
-		path.add(s2);
+		
+		path = new Levels(level).getPath();
 		painting = new Painting(path, 17);
 		// TODO Auto-generated method stub
 		
@@ -95,14 +79,8 @@ public class World {
 			enemy.update(deltaTime);
 		}
 		
-		for (Target target : targets) {
-			if (target.bounds.overlaps(player.bounds)) {
-				System.out.println("target taken");
-				target.take();
-			}
-		}
-		
-		if (allTargetsTaken()) {
+
+		if (painting.isDone()) {
 			listener_.nextLevel();
 		}
 		
@@ -114,20 +92,14 @@ public class World {
 		}
 	}
 	
-	private boolean allTargetsTaken() {
-		for (Target target : targets) {
-			if (!target.taken()) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
 
+		for (LineSegment line : path) {
+			renderLineSegment(shapeRenderer, line);
+		}
 		for (PaintingLine line : bloodLines) {
 			if (!line.onPath) {
 				line.render(shapeRenderer);
@@ -144,13 +116,21 @@ public class World {
 			}
 		}
 		batch.begin();
-		for (Target target : targets) {
-			target.render(batch);
-		}
 		player.render(batch);
 		for (Enemy enemy : enemies) {
 			enemy.render(batch);
 		}
 		batch.end();
+	}
+
+	private void renderLineSegment(ShapeRenderer renderer, LineSegment line) {
+		// TODO Auto-generated method stub
+		Gdx.gl.glLineWidth(2);
+		renderer.begin(ShapeType.Line);
+		
+		renderer.setColor(1, 1, 1, 1);
+		
+		renderer.line(line.startX, line.startY, line.endX, line.endY);
+		renderer.end();
 	}
 }

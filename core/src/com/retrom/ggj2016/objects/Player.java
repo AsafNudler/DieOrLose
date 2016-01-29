@@ -10,6 +10,7 @@ import com.retrom.ggj2016.utils.utils;
 public class Player extends DynamicGameObject {
 	
 	private static final float VEL = 100f;
+	private static final float ACCEL = 2000f;
 
 	public Player() {
 		super(0, 0, 108, 108);
@@ -18,20 +19,18 @@ public class Player extends DynamicGameObject {
 	
 	public void update(float deltaTime) {
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			velocity.y = -VEL;
+			velocity.y -= ACCEL * deltaTime;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			velocity.y = VEL;
-		} else {
-			velocity.y = 0;
+			velocity.y += ACCEL * deltaTime;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			velocity.x = -VEL;
+			velocity.x -= ACCEL * deltaTime;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			velocity.x = VEL;
-		} else {
-			velocity.x = 0;
+			velocity.x += ACCEL * deltaTime;
 		}
 		velocity.clamp(0, VEL);
+		velocity.x *= Math.pow(0.01, deltaTime);
+		velocity.y *= Math.pow(0.01, deltaTime);
 		
 		position.x += velocity.x * deltaTime;
 		position.y += velocity.y * deltaTime;
