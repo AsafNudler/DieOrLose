@@ -20,9 +20,11 @@ public class World {
 		public void nextLevel();
 	}
 	
-	private static final float BLOOD_SEGMENT_LENGTH = 50f;
+	private static final float BLOOD_SEGMENT_LENGTH = 5f;
 	
 	private Player player = new Player();
+
+	private Painting painting;
 	
 	private List<PaintingLine> bloodLines = new ArrayList<PaintingLine>();
 	
@@ -47,14 +49,32 @@ public class World {
 			Vector2 pos = utils.randomDir(400);
 			enemies.add(new BouncingBallEnemy(pos.x, pos.y));
 		}
+
+		LineSegment s1 = new LineSegment();
+		s1.startX = 0;
+		s1.startY = 0;
+		s1.endX = 500;
+		s1.endY = 500;
+		LineSegment s2 = new LineSegment();
+		s2.startX = 500;
+		s2.startY = 500;
+		s2.endX = 500;
+		s2.endY = -500;
+		ArrayList<LineSegment> path = new ArrayList<LineSegment>();
+		path.add(s1);
+		path.add(s2);
+		painting = new Painting(path, 10);
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void update(float deltaTime) {
 		player.update(deltaTime);
+		painting.step();
 		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
-			bloodLines.add(new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y));
+			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			bloodLines.add(line);
 			lastPosition = player.position.cpy();
 		}
 		for (Enemy enemy : enemies) {

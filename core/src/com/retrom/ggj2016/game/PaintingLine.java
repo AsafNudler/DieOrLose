@@ -1,5 +1,6 @@
 package com.retrom.ggj2016.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
@@ -18,6 +19,7 @@ public class PaintingLine {
 	final public Vector2 pt2;
 	
 	public void render(ShapeRenderer renderer) {
+		Gdx.gl.glLineWidth(2);
 		renderer.begin(ShapeType.Line);
 		
 		if (pathDone) {

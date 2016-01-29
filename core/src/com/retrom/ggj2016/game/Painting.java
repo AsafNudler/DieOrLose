@@ -22,6 +22,8 @@ public class Painting {
     {
         m_pt = new PaintingTreeNode();
         m_allLines = new ArrayList<PaintingNode>();
+        m_target = new ArrayList<LineSegment>();
+        m_targetStatus = new ArrayList<Boolean>();
         for (LineSegment lineSegment : target) {
             m_target.add(lineSegment);
             m_targetStatus.add(false);
@@ -33,9 +35,21 @@ public class Painting {
     {
         boolean isRelated = false;
         for (LineSegment lineSegment : m_target) {
+            System.out.print("(");
+            System.out.print(lineSegment.startX);
+            System.out.print(",");
+            System.out.print(lineSegment.startY);
+            System.out.print(")(");
+            System.out.print(startX);
+            System.out.print(",");
+            System.out.print(endY);
+            System.out.print(")");
+            System.out.println(dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, startX, startY));
             if (dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, startX, startY) <= m_precision ||
                     dist(lineSegment.startX, lineSegment.startY, lineSegment.endX, lineSegment.endY, endX, endY) <= m_precision)
             {
+                obj.onPath = true;
+                System.out.print("A");
                 isRelated = true;
                 break;
             }
@@ -136,7 +150,17 @@ public class Painting {
     {
         Vector2 v1 = new Vector2(x - segX1, y - segY1);
         Vector2 v2 = new Vector2(x - segX2, y - segY2);
-        return Math.max(Math.max(Math.abs(v1.crs(v2)), v1.len()), v2.len());
+        Vector2 v3 = new Vector2(segX1 - segX2, segY1 - segY2);
+        Vector2 v4 = v3.cpy();
+        v4.scl(-1);
+        if (v3.dot(v2) > 0 && v4.dot(v1) > 0)
+        {
+            return Math.abs(v1.crs(v2))/(2*v4.len());
+        }
+        else
+        {
+            return Math.min(v1.len(), v2.len());
+        }
     }
 
     public void findLines(float x, float y, float radius, PaintingTreeNode curr, float minX, float maxX, float minY, float maxY, boolean splitHor, ArrayList<PaintingNode> res)
