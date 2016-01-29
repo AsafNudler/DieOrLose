@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 public class Assets {
 	
 	public static Sprite player;
+	public static Sprite enemy;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
 		player = basicSheet.createSprite("player");
+		enemy = basicSheet.createSprite("enemy");
 	}
 }

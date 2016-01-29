@@ -31,9 +31,13 @@ public class Player extends DynamicGameObject {
 		} else {
 			velocity.x = 0;
 		}
+		velocity.clamp(0, VEL);
 		
 		position.x += velocity.x * deltaTime;
 		position.y += velocity.y * deltaTime;
+		
+		bounds.x = position.x - bounds.width / 2;
+		bounds.y = position.y - bounds.height / 2;
 	}
 	
 	@Override

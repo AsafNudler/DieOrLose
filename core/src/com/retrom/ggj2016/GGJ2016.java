@@ -15,7 +15,7 @@ public class GGJ2016 extends Game {
 	public void create () {
 		Assets.init();
 		
-		setScreen(new GameScreen());
+		setScreen(new GameScreen(0));
 		
 		batch = new SpriteBatch();
 	}
