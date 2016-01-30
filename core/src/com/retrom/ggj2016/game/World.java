@@ -118,7 +118,7 @@ public class World {
 		else {
 			res = new Vector2((float) GameScreen.FRUSTUM_HEIGHT - (float) WALL_WIDTH, (float) pos - (float) wallLength * 3);
 		}
-		res.sub(new Vector2(GameScreen.FRUSTUM_HEIGHT/2, GameScreen.FRUSTUM_HEIGHT/2));
+		res.sub(new Vector2(GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_HEIGHT / 2));
 		return res;
 	}
 	
@@ -134,9 +134,19 @@ public class World {
 		}
 		
 		path = lvl.getPath();
-		painting = new Painting(path, 17);
+		painting = new Painting(path, 17, new Painting.LineComplete() {
+			@Override
+			public void signale() {
+				lineCompleted();
+			}
+		});
 		
 		initCandlePoints(lvl);
+	}
+
+	private void lineCompleted()
+	{
+		System.out.print("Line completed!");
 	}
 	
 	private void initCandlePoints(Levels level) {
