@@ -297,6 +297,13 @@ public class World {
 
 	private void updateLevelEnd(float deltaTime) {
 		player.putInCenter();
+		
+		player.position.x *= (3f/4);
+		player.position.y *= (3f/4);
+		
+		player.bounds.x = player.position.x - player.bounds.width / 2;
+		player.bounds.y = player.position.y - player.bounds.height / 2;
+		
 		endTime += deltaTime;
 		if (endTime > 0.5) {
 			
@@ -485,10 +492,10 @@ public class World {
 		}
 		if (state == GameState.CANDLES_ON) {
 			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
+			System.out.println("set slash master alpha="+painting.master_alpha);
 			if (painting.isDone()) {
 				painting.master_alpha = Math.max(0, Math.min(altar.stateTime, 1));
 			}
-			painting.master_alpha = 0;
 			painting.render(shapeRenderer);
 		}
 

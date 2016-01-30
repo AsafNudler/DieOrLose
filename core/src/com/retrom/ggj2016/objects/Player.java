@@ -82,7 +82,6 @@ public class Player extends DynamicGameObject {
 			position.y = -World.BOUNDS;
 		}
 		
-		
 		bounds.x = position.x - bounds.width / 2;
 		bounds.y = position.y - bounds.height / 2;
 	}
@@ -147,10 +146,6 @@ public class Player extends DynamicGameObject {
 
 	public void putInCenter() {
 		eyes = true;
-		position.x = 0;
-		position.y = 0;
-		bounds.x = position.x - bounds.width / 2;
-		bounds.y = position.y - bounds.height / 2;
 	}
 
 	public void putHorns() {
