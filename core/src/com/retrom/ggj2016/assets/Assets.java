@@ -61,6 +61,8 @@ public class Assets {
 	public static Sprite playerBodyDies;
 
 	public static Array<Sprite> playerComplete;
+	
+	public static Array<Sprite> fireParticles;
 
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -112,6 +114,8 @@ public class Assets {
 		
 		playerHeadDies = basicSheet.createSprite("Player_head_front_die");
 		playerBodyDies = basicSheet.createSprite("Player_body_front_die");
+		
+		fireParticles = basicSheet.createSprites("particles_burnpiece");
 		
 		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
 		bg = bgSheet.createSprite("bg");

@@ -115,6 +115,7 @@ public class Painting {
     }
 
     public void render(ShapeRenderer renderer) {
+    	System.out.println("master_alpha="+master_alpha);
         for (SegmentStatus lineSegment : m_target) {
             float pos = 0;
             for (SegmentProjs proj : lineSegment.projs) {

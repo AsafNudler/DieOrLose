@@ -63,6 +63,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 
 	@Override
 	public void render(float delta) {
+		System.out.println("fps="+(1/delta));
 		
 		cam.update();
 		batch_.setProjectionMatrix(cam.combined);

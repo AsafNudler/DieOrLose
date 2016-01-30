@@ -1067,6 +1067,27 @@ items_candleslot_nocandle
   orig: 57, 58
   offset: 0, 0
   index: -1
+particles_burnpiece
+  rotate: false
+  xy: 1457, 1449
+  size: 49, 54
+  orig: 49, 54
+  offset: 0, 0
+  index: 1
+particles_burnpiece
+  rotate: false
+  xy: 1508, 1449
+  size: 49, 53
+  orig: 49, 53
+  offset: 0, 0
+  index: 2
+particles_burnpiece
+  rotate: false
+  xy: 1559, 1449
+  size: 53, 50
+  orig: 53, 50
+  offset: 0, 0
+  index: 3
 title
   rotate: false
   xy: 2, 1569
