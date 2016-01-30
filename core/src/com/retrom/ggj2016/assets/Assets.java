@@ -60,6 +60,8 @@ public class Assets {
 	public static Sprite playerHeadDies;
 	public static Sprite playerBodyDies;
 
+	public static Array<Sprite> playerComplete;
+
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
 		
@@ -69,6 +71,7 @@ public class Assets {
 		playerSide = basicSheet.createSprite("Player_body_side");
 		playerBack = basicSheet.createSprite("Player_body_back");
 		playerBodyKnife = basicSheet.createSprite("Player_body_front_knife");
+		playerComplete = basicSheet.createSprites("Player_head_levelcomplete");
 		
 		enemy = basicSheet.createSprites("enemies_roamer_frame");
 		enemyFire = basicSheet.createSprites("enemies_fire");

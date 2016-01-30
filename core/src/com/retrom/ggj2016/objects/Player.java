@@ -30,6 +30,8 @@ public class Player extends DynamicGameObject {
 	}
 
 	private boolean controlled = false;
+	private boolean horns = false;
+	private boolean eyes;
 	
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
@@ -118,8 +120,17 @@ public class Player extends DynamicGameObject {
 			return;
 		}
 		
+		float headOffset = 0;
+		if (horns) {
+			head = Assets.playerComplete.get(1);
+			headOffset = 12;
+		} else if (eyes) {
+			head = Assets.playerComplete.get(0);
+			headOffset = 12;
+		}
+		
 		utils.drawCenter(batch, body, position.x, position.y);
-		utils.drawCenter(batch, head, position.x, position.y + 57);
+		utils.drawCenter(batch, head, position.x, position.y + 57 + headOffset);
 	}
 
 	public void startBlood() {
@@ -132,6 +143,18 @@ public class Player extends DynamicGameObject {
 		}
 		dies = true;
 		stateTime = 0;
+	}
+
+	public void putInCenter() {
+		eyes = true;
+		position.x = 0;
+		position.y = 0;
+		bounds.x = position.x - bounds.width / 2;
+		bounds.y = position.y - bounds.height / 2;
+	}
+
+	public void putHorns() {
+		horns  = true;
 	}
 
 }

@@ -31,7 +31,8 @@ public class World {
 		BEFORE_CANDLES,
 		CANDLES_ON,
 		AFTER_CANDLES,
-		DEATH;
+		DEATH,
+		LEVEL_END;
 	}
 	
 	public interface WorldListener {
@@ -74,12 +75,18 @@ public class World {
 	
 	private float gameTime = 0;
 	private float slashTime = 0;
+	private float endTime = 0;
+	
+	private boolean newlevel = true;
 
 	private Altar altar;
 
 	private PlayerExplode explosion;
 
 	private float deathTime = 0;
+
+	private float fade = 0;
+	private float whiteFade = 0;
 
 	private void restartLevel()
 	{
@@ -90,6 +97,7 @@ public class World {
 		explosion = null;
 		deathTime = 0;
 		slashTime = 0;
+		gameTime = 0;
 		for (PaintingLine bloodLine : bloodLines) {
 			bloodLine.pathDone = false;
 			bloodLine.onPath = false;
@@ -212,6 +220,17 @@ public class World {
 		
 		gameTime += deltaTime;
 		
+		if (gameTime < 0.5f) {
+			float val = 1-(gameTime * 2);
+			if (newlevel) {
+				whiteFade = val;
+			} else {
+				fade = val;
+			}
+		} else {
+			fade = 0;
+		}
+		
 		lifebar.update(deltaTime);
 		altar.update(deltaTime);
 		
@@ -221,6 +240,10 @@ public class World {
 		}
 		if (state == GameState.DEATH) {
 			updateDeath(deltaTime);
+			return;
+		}
+		if (state == GameState.LEVEL_END) {
+			updateLevelEnd(deltaTime);
 			return;
 		}
 		
@@ -267,9 +290,24 @@ public class World {
 
 		if (painting.isDone()) {
 			if (player.position.len() < 60)
-				listener_.nextLevel();
+				state = GameState.LEVEL_END; 
 		}
 		
+	}
+
+	private void updateLevelEnd(float deltaTime) {
+		player.putInCenter();
+		endTime += deltaTime;
+		if (endTime > 0.5) {
+			
+		}
+		whiteFade = (endTime % 0.16f > 0.08f) ? 1 : 0;
+		if (endTime > 0.8f) {
+			player.putHorns();
+		}
+		if (endTime > 1.2f) {
+			listener_.nextLevel();
+		}
 	}
 
 	private void updateHotkeys() {
@@ -291,6 +329,9 @@ public class World {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
 			lifebar.life = 0;
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+			state = GameState.LEVEL_END;
+		}
 	}
 
 	private void updateDeath(float deltaTime) {
@@ -311,7 +352,12 @@ public class World {
 		player.update(deltaTime);
 		explosion.update(deltaTime);
 		deathTime += deltaTime;
-		if (deathTime > 2.5f) {
+		if (deathTime > 2.5) {
+			fade = (deathTime - 2.5f)*2; 
+		}
+		
+		if (deathTime > 3f) {
+			newlevel = false;
 			restartLevel();
 		}
 	}
@@ -493,5 +539,27 @@ public class World {
 		batch.end();
 		
 		lifebar.render(shapeRenderer, batch);
+		
+		renderFade(shapeRenderer);
+	}
+
+	private void renderFade(ShapeRenderer shapeRenderer) {
+		if (fade > 0) {
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		    Gdx.gl.glEnable(GL20.GL_BLEND);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(0, 0, 0, fade);
+			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
+			shapeRenderer.end();
+		}
+		if (whiteFade > 0) {
+			System.out.println("fade="+fade);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		    Gdx.gl.glEnable(GL20.GL_BLEND);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(1, 1, 1, whiteFade);
+			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
+			shapeRenderer.end();
+		}
 	}
 }
