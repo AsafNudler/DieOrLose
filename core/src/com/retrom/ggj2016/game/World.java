@@ -1,6 +1,7 @@
 package com.retrom.ggj2016.game;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -107,39 +108,56 @@ public class World {
 		buildLevel();
 	}
 
-	private Vector2 getEnemyRandomPos()
+	private ArrayList<Vector2> getEnemyRandomPos(int num)
 	{
 		double wallLength = (GameScreen.FRUSTUM_HEIGHT - 2 * WALL_WIDTH);
 		double pos = Math.random() * (wallLength * 4);
-		Vector2 res;
-		if (pos < wallLength)
-		{
-			res =  new Vector2((float)pos, WALL_WIDTH);
+		ArrayList<Vector2> res = new ArrayList<Vector2>();
+		for (int i = 0; i < num; i++) {
+			Vector2 loc;
+			pos += ((wallLength * 4)/(double)num) +  (Math.random() * 60) - 30;
+			pos %= wallLength * 4;
+			System.out.println(pos);
+			if (pos < wallLength)
+			{
+				loc =  new Vector2((float)pos, WALL_WIDTH);
+			}
+			else if (pos < 2 * wallLength)
+			{
+				loc = new Vector2((float) GameScreen.FRUSTUM_HEIGHT - (float) WALL_WIDTH, (float) pos - (float) wallLength * 1);
+
+			}
+			else if (pos < 3 * wallLength)
+			{
+				loc =  new Vector2((float)pos - (float)wallLength*2, (float)GameScreen.FRUSTUM_HEIGHT - (float)WALL_WIDTH);
+
+			}
+			else {
+				loc =  new Vector2(WALL_WIDTH, (float)pos - (float)wallLength*3);
+			}
+			loc.sub(new Vector2(GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_HEIGHT / 2));
+			res.add(loc);
 		}
-		else if (pos < 2 * wallLength)
-		{
-			res =  new Vector2((float)pos - (float)wallLength, (float)GameScreen.FRUSTUM_HEIGHT - (float)WALL_WIDTH);
-		}
-		else if (pos < 3 * wallLength)
-		{
-			res =  new Vector2(WALL_WIDTH, (float)pos - (float)wallLength*2);
-		}
-		else {
-			res = new Vector2((float) GameScreen.FRUSTUM_HEIGHT - (float) WALL_WIDTH, (float) pos - (float) wallLength * 3);
-		}
-		res.sub(new Vector2(GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_HEIGHT / 2));
+
+		Collections.shuffle(res);
+
 		return res;
 	}
 	
 	private void buildLevel() {
 		Levels lvl = new Levels(level);
+		ArrayList<Vector2> poses = getEnemyRandomPos(lvl.RandomWalkEnemy + lvl.FollowerEnemy);
+		int j = 0;
 		for (int i=0; i < lvl.RandomWalkEnemy; i++) {
-			Vector2 pos = getEnemyRandomPos();
+			Vector2 pos = poses.get(j++);
 			enemies.add(new RandomWalkEnemy(pos.x, pos.y));
 		}
+		ArrayList<FollowerEnemy> followers = new ArrayList<FollowerEnemy>();
 		for (int i=0; i < lvl.FollowerEnemy; i++) {
-			Vector2 pos = getEnemyRandomPos();
-			enemies.add(new FollowerEnemy(pos.x, pos.y, player));
+			Vector2 pos = poses.get(j++);
+			FollowerEnemy en = new FollowerEnemy(pos.x, pos.y, player, followers);
+			enemies.add(en);
+			followers.add(en);
 		}
 		
 		path = lvl.getPath();
@@ -208,7 +226,7 @@ public class World {
 		
 		player.update(deltaTime);
 		if (state == GameState.AFTER_CANDLES) {
-			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
+			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * Math.max(player.velocity.len(), 50f);
 		}
 
 		dropBlood();
@@ -309,6 +327,8 @@ public class World {
 			}
 		}
 	}
+
+
 
 	private void dropBlood() {
 		if (state == GameState.BEFORE_CANDLES) {

@@ -28,23 +28,28 @@ public class Player extends DynamicGameObject {
 		super(0, 0, 50, 50);
 		// TODO Auto-generated constructor stub
 	}
+
+	private boolean controlled = false;
 	
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
-		
 		if (dies) {
 			return;
 		}
-		
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+		controlled = false;
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
-		} else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+			controlled = true;
+		} else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			velocity.y += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			controlled = true;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			velocity.x -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
-		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+			controlled = true;
+		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			velocity.x += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			controlled = true;
 		}
 		if (Gdx.input.isTouched())
 		{
@@ -53,29 +58,12 @@ public class Player extends DynamicGameObject {
 			touch.scl(ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f));
 			velocity.x += touch.x;
 			velocity.y += touch.y;
+			controlled = true;
 
-			/*float ang = touch.angle();
-
-			if ((ang >= 0 && ang <= 60) || (ang >= 300))
-			{
-				velocity.x += ACCEL * deltaTime;
-			}
-			else if (ang >= 120 && ang <= 240)
-			{
-				velocity.x -= ACCEL * deltaTime;
-			}
-			if (ang >= 30 && ang <= 150)
-			{
-				velocity.y += ACCEL * deltaTime;
-			}
-			else if (ang >= 210 && ang <= 330)
-			{
-				velocity.y -= ACCEL * deltaTime;
-			}*/
 		}
 		velocity.clamp(0, VEL* (bloodStarted ? 1 : 1.5f));
-		velocity.x *= Math.pow(0.01, deltaTime);
-		velocity.y *= Math.pow(0.01, deltaTime);
+		velocity.x *= Math.pow(0.0001, deltaTime);
+		velocity.y *= Math.pow(0.0001, deltaTime);
 		
 		position.x += velocity.x * deltaTime;
 		position.y += velocity.y * deltaTime;
@@ -106,7 +94,7 @@ public class Player extends DynamicGameObject {
 		} else {
 			head = Assets.playerHead;
 		}
-		if (velocity.len() > 30) {
+		if (velocity.len() > 30 && controlled) {
 			if (velocity.y > 10) {
 				body = utils.getFrameLoop(Assets.playerWalkBack, stateTime, 10);
 			} else {

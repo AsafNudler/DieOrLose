@@ -92,7 +92,7 @@ public class Painting {
                 Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
                 renderer.begin(ShapeType.Line);
 
-                renderer.setColor(r, g, b, 0.12f - 0.12f * ((float)i / (float) glow));
+                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha);
 
                 renderer.line(pt11.x, pt11.y - 6, pt12.x, pt12.y - 6);
                 renderer.end();
@@ -105,7 +105,7 @@ public class Painting {
                 Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
                 renderer.begin(ShapeType.Line);
 
-                renderer.setColor(r, g, b, 0.12f - 0.12f * ((float) i / (float) glow));
+                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha);
 
                 renderer.line(pt21.x, pt21.y - 6, pt22.x, pt22.y - 6);
                 renderer.end();

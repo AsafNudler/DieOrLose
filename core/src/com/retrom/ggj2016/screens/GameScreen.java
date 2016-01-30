@@ -77,12 +77,14 @@ public class GameScreen extends ScreenAdapter implements Screen {
 		if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
 			delta /= 10f;
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-			for (int i=0; i < 10; i++) {
-				update(delta);
+		if (!isPaused_) {
+			if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+				for (int i = 0; i < 10; i++) {
+					update(delta);
+				}
 			}
+			update(delta);
 		}
-		update(delta);
 	}
 	
 	private void update(float deltaTime) {
