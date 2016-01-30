@@ -82,8 +82,6 @@ public class Assets {
 		enemyFire = basicSheet.createSprites("enemies_fire");
 		taken = basicSheet.createSprite("taken");
 		
-		logo = basicSheet.createSprite("title");
-		
 		centerGlow = basicSheet.createSprite("center_glow");
 		
 		blood = basicSheet.createSprites("blood");
@@ -128,5 +126,8 @@ public class Assets {
 		
 		TextureAtlas explodeSheet = new TextureAtlas("explode.txt");
 		playerExplode = explodeSheet.createSprites("blood_explotion");
+		
+		TextureAtlas titleSheet = new TextureAtlas("title.txt");
+		logo = titleSheet.createSprite("title");
 	}
 }

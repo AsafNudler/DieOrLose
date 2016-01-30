@@ -468,6 +468,10 @@ public class World {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
+		
+		if (level == 0 && player.position.x == 0 && player.position.y == 0) {
+			utils.drawCenter(batch, Assets.logo, 0, 0);
+		}
 		batch.end();
 		
 		if (state == GameState.AFTER_CANDLES) {
@@ -544,12 +548,6 @@ public class World {
 		if (explosion != null) {
 			explosion.render(batch);
 		}
-		
-		if (level == 0) {
-			Assets.logo.setAlpha(Math.max(0, 1 - gameTime / 10));
-			utils.drawCenter(batch, Assets.logo, 0, 350);
-		}
-		
 		
 		
 		batch.end();
