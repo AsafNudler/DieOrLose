@@ -124,7 +124,6 @@ public class World {
 			Vector2 loc;
 			pos += ((wallLength * 4)/(double)num) +  (Math.random() * 60) - 30;
 			pos %= wallLength * 4;
-			System.out.println(pos);
 			if (pos < wallLength)
 			{
 				loc =  new Vector2((float)pos, WALL_WIDTH);
@@ -370,6 +369,9 @@ public class World {
 
 	private void updateCandlesOn(float deltaTime) {
 		slashTime += deltaTime;
+		for (CandlePoint cp : candlePoints) {
+			cp.update(deltaTime);
+		}
 		if (slashTime > 1.3) {
 			startCandlePhase();
 		}
@@ -397,13 +399,16 @@ public class World {
 	}
 
 	private void updateCandlePoints(float deltaTime) {
+		for (CandlePoint cp : candlePoints) {
+			cp.update(deltaTime);
+		}
+		
 		if (state == GameState.AFTER_CANDLES)
 		{
 			return;
 		}
 		boolean allHaveCandles = true;
 		for (CandlePoint cp : candlePoints) {
-			cp.update(deltaTime);
 			if (cp.state == CandlePoint.State.NOCANDLE) {
 				allHaveCandles = false;
 			}
@@ -491,7 +496,6 @@ public class World {
 		}
 		if (state == GameState.CANDLES_ON) {
 			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
-			System.out.println("set slash master alpha="+painting.master_alpha);
 			if (painting.isDone()) {
 				painting.master_alpha = Math.max(0, Math.min(altar.stateTime, 1));
 			}
@@ -508,6 +512,9 @@ public class World {
 
 		for (CandlePoint cp : candlePoints) {
 			cp.render(batch);
+			if (cp.position.y > player.position.y - 40) {
+				cp.renderFire(batch);
+			}
 		}
 		
 		for (Candle candle : candles) {
@@ -521,6 +528,12 @@ public class World {
 		player.render(batch);
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && candle.overPlayer()) candle.render(batch);
+		}
+		
+		for (CandlePoint cp : candlePoints) {
+			if (cp.position.y <= player.position.y - 40) {
+				cp.renderFire(batch);
+			}
 		}
 		
 		for (Enemy enemy : enemies) {

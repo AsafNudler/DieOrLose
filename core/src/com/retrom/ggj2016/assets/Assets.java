@@ -64,6 +64,8 @@ public class Assets {
 	
 	public static Array<Sprite> fireParticles;
 
+	public static Array<Sprite> candleFire;
+
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
 		
@@ -95,6 +97,8 @@ public class Assets {
 		candlePointGlow = basicSheet.createSprite("items_candleslot_light_glow");
 		candlePointUI = basicSheet.createSprite("items_candleslot_UX");
 		candleBlank = basicSheet.createSprite("items_candleslot_nocandle");
+		
+		candleFire = basicSheet.createSprites("candle_fire");
 		
 		lifeBarOver = basicSheet.createSprite("hud_healthbar");
 		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
