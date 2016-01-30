@@ -5,21 +5,21 @@ FollowerEnemy:0
 Segment:135:45
 Segment:315:225
 Segment:90:270
-RandomWalkEnemy:1
+RandomWalkEnemy:2
 FollowerEnemy:0
 
 Segment:45:135
 Segment:90:270
 Segment:135:270
 Segment:270:45
-RandomWalkEnemy:2
+RandomWalkEnemy:3
 FollowerEnemy:0
 
 Segment:45:135
 Segment:135:315
 Segment:45:225
 Segment:225:315
-RandomWalkEnemy:1
+RandomWalkEnemy:3
 FollowerEnemy:1
 
 Segment:22.5f:157.5f
@@ -30,8 +30,8 @@ Segment:22.5f:337.5f
 Segment:67.5f:112.5f
 Segment:157.5f:202.5f
 Segment:247.5f:292.5f
-RandomWalkEnemy:2
-FollowerEnemy:1
+RandomWalkEnemy:3
+FollowerEnemy:2
 
 Segment:90:0
 Segment:90:180
@@ -41,7 +41,7 @@ Segment:45:135
 Segment:135:225
 Segment:225:315
 Segment:45:315
-RandomWalkEnemy:1
+RandomWalkEnemy:4
 FollowerEnemy:2
 
 Segment:0:120
@@ -50,7 +50,7 @@ Segment:240:0
 Segment:60:180
 Segment:180:300
 Segment:300:60
-RandomWalkEnemy:1
+RandomWalkEnemy:5
 FollowerEnemy:2
 
 Segment:90:0
@@ -66,5 +66,5 @@ Segment:270:135
 Segment:270:180
 Segment:270:225
 Segment:270:315
-RandomWalkEnemy:0
+RandomWalkEnemy:5
 FollowerEnemy:3

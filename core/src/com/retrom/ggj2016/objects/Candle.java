@@ -9,7 +9,7 @@ public class Candle extends DynamicGameObject {
 	
 	private final static float SIZE = 40;
 	
-	private boolean onPlayer = false;
+	public boolean taken = false;
 	
 	private final Sprite sprite = Assets.candle.random();
 
@@ -19,10 +19,8 @@ public class Candle extends DynamicGameObject {
 		super(x, y, SIZE, SIZE);
 		this.player = player;
 		
-		if (onPlayer) {
-			position.x = player.position.x + 20;
-			position.y = player.position.y;
-		}
+		System.out.println("bb="+bounds);
+		
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -30,12 +28,14 @@ public class Candle extends DynamicGameObject {
 	}
 
 	public void update(float deltaTime) {
-		// TODO Auto-generated method stub
-		
+		if (taken) {
+			position.x = player.position.x + 24;
+			position.y = player.position.y+ 5;
+		}
 	}
 
 	public boolean overPlayer() {
-		if (onPlayer) return true;
+		if (taken) return true;
 		return position.y < player.position.y;
 	}
 }

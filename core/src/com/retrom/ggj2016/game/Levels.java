@@ -36,7 +36,6 @@ public class Levels {
 				FileHandle fl = Gdx.files.internal("levels.txt");
 				String cont = fl.readString();
 				String[] lines = cont.replace("\r", "").split("\n");
-				BufferedReader reader = new BufferedReader(new FileReader("levels.txt"));
 				Levels nextLevel = null;
 				for (String line : lines) {
 					if (line.trim().equals(""))

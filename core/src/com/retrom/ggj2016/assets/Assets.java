@@ -27,6 +27,13 @@ public class Assets {
 
 	public static Array<Sprite> candle;
 
+	public static Sprite candlePointNo;
+	public static Sprite candlePointOff;
+	public static Sprite candlePointOn;
+	public static Sprite candlePointGlow;
+	
+	public static Sprite lifeBarOver;
+	public static Sprite lifeBarBg;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -49,6 +56,14 @@ public class Assets {
 		blood = basicSheet.createSprites("blood");
 		smallBlood = basicSheet.createSprites("blood_small");
 		
-		candle = basicSheet.createSprites("items_candle");;
+		candle = basicSheet.createSprites("items_candle");
+		
+		candlePointNo = basicSheet.createSprite("items_candleslot_empty");
+		candlePointOff = basicSheet.createSprite("items_candleslot_full");
+		candlePointOn = basicSheet.createSprite("items_candleslot_light");
+		candlePointGlow = basicSheet.createSprite("items_candleslot_light_glow");
+		
+		lifeBarOver = basicSheet.createSprite("hud_healthbar");
+		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
 	}
 }

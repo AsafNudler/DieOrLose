@@ -12,10 +12,12 @@ import com.retrom.ggj2016.utils.utils;
 
 public class Player extends DynamicGameObject {
 	
-	private static final float VEL = 200f;
+	private static final float VEL = 250f;
 	private static final float ACCEL = 2000f;
 
 	private static TouchToPoint ttp = TouchToPoint.create();
+	public Candle candle = null;
+	private boolean bloodStarted = false;
 
 	public Player() {
 		super(0, 0, 50, 50);
@@ -24,20 +26,20 @@ public class Player extends DynamicGameObject {
 	
 	public void update(float deltaTime) {
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			velocity.y -= ACCEL * deltaTime;
+			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		} else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			velocity.y += ACCEL * deltaTime;
+			velocity.y += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			velocity.x -= ACCEL * deltaTime;
+			velocity.x -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			velocity.x += ACCEL * deltaTime;
+			velocity.x += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		}
 		if (Gdx.input.isTouched())
 		{
 			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
 			touch.sub(position);
-			touch.scl(ACCEL * deltaTime);
+			touch.scl(ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f));
 			velocity.x += touch.x;
 			velocity.y += touch.y;
 
@@ -60,7 +62,7 @@ public class Player extends DynamicGameObject {
 				velocity.y -= ACCEL * deltaTime;
 			}*/
 		}
-		velocity.clamp(0, VEL);
+		velocity.clamp(0, VEL* (bloodStarted ? 1 : 1.5f));
 		velocity.x *= Math.pow(0.01, deltaTime);
 		velocity.y *= Math.pow(0.01, deltaTime);
 		
@@ -107,6 +109,10 @@ public class Player extends DynamicGameObject {
 		}
 		utils.drawCenter(batch, body, position.x, position.y);
 		utils.drawCenter(batch, head, position.x, position.y + 57);
+	}
+
+	public void startBlood() {
+		bloodStarted  = true;
 	}
 
 }
