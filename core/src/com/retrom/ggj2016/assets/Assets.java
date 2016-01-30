@@ -50,6 +50,7 @@ public class Assets {
 
 	public static Array<Sprite> enemyFollower;
 	public static Array<Sprite> enemyFollowerFire;
+	public static Sprite enemyFollowerEyes;
 	
 	public static Sprite altar;
 	public static Sprite altar_glow;
@@ -111,6 +112,7 @@ public class Assets {
 		
 		enemyFollower = basicSheet.createSprites("enemies_stalker_frame");
 		enemyFollowerFire = basicSheet.createSprites("enemies_fire_green");
+		enemyFollowerEyes = basicSheet.createSprite("enemies_stalker_eyesglow");
 		
 		altar = basicSheet.createSprite("exitaltar_base");
 		altar_glow = basicSheet.createSprite("exitaltar_base_glow");

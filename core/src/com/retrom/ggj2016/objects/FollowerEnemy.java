@@ -58,6 +58,14 @@ public class FollowerEnemy extends Enemy {
 		s.setAlpha(alpha);
 		utils.drawCenter(batch, s, position.x, position.y);
 		}
+		
+		BatchUtils.setBlendFuncAdd(batch);
+		{
+			Sprite s = Assets.enemyFollowerEyes;
+			s.setColor(alpha,alpha,alpha,1);
+			utils.drawCenter(batch, s, position.x, position.y);
+		}
+		BatchUtils.setBlendFuncNormal(batch);
 	}
 
 }

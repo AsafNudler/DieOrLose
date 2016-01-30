@@ -937,41 +937,41 @@ enemies_roamer_frame
 enemies_stalker_eyesglow
   rotate: false
   xy: 656, 1042
-  size: 42, 42
-  orig: 42, 42
+  size: 69, 115
+  orig: 69, 115
   offset: 0, 0
   index: -1
 enemies_stalker_frame
   rotate: false
-  xy: 700, 1042
+  xy: 727, 1042
   size: 69, 115
   orig: 69, 115
   offset: 0, 0
   index: 1
 enemies_stalker_frame
   rotate: false
-  xy: 771, 1042
+  xy: 798, 1042
   size: 69, 115
   orig: 69, 115
   offset: 0, 0
   index: 2
 exitaltar_base
   rotate: false
-  xy: 842, 1042
+  xy: 869, 1042
   size: 296, 291
   orig: 296, 291
   offset: 0, 0
   index: -1
 exitaltar_base_UX
   rotate: false
-  xy: 1140, 1042
+  xy: 1167, 1042
   size: 405, 405
   orig: 405, 405
   offset: 0, 0
   index: -1
 exitaltar_base_glow
   rotate: false
-  xy: 1547, 1042
+  xy: 1574, 1042
   size: 393, 393
   orig: 393, 393
   offset: 0, 0

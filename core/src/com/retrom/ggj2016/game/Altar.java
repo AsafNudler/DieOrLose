@@ -18,7 +18,6 @@ public class Altar extends GameObject {
 	public Altar(int level) {
 		super(0, 0, ALTAR_COLLIDER, ALTAR_COLLIDER);
 		this.level = level;
-		System.out.println("level="+level);
 	}
 	
 	public void update(float deltaTime) {

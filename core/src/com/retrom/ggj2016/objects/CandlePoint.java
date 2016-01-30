@@ -81,7 +81,6 @@ public class CandlePoint extends GameObject {
 
 	public void update(float deltaTime) {
 //		if (state == State.ON) {
-		System.out.println("stateTime="+stateTime);
 			stateTime += deltaTime;
 //		}
 	}
@@ -94,7 +93,6 @@ public class CandlePoint extends GameObject {
 	public void turnOnCandle() {
 		if (state != State.BLANK && state != State.ON) {
 			state = State.ON;
-			System.out.println("reset");
 			stateTime = 0;
 		}
 	}
