@@ -18,6 +18,9 @@ public class Player extends DynamicGameObject {
 	private static TouchToPoint ttp = TouchToPoint.create();
 	public Candle candle = null;
 	private boolean bloodStarted = false;
+	
+	private float stateTime = 0;
+	public boolean knife = false;
 
 	public Player() {
 		super(0, 0, 50, 50);
@@ -25,6 +28,8 @@ public class Player extends DynamicGameObject {
 	}
 	
 	public void update(float deltaTime) {
+		stateTime += deltaTime;
+		
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		} else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
@@ -89,24 +94,25 @@ public class Player extends DynamicGameObject {
 	public void render(SpriteBatch batch) {
 		Sprite body = Assets.playerFront;
 		Sprite head = Assets.playerHead;
-		if (velocity.y > 0) {
+		if (velocity.y > 10) {
 			head = Assets.playerHeadBack;
+			body = Assets.playerBack;
 		} else {
 			head = Assets.playerHead;
 		}
-		if (Math.abs(velocity.y) > Math.abs(velocity.x)) {
-			if (velocity.y > 0) {
-				body = Assets.playerBack;
-			} else if (velocity.y < 0) {
-				body = Assets.playerFront;
-			}
-		} else if (velocity.x > 0) {
-			body = Assets.playerSide;
-			body.setFlip(false, false);
-		} else if (velocity.x < 0) {
-			body = Assets.playerSide;
-			body.setFlip(true, false);
+		if (velocity.len() > 30) {
+			if (velocity.y > 10) {
+				body = utils.getFrameLoop(Assets.playerWalkBack, stateTime, 10);
+			} else {
+				body = utils.getFrameLoop(Assets.playerWalkFront, stateTime, 10);
+			}	
 		}
+		
+		if (knife) {
+			head = Assets.playerHead;
+			body = Assets.playerBodyKnife;
+		}
+		
 		utils.drawCenter(batch, body, position.x, position.y);
 		utils.drawCenter(batch, head, position.x, position.y + 57);
 	}

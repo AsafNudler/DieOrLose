@@ -6,6 +6,8 @@ import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -25,12 +27,14 @@ public class World {
 	
 	private enum GameState {
 		BEFORE_CANDLES,
+		CANDLES_ON,
 		AFTER_CANDLES;
 	}
 	
 	public interface WorldListener {
 		public void restart();
 		public void nextLevel();
+		public void restartGame();
 	}
 	
 	GameState state = GameState.BEFORE_CANDLES;
@@ -66,6 +70,7 @@ public class World {
 	private final int level;
 	
 	private float gameTime = 0;
+	private float slashTime = 0;
 
 	private void restartLevel()
 	{
@@ -150,7 +155,7 @@ public class World {
 			}
 		}
 		System.out.println("Adding!");
-		candlePoints.add(new CandlePoint(x, y));
+		candlePoints.add(new CandlePoint(x, y, player));
 		System.out.println("candlePoints.size()="+candlePoints.size());
 	}
 
@@ -162,6 +167,10 @@ public class World {
 
 	public void update(float deltaTime) {
 		gameTime += deltaTime;
+		if (state == GameState.CANDLES_ON) {
+			updateCandlesOn(deltaTime);
+			return;
+		}
 		
 		if (candles.isEmpty() && state == GameState.BEFORE_CANDLES) {
 			spawnCandle();
@@ -196,7 +205,7 @@ public class World {
 		}
 		
 		for (Candle candle : candles) {
-			if (!candle.taken && candle.bounds.overlaps(player.bounds)) {
+			if (player.candle == null && !candle.taken && candle.bounds.overlaps(player.bounds)) {
 				candle.taken = true;
 				player.candle = candle;
 			}
@@ -218,6 +227,22 @@ public class World {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
 			listener_.nextLevel();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
+			listener_.restartGame();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.C)) {
+			startCandlePhase();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+			startCandleOn();
+		}
+	}
+
+	private void updateCandlesOn(float deltaTime) {
+		slashTime += deltaTime;
+		if (slashTime > 1) {
+			startCandlePhase();
 		}
 	}
 
@@ -250,13 +275,19 @@ public class World {
 				}
 			}
 		}
-		if (allHaveCandles) {
-			startCandlePhase();
+		if (allHaveCandles && state == GameState.BEFORE_CANDLES) {
+			startCandleOn();
 		}
+	}
+	
+	private void startCandleOn() {
+		state = GameState.CANDLES_ON;
+		player.knife = true;
 	}
 
 	private void startCandlePhase() {
 		state = GameState.AFTER_CANDLES;
+		player.knife = false;
 		candles.clear();
 		for (CandlePoint cp : candlePoints) {
 			cp.turnOnCandle();
@@ -289,11 +320,7 @@ public class World {
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
 
-		if (state == GameState.AFTER_CANDLES) {
-			for (LineSegment line : path) {
-				renderLineSegment(shapeRenderer, line);
-			}
-		}
+		renderFloorSegments(shapeRenderer);
 //		PaintBloodPath(shapeRenderer);
 		batch.begin();
 		for (PaintingLine line : bloodLines) {
@@ -305,11 +332,11 @@ public class World {
 		}
 		
 		for (Candle candle : candles) {
-			if (!candle.overPlayer()) candle.render(batch);
+			if (state == GameState.BEFORE_CANDLES && !candle.overPlayer()) candle.render(batch);
 		}
 		player.render(batch);
 		for (Candle candle : candles) {
-			if (candle.overPlayer()) candle.render(batch);
+			if (state == GameState.BEFORE_CANDLES && candle.overPlayer()) candle.render(batch);
 		}
 		
 		for (Enemy enemy : enemies) {
@@ -326,10 +353,36 @@ public class World {
 		if (painting.isDone()) {
 			utils.drawCenter(batch, Assets.centerGlow, 0, 0);
 		}
+		if (GameState.CANDLES_ON == state) {
+			float anim_time = slashTime - 0.5f;
+			{
+			Sprite s = utils.getFrameUntilDone(Assets.slash, anim_time, 15);
+			if (s != null) {
+				utils.drawCenter(batch, s, player.position.x, player.position.y);
+			}
+			}
+			{
+				BatchUtils.setBlendFuncAdd(batch);
+				Sprite s = Assets.knifeFlare;
+				float tint = Math.min(1, Math.min(slashTime, 1 - slashTime)); 
+				s.setColor(tint, tint, tint, 1);
+				utils.drawCenter(batch, s, player.position.x-30, player.position.y + 10+ slashTime * 20);
+				BatchUtils.setBlendFuncNormal(batch);
+			}
+		}
 		batch.end();
 		
 		lifebar.render(shapeRenderer, batch);
 		
+		
+	}
+
+	private void renderFloorSegments(ShapeRenderer shapeRenderer) {
+		if (state == GameState.AFTER_CANDLES) {
+			for (LineSegment line : path) {
+				renderLineSegment(shapeRenderer, line);
+			}
+		}
 	}
 
 	private void PaintBloodPath(ShapeRenderer shapeRenderer) {
@@ -351,13 +404,15 @@ public class World {
 	}
 
 	private void renderLineSegment(ShapeRenderer renderer, LineSegment line) {
-		// TODO Auto-generated method stub
-		Gdx.gl.glLineWidth(2);
+		// TODO: try to call these once and not in every segment.
+		Gdx.gl.glLineWidth(5);
+		Gdx.gl.glEnable(GL20.GL_BLEND);
+		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		renderer.begin(ShapeType.Line);
 		
-		renderer.setColor(1, 1, 1, 1);
+		renderer.setColor(1, 0.2f, 0.2f, 0.3f);
 		
-		renderer.line(line.startX, line.startY, line.endX, line.endY);
+		renderer.line(line.startX, line.startY - 6, line.endX, line.endY - 6);
 		renderer.end();
 	}
 }

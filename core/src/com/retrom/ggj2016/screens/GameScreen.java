@@ -53,6 +53,11 @@ public class GameScreen extends ScreenAdapter implements Screen {
 			public void nextLevel() {
 				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(level_+1));
 			}
+
+			@Override
+			public void restartGame() {
+				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(0));
+			}
 		}, level_);
 	}
 

@@ -15,9 +15,12 @@ public class CandlePoint extends GameObject {
 	}
 	
 	public State state = State.NOCANDLE;
+	private final Player player;
+	private float stateTime = 0;
 
-	public CandlePoint(float x, float y) {
+	public CandlePoint(float x, float y, Player player) {
 		super(x, y, 20, 20);
+		this.player = player;
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -41,10 +44,14 @@ public class CandlePoint extends GameObject {
 			utils.drawCenter(batch, Assets.candlePointGlow, position.x, position.y);
 			BatchUtils.setBlendFuncNormal(batch);
 		}
+		
+		if (state == State.NOCANDLE && player.candle != null) {
+			utils.drawCenter(batch, Assets.candlePointUI, position.x, (float) (position.y + 50 + 5 * Math.sin(stateTime * 6)));
+		}
 	}
 
 	public void update(float deltaTime) {
-		// TODO Auto-generated method stub
+		stateTime += deltaTime;
 	}
 	
 	public void putCandle() {

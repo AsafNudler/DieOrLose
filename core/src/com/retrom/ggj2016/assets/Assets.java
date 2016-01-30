@@ -13,9 +13,13 @@ public class Assets {
 	public static Sprite playerFront;
 	public static Sprite playerSide;
 	public static Sprite playerBack;
-	public static Sprite enemy;
+	public static Array<Sprite> enemy;
 	public static Sprite taken;
 	public static Sprite logo;
+	public static Sprite playerBodyKnife;
+	
+	public static Array<Sprite> playerWalkFront;
+	public static Array<Sprite> playerWalkBack;
 
 	public static Sprite centerGlow;
 
@@ -26,15 +30,23 @@ public class Assets {
 	public static Array<Sprite> smallBlood;
 
 	public static Array<Sprite> candle;
+	public static Array<Sprite> candleGlow;
 
 	public static Sprite candlePointNo;
 	public static Sprite candlePointOff;
 	public static Sprite candlePointOn;
 	public static Sprite candlePointGlow;
+	public static Sprite candlePointUI;
 	
 	public static Sprite lifeBarOver;
 	public static Sprite lifeBarBg;
+
+	public static Array<Sprite> enemyFire;
 	
+	public static Array<Sprite> slash;
+
+	public static Sprite knifeFlare;
+
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
 		
@@ -45,8 +57,10 @@ public class Assets {
 		playerFront = basicSheet.createSprite("Player_body_front");
 		playerSide = basicSheet.createSprite("Player_body_side");
 		playerBack = basicSheet.createSprite("Player_body_back");
+		playerBodyKnife = basicSheet.createSprite("Player_body_front_knife");
 		
-		enemy = basicSheet.createSprite("enemies_roamer_frame1");
+		enemy = basicSheet.createSprites("enemies_roamer_frame");
+		enemyFire = basicSheet.createSprites("enemies_fire");
 		taken = basicSheet.createSprite("taken");
 		
 		logo = basicSheet.createSprite("title");
@@ -57,13 +71,21 @@ public class Assets {
 		smallBlood = basicSheet.createSprites("blood_small");
 		
 		candle = basicSheet.createSprites("items_candle");
+		candleGlow = basicSheet.createSprites("items_candle_glow");
 		
 		candlePointNo = basicSheet.createSprite("items_candleslot_empty");
 		candlePointOff = basicSheet.createSprite("items_candleslot_full");
 		candlePointOn = basicSheet.createSprite("items_candleslot_light");
 		candlePointGlow = basicSheet.createSprite("items_candleslot_light_glow");
+		candlePointUI = basicSheet.createSprite("items_candleslot_UX");
 		
 		lifeBarOver = basicSheet.createSprite("hud_healthbar");
 		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
+		
+		playerWalkFront = basicSheet.createSprites("Player_body_front_walking");
+		playerWalkBack = basicSheet.createSprites("Player_body_back_walking");
+		
+		slash = basicSheet.createSprites("blood_slash");
+		knifeFlare = basicSheet.createSprite("Player_body_front_knife_knifeflare");
 	}
 }

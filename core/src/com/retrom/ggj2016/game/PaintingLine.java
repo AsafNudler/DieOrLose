@@ -31,8 +31,9 @@ public class PaintingLine {
 	float rotation = (float) (Math.random() * 360);
 	float opacity = 1;
 	
-	private static final float TOTAL_OFFTIME = 20;
+	private static final float TOTAL_OFFTIME = 8;
 	float offTime = TOTAL_OFFTIME;
+	private float darken;
 	
 	public void render(ShapeRenderer renderer) {
 
@@ -83,5 +84,6 @@ public class PaintingLine {
 			offTime -= deltaTime;
 		}
 		opacity = offTime / TOTAL_OFFTIME;
+		darken = Math.min(1, Math.max(0.5f, (TOTAL_OFFTIME - offTime)));
 	}
 }
