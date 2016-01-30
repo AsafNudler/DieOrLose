@@ -39,7 +39,7 @@ public class World {
 	
 	GameState state = GameState.BEFORE_CANDLES;
 	
-	private static final float BLOOD_SEGMENT_LENGTH = 5f;
+	private static final float BLOOD_SEGMENT_LENGTH = 2f;
 
 	private static final float BLOOD_LOSE_RATE = 15e-5f;
 
@@ -317,6 +317,11 @@ public class World {
 		batch.end();
 
 		if (state == GameState.AFTER_CANDLES) {
+			painting.master_alpha = 1;
+			painting.render(shapeRenderer);
+		}
+		if (state == GameState.CANDLES_ON) {
+			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
 			painting.render(shapeRenderer);
 		}
 
@@ -363,9 +368,10 @@ public class World {
 			{
 				BatchUtils.setBlendFuncAdd(batch);
 				Sprite s = Assets.knifeFlare;
-				float tint = Math.max(0,Math.min(1, Math.min(slashTime, 1.5f - slashTime))); 
+				s.setRotation(slashTime * 60);
+				float tint = Math.max(0,Math.min(1, Math.min(slashTime*2, 1.5f - slashTime*2))); 
 				s.setColor(tint, tint, tint, 1);
-				utils.drawCenter(batch, s, player.position.x-30, player.position.y + 10+ slashTime * 20);
+				utils.drawCenter(batch, s, player.position.x-30, player.position.y + 10);
 				BatchUtils.setBlendFuncNormal(batch);
 			}
 		}

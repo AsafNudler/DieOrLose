@@ -17,6 +17,8 @@ public class Painting {
     private ArrayList<SegmentStatus> m_target;
     private float m_precision;
     private ArrayList<LineSegment> m_projects = new ArrayList<LineSegment>();
+    
+     public float master_alpha = 1;
 
 
     private final float MAX_X = 1080;
@@ -57,7 +59,7 @@ public class Painting {
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         renderer.begin(ShapeType.Line);
 
-        renderer.setColor(r, g, b, a);
+        renderer.setColor(r, g, b, a * master_alpha);
 
         renderer.line(pt1.x, pt1.y - 6, pt2.x, pt2.y - 6);
         renderer.end();

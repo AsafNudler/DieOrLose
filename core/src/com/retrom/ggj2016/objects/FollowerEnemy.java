@@ -1,5 +1,11 @@
 package com.retrom.ggj2016.objects;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.utils.BatchUtils;
+import com.retrom.ggj2016.utils.utils;
+
 public class FollowerEnemy extends Enemy {
 
 	private Player player;
@@ -18,6 +24,23 @@ public class FollowerEnemy extends Enemy {
 		velocity.limit(VEL);
 		super.update(deltaTime);
 		
+	}
+	
+	@Override
+	public void render(SpriteBatch batch) {
+		BatchUtils.setBlendFuncAdd(batch);
+		{
+			Sprite s = utils.getFrameLoop(Assets.enemyFollowerFire, stateTime, 30);
+			s.setColor(alpha,alpha,alpha,1);
+			utils.drawCenter(batch, s, position.x, position.y + 40);
+		}
+		
+		BatchUtils.setBlendFuncNormal(batch);
+		{
+		Sprite s = utils.getFrameLoop(Assets.enemyFollower, stateTime, 2);
+		s.setAlpha(alpha);
+		utils.drawCenter(batch, s, position.x, position.y);
+		}
 	}
 
 }
