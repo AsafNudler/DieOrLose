@@ -209,7 +209,7 @@ public class World {
 		
 
 		if (painting.isDone()) {
-			if (player.position.len() < 30)
+			if (player.position.len() < 60)
 				listener_.nextLevel();
 		}
 		
