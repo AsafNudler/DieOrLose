@@ -133,8 +133,6 @@ public class World {
 		painting = new Painting(path, 17);
 		
 		initCandlePoints(path);
-		System.out.println("candlePoints.size()="+candlePoints.size());
-		// TODO Auto-generated method stub
 	}
 	
 	private void initCandlePoints(ArrayList<LineSegment> path) {
@@ -147,16 +145,12 @@ public class World {
 	}
 	
 	private void tryAddCandlePoint(float x, float y) {
-		System.out.println("trying to add at " + x + "," + y);
 		for (CandlePoint cp : candlePoints) {
 			if (utils.floatEquals(x, cp.position.x, 1f) && utils.floatEquals(y, cp.position.y, 1f)) {
-				System.out.println("cant add...");
 				return;
 			}
 		}
-		System.out.println("Adding!");
 		candlePoints.add(new CandlePoint(x, y, player));
-		System.out.println("candlePoints.size()="+candlePoints.size());
 	}
 
 	private void spawnCandle() {
@@ -174,15 +168,13 @@ public class World {
 		
 		if (candles.isEmpty() && state == GameState.BEFORE_CANDLES) {
 			spawnCandle();
-			System.out.println("spawning");
 		}
 		
 		player.update(deltaTime);
 		if (state == GameState.AFTER_CANDLES) {
 			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
 		}
-		
-		painting.step();
+
 		dropBlood();
 		
 		for (PaintingLine bloodLine : bloodLines) {
@@ -261,6 +253,10 @@ public class World {
 	}
 
 	private void updateCandlePoints(float deltaTime) {
+		if (state == GameState.AFTER_CANDLES)
+		{
+			return;
+		}
 		boolean allHaveCandles = true;
 		for (CandlePoint cp : candlePoints) {
 			cp.update(deltaTime);
@@ -292,6 +288,7 @@ public class World {
 		for (CandlePoint cp : candlePoints) {
 			cp.turnOnCandle();
 		}
+		lastPosition = player.position.cpy();
 		player.startBlood();
 	}
 
@@ -309,7 +306,6 @@ public class World {
 		
 		PaintingLineGlow lineGlow = new PaintingLineGlow(player.position.x, player.position.y, newPos.x, newPos.y);
 		PaintingLine line = new PaintingLine(player.position.x, player.position.y, newPos.x, newPos.y, lineGlow);
-//		painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
 		bloodLines.add(line);
 		glowLines.add(lineGlow);
 	}
@@ -320,9 +316,11 @@ public class World {
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
 
-		renderFloorSegments(shapeRenderer);
-//		PaintBloodPath(shapeRenderer);
-		batch.begin();
+		if (state == GameState.AFTER_CANDLES) {
+			for (LineSegment line : path) {
+				painting.render(shapeRenderer);
+			}
+		}		batch.begin();
 		for (PaintingLine line : bloodLines) {
 			line.render(batch);
 		}
@@ -334,6 +332,7 @@ public class World {
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && !candle.overPlayer()) candle.render(batch);
 		}
+
 		player.render(batch);
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && candle.overPlayer()) candle.render(batch);
