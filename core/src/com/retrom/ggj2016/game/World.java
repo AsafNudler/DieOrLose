@@ -317,10 +317,10 @@ public class World {
 		batch.end();
 
 		if (state == GameState.AFTER_CANDLES) {
-			for (LineSegment line : path) {
-				painting.render(shapeRenderer);
-			}
-		}		batch.begin();
+			painting.render(shapeRenderer);
+		}
+
+		batch.begin();
 		for (PaintingLine line : bloodLines) {
 			line.render(batch);
 		}
