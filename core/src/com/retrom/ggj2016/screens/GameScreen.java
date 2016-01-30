@@ -71,7 +71,6 @@ public class GameScreen extends ScreenAdapter implements Screen {
 		Gdx.graphics.getGL20().glClearColor(0, 0, 0, 1);
 		Gdx.graphics.getGL20().glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		
 		batch_.enableBlending();
 		world_.render(batch_, shapeRenderer_);
 		

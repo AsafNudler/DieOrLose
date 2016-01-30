@@ -31,1017 +31,1045 @@ Player_body_front
   orig: 57, 56
   offset: 0, 0
   index: -1
-Player_body_front_knife
+Player_body_front_die
   rotate: false
   xy: 242, 2
+  size: 56, 56
+  orig: 56, 56
+  offset: 0, 0
+  index: -1
+Player_body_front_knife
+  rotate: false
+  xy: 300, 2
   size: 66, 56
   orig: 66, 56
   offset: 0, 0
   index: -1
 Player_body_front_knife_knifeflare
   rotate: false
-  xy: 310, 2
+  xy: 368, 2
   size: 53, 41
   orig: 53, 41
   offset: 0, 0
   index: -1
 Player_body_front_walking
   rotate: false
-  xy: 365, 2
+  xy: 423, 2
   size: 59, 58
   orig: 59, 58
   offset: 0, 0
   index: 1
 Player_body_front_walking
   rotate: false
-  xy: 426, 2
+  xy: 484, 2
   size: 59, 58
   orig: 59, 58
   offset: 0, 0
   index: 2
 Player_body_side
   rotate: false
-  xy: 487, 2
+  xy: 545, 2
   size: 57, 56
   orig: 57, 56
   offset: 0, 0
   index: -1
 Player_body_side_walking
   rotate: false
-  xy: 546, 2
+  xy: 604, 2
   size: 39, 55
   orig: 39, 55
   offset: 0, 0
   index: 1
 Player_body_side_walking
   rotate: false
-  xy: 587, 2
+  xy: 645, 2
   size: 39, 55
   orig: 39, 55
   offset: 0, 0
   index: 2
 Player_head_back
   rotate: false
-  xy: 628, 2
+  xy: 686, 2
   size: 126, 89
   orig: 126, 89
   offset: 0, 0
   index: -1
 Player_head_front
   rotate: false
-  xy: 756, 2
+  xy: 814, 2
   size: 126, 89
   orig: 126, 89
   offset: 0, 0
   index: -1
+Player_head_front_die
+  rotate: false
+  xy: 942, 2
+  size: 126, 89
+  orig: 126, 89
+  offset: 0, 0
+  index: -1
+Player_head_levelcomplete
+  rotate: false
+  xy: 1070, 2
+  size: 151, 112
+  orig: 151, 112
+  offset: 0, 0
+  index: 1
+Player_head_levelcomplete
+  rotate: false
+  xy: 1223, 2
+  size: 151, 112
+  orig: 151, 112
+  offset: 0, 0
+  index: 2
 blood
   rotate: false
-  xy: 884, 2
+  xy: 1376, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 1
 blood
   rotate: false
-  xy: 986, 2
+  xy: 1478, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 2
 blood
   rotate: false
-  xy: 1088, 2
+  xy: 1580, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 3
 blood
   rotate: false
-  xy: 1190, 2
+  xy: 1682, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 4
 blood
   rotate: false
-  xy: 1292, 2
+  xy: 1784, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 5
 blood
   rotate: false
-  xy: 1394, 2
+  xy: 1886, 2
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 6
 blood
   rotate: false
-  xy: 1496, 2
+  xy: 2, 116
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: 7
 blood_slash
   rotate: false
-  xy: 1598, 2
+  xy: 104, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 0
 blood_slash
   rotate: false
-  xy: 1704, 2
+  xy: 210, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 1
 blood_slash
   rotate: false
-  xy: 1810, 2
+  xy: 316, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 2
 blood_slash
   rotate: false
-  xy: 1916, 2
+  xy: 422, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 3
 blood_slash
   rotate: false
-  xy: 2, 104
+  xy: 528, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 4
 blood_slash
   rotate: false
-  xy: 108, 104
+  xy: 634, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 5
 blood_slash
   rotate: false
-  xy: 214, 104
+  xy: 740, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 6
 blood_slash
   rotate: false
-  xy: 320, 104
+  xy: 846, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 7
 blood_slash
   rotate: false
-  xy: 426, 104
+  xy: 952, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 8
 blood_slash
   rotate: false
-  xy: 532, 104
+  xy: 1058, 116
   size: 104, 87
   orig: 104, 87
   offset: 0, 0
   index: 9
 blood_small
   rotate: false
-  xy: 638, 104
+  xy: 1164, 116
   size: 25, 25
   orig: 25, 25
   offset: 0, 0
   index: 1
 blood_small
   rotate: false
-  xy: 665, 104
+  xy: 1191, 116
   size: 25, 25
   orig: 25, 25
   offset: 0, 0
   index: 2
 blood_small
   rotate: false
-  xy: 692, 104
+  xy: 1218, 116
   size: 25, 25
   orig: 25, 25
   offset: 0, 0
   index: 3
 blood_small
   rotate: false
-  xy: 719, 104
+  xy: 1245, 116
   size: 25, 25
   orig: 25, 25
   offset: 0, 0
   index: 4
 candle_fire
   rotate: false
-  xy: 746, 104
+  xy: 1272, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 0
 candle_fire
   rotate: false
-  xy: 793, 104
+  xy: 1319, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 1
 candle_fire
   rotate: false
-  xy: 840, 104
+  xy: 1366, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 2
 candle_fire
   rotate: false
-  xy: 887, 104
+  xy: 1413, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 3
 candle_fire
   rotate: false
-  xy: 934, 104
+  xy: 1460, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 4
 candle_fire
   rotate: false
-  xy: 981, 104
+  xy: 1507, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 5
 candle_fire
   rotate: false
-  xy: 1028, 104
+  xy: 1554, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 6
 candle_fire
   rotate: false
-  xy: 1075, 104
+  xy: 1601, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 7
 candle_fire
   rotate: false
-  xy: 1122, 104
+  xy: 1648, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 8
 candle_fire
   rotate: false
-  xy: 1169, 104
+  xy: 1695, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 9
 candle_fire
   rotate: false
-  xy: 1216, 104
+  xy: 1742, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 10
 candle_fire
   rotate: false
-  xy: 1263, 104
+  xy: 1789, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 11
 candle_fire
   rotate: false
-  xy: 1310, 104
+  xy: 1836, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 12
 candle_fire
   rotate: false
-  xy: 1357, 104
+  xy: 1883, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 13
 candle_fire
   rotate: false
-  xy: 1404, 104
+  xy: 1930, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 14
 candle_fire
   rotate: false
-  xy: 1451, 104
+  xy: 1977, 116
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 15
 candle_fire
   rotate: false
-  xy: 1498, 104
+  xy: 2, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 16
 candle_fire
   rotate: false
-  xy: 1545, 104
+  xy: 49, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 17
 candle_fire
   rotate: false
-  xy: 1592, 104
+  xy: 96, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 18
 candle_fire
   rotate: false
-  xy: 1639, 104
+  xy: 143, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 19
 candle_fire
   rotate: false
-  xy: 1686, 104
+  xy: 190, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 20
 candle_fire
   rotate: false
-  xy: 1733, 104
+  xy: 237, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 21
 candle_fire
   rotate: false
-  xy: 1780, 104
+  xy: 284, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 22
 candle_fire
   rotate: false
-  xy: 1827, 104
+  xy: 331, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 23
 candle_fire
   rotate: false
-  xy: 1874, 104
+  xy: 378, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 24
 candle_fire
   rotate: false
-  xy: 1921, 104
+  xy: 425, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 25
 candle_fire
   rotate: false
-  xy: 1968, 104
+  xy: 472, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 26
 candle_fire
   rotate: false
-  xy: 2, 196
+  xy: 519, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 27
 candle_fire
   rotate: false
-  xy: 49, 196
+  xy: 566, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 28
 candle_fire
   rotate: false
-  xy: 96, 196
+  xy: 613, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 29
 candle_fire
   rotate: false
-  xy: 143, 196
+  xy: 660, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 30
 candle_fire
   rotate: false
-  xy: 190, 196
+  xy: 707, 218
   size: 45, 90
   orig: 45, 90
   offset: 0, 0
   index: 31
 center_glow
   rotate: false
-  xy: 237, 196
+  xy: 754, 218
   size: 240, 240
   orig: 240, 240
   offset: 0, 0
   index: -1
 enemies_fire
   rotate: false
-  xy: 479, 196
+  xy: 996, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 0
 enemies_fire
   rotate: false
-  xy: 606, 196
+  xy: 1123, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 1
 enemies_fire
   rotate: false
-  xy: 733, 196
+  xy: 1250, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 2
 enemies_fire
   rotate: false
-  xy: 860, 196
+  xy: 1377, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 3
 enemies_fire
   rotate: false
-  xy: 987, 196
+  xy: 1504, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 4
 enemies_fire
   rotate: false
-  xy: 1114, 196
+  xy: 1631, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 5
 enemies_fire
   rotate: false
-  xy: 1241, 196
+  xy: 1758, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 6
 enemies_fire
   rotate: false
-  xy: 1368, 196
+  xy: 1885, 218
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 7
 enemies_fire
   rotate: false
-  xy: 1495, 196
+  xy: 2, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 8
 enemies_fire
   rotate: false
-  xy: 1622, 196
+  xy: 129, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 9
 enemies_fire
   rotate: false
-  xy: 1749, 196
+  xy: 256, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 10
 enemies_fire
   rotate: false
-  xy: 1876, 196
+  xy: 383, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 11
 enemies_fire
   rotate: false
-  xy: 2, 438
+  xy: 510, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 12
 enemies_fire
   rotate: false
-  xy: 129, 438
+  xy: 637, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 13
 enemies_fire
   rotate: false
-  xy: 256, 438
+  xy: 764, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 14
 enemies_fire
   rotate: false
-  xy: 383, 438
+  xy: 891, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 15
 enemies_fire
   rotate: false
-  xy: 510, 438
+  xy: 1018, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 16
 enemies_fire
   rotate: false
-  xy: 637, 438
+  xy: 1145, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 17
 enemies_fire
   rotate: false
-  xy: 764, 438
+  xy: 1272, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 18
 enemies_fire
   rotate: false
-  xy: 891, 438
+  xy: 1399, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 19
 enemies_fire
   rotate: false
-  xy: 1018, 438
+  xy: 1526, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 20
 enemies_fire
   rotate: false
-  xy: 1145, 438
+  xy: 1653, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 21
 enemies_fire
   rotate: false
-  xy: 1272, 438
+  xy: 1780, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 22
 enemies_fire
   rotate: false
-  xy: 1399, 438
+  xy: 1907, 460
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 23
 enemies_fire
   rotate: false
-  xy: 1526, 438
+  xy: 2, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 24
 enemies_fire
   rotate: false
-  xy: 1653, 438
+  xy: 129, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 25
 enemies_fire
   rotate: false
-  xy: 1780, 438
+  xy: 256, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 26
 enemies_fire
   rotate: false
-  xy: 1907, 438
+  xy: 383, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 27
 enemies_fire
   rotate: false
-  xy: 2, 632
+  xy: 510, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 28
 enemies_fire
   rotate: false
-  xy: 129, 632
+  xy: 637, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 29
 enemies_fire_green
   rotate: false
-  xy: 256, 632
+  xy: 764, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 0
 enemies_fire_green
   rotate: false
-  xy: 383, 632
+  xy: 891, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 1
 enemies_fire_green
   rotate: false
-  xy: 510, 632
+  xy: 1018, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 2
 enemies_fire_green
   rotate: false
-  xy: 637, 632
+  xy: 1145, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 3
 enemies_fire_green
   rotate: false
-  xy: 764, 632
+  xy: 1272, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 4
 enemies_fire_green
   rotate: false
-  xy: 891, 632
+  xy: 1399, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 5
 enemies_fire_green
   rotate: false
-  xy: 1018, 632
+  xy: 1526, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 6
 enemies_fire_green
   rotate: false
-  xy: 1145, 632
+  xy: 1653, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 7
 enemies_fire_green
   rotate: false
-  xy: 1272, 632
+  xy: 1780, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 8
 enemies_fire_green
   rotate: false
-  xy: 1399, 632
+  xy: 1907, 654
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 9
 enemies_fire_green
   rotate: false
-  xy: 1526, 632
+  xy: 2, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 10
 enemies_fire_green
   rotate: false
-  xy: 1653, 632
+  xy: 129, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 11
 enemies_fire_green
   rotate: false
-  xy: 1780, 632
+  xy: 256, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 12
 enemies_fire_green
   rotate: false
-  xy: 1907, 632
+  xy: 383, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 13
 enemies_fire_green
   rotate: false
-  xy: 2, 826
+  xy: 510, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 14
 enemies_fire_green
   rotate: false
-  xy: 129, 826
+  xy: 637, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 15
 enemies_fire_green
   rotate: false
-  xy: 256, 826
+  xy: 764, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 16
 enemies_fire_green
   rotate: false
-  xy: 383, 826
+  xy: 891, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 17
 enemies_fire_green
   rotate: false
-  xy: 510, 826
+  xy: 1018, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 18
 enemies_fire_green
   rotate: false
-  xy: 637, 826
+  xy: 1145, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 19
 enemies_fire_green
   rotate: false
-  xy: 764, 826
+  xy: 1272, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 20
 enemies_fire_green
   rotate: false
-  xy: 891, 826
+  xy: 1399, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 21
 enemies_fire_green
   rotate: false
-  xy: 1018, 826
+  xy: 1526, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 22
 enemies_fire_green
   rotate: false
-  xy: 1145, 826
+  xy: 1653, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 23
 enemies_fire_green
   rotate: false
-  xy: 1272, 826
+  xy: 1780, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 24
 enemies_fire_green
   rotate: false
-  xy: 1399, 826
+  xy: 1907, 848
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 25
 enemies_fire_green
   rotate: false
-  xy: 1526, 826
+  xy: 2, 1042
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 26
 enemies_fire_green
   rotate: false
-  xy: 1653, 826
+  xy: 129, 1042
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 27
 enemies_fire_green
   rotate: false
-  xy: 1780, 826
+  xy: 256, 1042
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 28
 enemies_fire_green
   rotate: false
-  xy: 1907, 826
+  xy: 383, 1042
   size: 125, 192
   orig: 125, 192
   offset: 0, 0
   index: 29
 enemies_roamer_frame
   rotate: false
-  xy: 2, 1020
+  xy: 510, 1042
   size: 71, 115
   orig: 71, 115
   offset: 0, 0
   index: 1
 enemies_roamer_frame
   rotate: false
-  xy: 75, 1020
+  xy: 583, 1042
   size: 71, 115
   orig: 71, 115
   offset: 0, 0
   index: 2
 enemies_stalker_eyesglow
   rotate: false
-  xy: 148, 1020
+  xy: 656, 1042
   size: 42, 42
   orig: 42, 42
   offset: 0, 0
   index: -1
 enemies_stalker_frame
   rotate: false
-  xy: 192, 1020
+  xy: 700, 1042
   size: 69, 115
   orig: 69, 115
   offset: 0, 0
   index: 1
 enemies_stalker_frame
   rotate: false
-  xy: 263, 1020
+  xy: 771, 1042
   size: 69, 115
   orig: 69, 115
   offset: 0, 0
   index: 2
 exitaltar_base
   rotate: false
-  xy: 334, 1020
+  xy: 842, 1042
   size: 296, 291
   orig: 296, 291
   offset: 0, 0
   index: -1
 exitaltar_base_UX
   rotate: false
-  xy: 632, 1020
+  xy: 1140, 1042
   size: 405, 405
   orig: 405, 405
   offset: 0, 0
   index: -1
 exitaltar_base_glow
   rotate: false
-  xy: 1039, 1020
+  xy: 1547, 1042
   size: 393, 393
   orig: 393, 393
   offset: 0, 0
   index: -1
 hud_healthbar
   rotate: false
-  xy: 1434, 1020
+  xy: 2, 1449
   size: 295, 107
   orig: 295, 107
   offset: 0, 0
   index: -1
 hud_healthbar_bg
   rotate: false
-  xy: 1731, 1020
+  xy: 299, 1449
   size: 295, 107
   orig: 295, 107
   offset: 0, 0
   index: -1
 hud_healthbar_color
   rotate: false
-  xy: 2, 1427
+  xy: 596, 1449
   size: 263, 22
   orig: 263, 22
   offset: 0, 0
   index: -1
 items_candle
   rotate: false
-  xy: 267, 1427
+  xy: 861, 1449
   size: 45, 65
   orig: 45, 65
   offset: 0, 0
   index: 1
 items_candle
   rotate: false
-  xy: 314, 1427
+  xy: 908, 1449
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: 2
 items_candle_glow
   rotate: false
-  xy: 357, 1427
+  xy: 951, 1449
   size: 45, 65
   orig: 45, 65
   offset: 0, 0
   index: 1
 items_candle_glow
   rotate: false
-  xy: 404, 1427
+  xy: 998, 1449
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: 2
 items_candleslot_UX
   rotate: false
-  xy: 447, 1427
+  xy: 1041, 1449
   size: 40, 89
   orig: 40, 89
   offset: 0, 0
   index: -1
 items_candleslot_empty
   rotate: false
-  xy: 489, 1427
+  xy: 1083, 1449
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_full
   rotate: false
-  xy: 547, 1427
+  xy: 1141, 1449
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_light
   rotate: false
-  xy: 605, 1427
+  xy: 1199, 1449
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_light_glow
   rotate: false
-  xy: 663, 1427
+  xy: 1257, 1449
   size: 139, 118
   orig: 139, 118
   offset: 0, 0
   index: -1
 items_candleslot_nocandle
   rotate: false
-  xy: 804, 1427
+  xy: 1398, 1449
   size: 57, 58
   orig: 57, 58
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 863, 1427
+  xy: 2, 1569
   size: 686, 304
   orig: 686, 304
   offset: 0, 0

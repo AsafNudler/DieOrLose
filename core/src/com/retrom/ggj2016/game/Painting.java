@@ -83,7 +83,7 @@ public class Painting {
             {
                 seg1.add(norm);
                 seg2.sub(norm);
-
+                // TODO: master alpha
                 Vector2 pt11 = seg1.cpy().add(seg.cpy().scl(start));
                 Vector2 pt12 = seg1.cpy().add(seg.cpy().scl(end));
 

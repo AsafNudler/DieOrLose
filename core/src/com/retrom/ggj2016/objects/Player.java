@@ -14,6 +14,7 @@ public class Player extends DynamicGameObject {
 	
 	private static final float VEL = 250f;
 	private static final float ACCEL = 2000f;
+	public static final float TIME_BEFORE_EXPLODE = 1f;
 
 	private static TouchToPoint ttp = TouchToPoint.create();
 	public Candle candle = null;
@@ -21,6 +22,7 @@ public class Player extends DynamicGameObject {
 	
 	private float stateTime = 0;
 	public boolean knife = false;
+	public boolean dies = false;
 
 	public Player() {
 		super(0, 0, 50, 50);
@@ -28,9 +30,14 @@ public class Player extends DynamicGameObject {
 	}
 
 	private boolean controlled = false;
+	private boolean horns = false;
+	private boolean eyes;
 	
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
+		if (dies) {
+			return;
+		}
 		controlled = false;
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
@@ -102,12 +109,52 @@ public class Player extends DynamicGameObject {
 			body = Assets.playerBodyKnife;
 		}
 		
+		if (dies) {
+			if (stateTime > TIME_BEFORE_EXPLODE) {
+				return;
+			}
+			head = Assets.playerHeadDies;
+			body = Assets.playerBodyDies;
+			utils.drawCenter(batch, body, position.x, position.y);
+			utils.drawCenter(batch, head, position.x, position.y + 57 + (float)Math.random()*5-3);
+			return;
+		}
+		
+		float headOffset = 0;
+		if (horns) {
+			head = Assets.playerComplete.get(1);
+			headOffset = 12;
+		} else if (eyes) {
+			head = Assets.playerComplete.get(0);
+			headOffset = 12;
+		}
+		
 		utils.drawCenter(batch, body, position.x, position.y);
-		utils.drawCenter(batch, head, position.x, position.y + 57);
+		utils.drawCenter(batch, head, position.x, position.y + 57 + headOffset);
 	}
 
 	public void startBlood() {
 		bloodStarted  = true;
+	}
+
+	public void die() {
+		if (dies == true) {
+			return;
+		}
+		dies = true;
+		stateTime = 0;
+	}
+
+	public void putInCenter() {
+		eyes = true;
+		position.x = 0;
+		position.y = 0;
+		bounds.x = position.x - bounds.width / 2;
+		bounds.y = position.y - bounds.height / 2;
+	}
+
+	public void putHorns() {
+		horns  = true;
 	}
 
 }

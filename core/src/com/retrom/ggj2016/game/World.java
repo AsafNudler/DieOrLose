@@ -12,6 +12,7 @@ import com.retrom.ggj2016.objects.CandlePoint;
 import com.retrom.ggj2016.objects.Enemy;
 import com.retrom.ggj2016.objects.FollowerEnemy;
 import com.retrom.ggj2016.objects.Player;
+import com.retrom.ggj2016.objects.PlayerExplode;
 import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
 import com.retrom.ggj2016.utils.BatchUtils;
@@ -27,7 +28,9 @@ public class World {
 	private enum GameState {
 		BEFORE_CANDLES,
 		CANDLES_ON,
-		AFTER_CANDLES;
+		AFTER_CANDLES,
+		DEATH,
+		LEVEL_END;
 	}
 	
 	public interface WorldListener {
@@ -70,8 +73,18 @@ public class World {
 	
 	private float gameTime = 0;
 	private float slashTime = 0;
+	private float endTime = 0;
+	
+	private boolean newlevel = true;
 
 	private Altar altar;
+
+	private PlayerExplode explosion;
+
+	private float deathTime = 0;
+
+	private float fade = 0;
+	private float whiteFade = 0;
 
 	private void restartLevel()
 	{
@@ -79,6 +92,10 @@ public class World {
 		state = GameState.BEFORE_CANDLES;
 		enemies.clear();
 		candles.clear();
+		explosion = null;
+		deathTime = 0;
+		slashTime = 0;
+		gameTime = 0;
 		for (PaintingLine bloodLine : bloodLines) {
 			bloodLine.pathDone = false;
 			bloodLine.onPath = false;
@@ -168,38 +185,64 @@ public class World {
 	private void initCandlePoints(Levels level) {
 		candlePoints.clear();
 		for (Vector2 candle : level.candles) {
-			tryAddCandlePoint(candle.x, candle.y);
+			tryAddCandlePoint(candle.x, candle.y, true);
+		}
+		for (LineSegment ls : path) {
+			tryAddCandlePoint(ls.startX, ls.startY, false);
+			tryAddCandlePoint(ls.endX, ls.endY, false);
 		}
 	}
 	
-	private void tryAddCandlePoint(float x, float y) {
+	private void tryAddCandlePoint(float x, float y, boolean withCandle) {
 		for (CandlePoint cp : candlePoints) {
 			if (utils.floatEquals(x, cp.position.x, 1f) && utils.floatEquals(y, cp.position.y, 1f)) {
 				return;
 			}
 		}
-		candlePoints.add(new CandlePoint(x, y, player, level));
-//		for ()
+		candlePoints.add(new CandlePoint(x, y, player, level, withCandle));
+		if (withCandle) {
+			spawnCandle();
+		}
 	}
 
 	private void spawnCandle() {
 		float x ,y; 
 		x = y = 380 * (Math.random() > 0.5 ? 1 : -1);
+		x += Math.random() * 80 - 40;
+		y += Math.random() * 80 - 40;
 		candles.add(new Candle(x, y, player));
 	}
 
 	public void update(float deltaTime) {
+		updateHotkeys();
+		
 		gameTime += deltaTime;
 		
+		if (gameTime < 0.5f) {
+			float val = 1-(gameTime * 2);
+			if (newlevel) {
+				whiteFade = val;
+			} else {
+				fade = val;
+			}
+		} else {
+			fade = 0;
+		}
+		
+		lifebar.update(deltaTime);
 		altar.update(deltaTime);
 		
 		if (state == GameState.CANDLES_ON) {
 			updateCandlesOn(deltaTime);
 			return;
 		}
-		
-		if (candles.isEmpty() && state == GameState.BEFORE_CANDLES) {
-			spawnCandle();
+		if (state == GameState.DEATH) {
+			updateDeath(deltaTime);
+			return;
+		}
+		if (state == GameState.LEVEL_END) {
+			updateLevelEnd(deltaTime);
+			return;
 		}
 		
 		player.update(deltaTime);
@@ -224,7 +267,9 @@ public class World {
 			enemy.update(deltaTime);
 			if (enemy.bounds.overlaps(player.bounds)) {
 				lifebar.life -= deltaTime * 0.4;
-				splashBlood();
+				for (int i=0; i < deltaTime * 500; i++) {
+					splashBlood();
+				}
 			}
 		}
 		
@@ -237,15 +282,33 @@ public class World {
 		}
 		
 		if (lifebar.life <= 0) {
-			restartLevel();
+			state = GameState.DEATH;
 		}
 		
 
 		if (painting.isDone()) {
 			if (player.position.len() < 60)
-				listener_.nextLevel();
+				state = GameState.LEVEL_END; 
 		}
 		
+	}
+
+	private void updateLevelEnd(float deltaTime) {
+		player.putInCenter();
+		endTime += deltaTime;
+		if (endTime > 0.5) {
+			
+		}
+		whiteFade = (endTime % 0.16f > 0.08f) ? 1 : 0;
+		if (endTime > 0.8f) {
+			player.putHorns();
+		}
+		if (endTime > 1.2f) {
+			listener_.nextLevel();
+		}
+	}
+
+	private void updateHotkeys() {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 			listener_.restart();
 		}
@@ -261,12 +324,51 @@ public class World {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
 			startCandleOn();
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.D)) {
+			lifebar.life = 0;
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+			state = GameState.LEVEL_END;
+		}
+	}
+
+	private void updateDeath(float deltaTime) {
+		if (explosion == null) {
+			explosion = new PlayerExplode(player.position);
+			player.die();
+		}
+		if (explosion.getStarted()) {
+			for (int i=0; i < 600; i++) {
+				splashBlood(100);
+			}
+		}
+		if (explosion.stateTime > 0 && explosion.stateTime < 0.7f) {
+			for (int i=0; i < deltaTime * 500; i++) {
+				splashBlood(200);
+			}
+		}
+		player.update(deltaTime);
+		explosion.update(deltaTime);
+		deathTime += deltaTime;
+		if (deathTime > 2.5) {
+			fade = (deathTime - 2.5f)*2; 
+		}
+		
+		if (deathTime > 3f) {
+			newlevel = false;
+			restartLevel();
+		}
 	}
 
 	private void updateCandlesOn(float deltaTime) {
 		slashTime += deltaTime;
 		if (slashTime > 1.3) {
 			startCandlePhase();
+		}
+		if (slashTime > 0.7f) {
+			for (int i=0; i < deltaTime * 300; i++) {
+				splashBlood(60);
+			}
 		}
 	}
 
@@ -317,6 +419,7 @@ public class World {
 			cp.turnOnCandle();
 		}
 		player.knife = true;
+		lifebar.blink();
 	}
 
 	private void startCandlePhase() {
@@ -335,7 +438,11 @@ public class World {
 	}
 	
 	private void splashBlood() {
-		Vector2 newPos = utils.randomDir((float) (Math.random()*100));
+		splashBlood(100);
+	}
+	
+	private void splashBlood(float radius) {
+		Vector2 newPos = utils.randomDir((float) (Math.random()*radius));
 		newPos.add(player.position);
 		
 		PaintingLineGlow lineGlow = new PaintingLineGlow(player.position.x, player.position.y, newPos.x, newPos.y);
@@ -349,7 +456,7 @@ public class World {
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
-
+		
 		if (state == GameState.AFTER_CANDLES) {
 			if (!painting.isDone()) {
 				painting.master_alpha = 1;
@@ -376,6 +483,10 @@ public class World {
 		}
 		if (state == GameState.CANDLES_ON) {
 			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
+			if (painting.isDone()) {
+				painting.master_alpha = Math.max(0, Math.min(altar.stateTime, 1));
+			}
+			painting.master_alpha = 0;
 			painting.render(shapeRenderer);
 		}
 
@@ -408,10 +519,18 @@ public class World {
 			if (enemy.position.y < player.position.y)
 			enemy.render(batch);
 		}
+		
+		if (explosion != null) {
+			explosion.render(batch);
+		}
+		
 		if (level == 0) {
 			Assets.logo.setAlpha(Math.max(0, 1 - gameTime / 10));
 			utils.drawCenter(batch, Assets.logo, 0, 350);
 		}
+		
+		
+		
 		batch.end();
 		
 		BatchUtils.setBlendFuncAdd(batch);
@@ -440,5 +559,27 @@ public class World {
 		batch.end();
 		
 		lifebar.render(shapeRenderer, batch);
+		
+		renderFade(shapeRenderer);
+	}
+
+	private void renderFade(ShapeRenderer shapeRenderer) {
+		if (fade > 0) {
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		    Gdx.gl.glEnable(GL20.GL_BLEND);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(0, 0, 0, fade);
+			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
+			shapeRenderer.end();
+		}
+		if (whiteFade > 0) {
+			System.out.println("fade="+fade);
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		    Gdx.gl.glEnable(GL20.GL_BLEND);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(1, 1, 1, whiteFade);
+			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
+			shapeRenderer.end();
+		}
 	}
 }
