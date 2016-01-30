@@ -17,10 +17,12 @@ public class CandlePoint extends GameObject {
 	public State state = State.NOCANDLE;
 	private final Player player;
 	private float stateTime = 0;
+	private int level;
 
-	public CandlePoint(float x, float y, Player player) {
+	public CandlePoint(float x, float y, Player player, int level) {
 		super(x, y, 20, 20);
 		this.player = player;
+		this.level = level;
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -45,7 +47,7 @@ public class CandlePoint extends GameObject {
 			BatchUtils.setBlendFuncNormal(batch);
 		}
 		
-		if (state == State.NOCANDLE && player.candle != null) {
+		if (state == State.NOCANDLE && player.candle != null && level <= 0) {
 			utils.drawCenter(batch, Assets.candlePointUI, position.x, (float) (position.y + 50 + 5 * Math.sin(stateTime * 6)));
 		}
 	}

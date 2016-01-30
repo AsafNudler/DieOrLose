@@ -152,7 +152,8 @@ public class World {
 				return;
 			}
 		}
-		candlePoints.add(new CandlePoint(x, y, player));
+		candlePoints.add(new CandlePoint(x, y, player, level));
+//		for ()
 	}
 
 	private void spawnCandle() {
@@ -343,6 +344,10 @@ public class World {
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && !candle.overPlayer()) candle.render(batch);
 		}
+		for (Enemy enemy : enemies) {
+			if (enemy.position.y >= player.position.y)
+				enemy.render(batch);
+		}
 
 		player.render(batch);
 		for (Candle candle : candles) {
@@ -350,6 +355,7 @@ public class World {
 		}
 		
 		for (Enemy enemy : enemies) {
+			if (enemy.position.y < player.position.y)
 			enemy.render(batch);
 		}
 		if (level == 0) {
