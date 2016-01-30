@@ -7,20 +7,21 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.game.World;
 import com.retrom.ggj2016.game.World.WorldListener;
 import com.retrom.ggj2016.game.WorldRenderer;
+import com.retrom.ggj2016.assets.SoundAssets;
 
 
 public class GameScreen extends ScreenAdapter implements Screen {
 	static final public float FRUSTUM_WIDTH = 1080;
 	static final public float FRUSTUM_HEIGHT = 1080;
+	
+	static boolean openingPlayed = false;
 	
 	SpriteBatch batch_ = new SpriteBatch();
 	ShapeRenderer shapeRenderer_ = new ShapeRenderer();
@@ -42,6 +43,12 @@ public class GameScreen extends ScreenAdapter implements Screen {
 
 	@Override
 	public void show() {
+		if (!openingPlayed) {
+			openingPlayed = true;
+//			SoundAssets.playSound(SoundAssets.opening);
+			SoundAssets.startMusic();
+			
+		}
 		world_ = new World(new WorldListener() {
 			
 			@Override

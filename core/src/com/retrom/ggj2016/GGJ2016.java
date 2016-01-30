@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.assets.SoundAssets;
 import com.retrom.ggj2016.screens.GameScreen;
 
 public class GGJ2016 extends Game {
@@ -14,6 +15,7 @@ public class GGJ2016 extends Game {
 	@Override
 	public void create () {
 		Assets.init();
+		SoundAssets.load();
 		
 		setScreen(new GameScreen(0));
 		

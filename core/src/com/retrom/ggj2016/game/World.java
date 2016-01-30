@@ -468,10 +468,6 @@ public class World {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
-		
-		if (level == 0 && player.position.x == 0 && player.position.y == 0) {
-			utils.drawCenter(batch, Assets.logo, 0, 0);
-		}
 		batch.end();
 		
 		if (state == GameState.AFTER_CANDLES) {
@@ -523,8 +519,10 @@ public class World {
 			}
 		}
 		
+		if (!showLogo()) {
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && !candle.overPlayer()) candle.render(batch);
+		}
 		}
 
 		if (state == GameState.AFTER_CANDLES || state == GameState.CANDLES_ON) {
@@ -536,9 +534,13 @@ public class World {
 				enemy.render(batch);
 		}
 
-		player.render(batch);
+		if (!showLogo()) {
+			player.render(batch);
+		}
+		if (!showLogo()) {
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && candle.overPlayer()) candle.render(batch);
+		}
 		}
 		
 		for (CandlePoint cp : candlePoints) {
@@ -582,11 +584,26 @@ public class World {
 				BatchUtils.setBlendFuncNormal(batch);
 			}
 		}
+		
 		batch.end();
 		
-		lifebar.render(shapeRenderer, batch);
+		if (!showLogo()) {
+			lifebar.render(shapeRenderer, batch);
+		}
 		
 		renderFade(shapeRenderer);
+		
+		
+		if (showLogo()) {
+			BatchUtils.setBlendFuncNormal(batch);
+			batch.begin();
+			utils.drawCenter(batch, Assets.logo, 0, 0);
+			batch.end();
+		}
+	}
+
+	private boolean showLogo() {
+		return level == 0 && player.position.x == 0 && player.position.y == 0;
 	}
 
 	private void renderFade(ShapeRenderer shapeRenderer) {
