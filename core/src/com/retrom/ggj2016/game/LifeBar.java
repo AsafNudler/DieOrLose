@@ -20,6 +20,7 @@ public class LifeBar {
 	private boolean blinking;
 	
 	public float life = 1;
+	private float addLifeBlinkTime = 0;
 	public void render(ShapeRenderer renderer, SpriteBatch batch) {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
@@ -40,7 +41,7 @@ public class LifeBar {
 			blinking = false;
 			stateTime = 0;
 		}
-		if (blinking  && stateTime > 0.4f && (stateTime % 0.3f > 0.15f)) {
+		if (addLifeBlinkTime > 0 || (blinking  && stateTime > 0.4f && (stateTime % 0.3f > 0.15f))) {
 			renderer.setColor(1, 0.15f, 0.1f, 1);
 		} else {
 			renderer.setColor(0.33f, 0, 0, 1);
@@ -50,12 +51,20 @@ public class LifeBar {
 		renderer.end();
 	}
 	
-	public void update(float dateTime) {
-		stateTime += dateTime;
+	public void update(float deltaTime) {
+		stateTime += deltaTime;
+		addLifeBlinkTime -= deltaTime;
 	}
 	
 	public void blink() {
 		stateTime = 0;
 		blinking = true;
+	}
+
+	public void addLife() {
+		life += 0.3f;
+		life = Math.min(1, life);
+		
+		addLifeBlinkTime = 0.1f;
 	}
 }
