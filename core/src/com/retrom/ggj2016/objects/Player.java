@@ -30,14 +30,14 @@ public class Player extends DynamicGameObject {
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
 		
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
-		} else if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+		} else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			velocity.y += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			velocity.x -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
-		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			velocity.x += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
 		}
 		if (Gdx.input.isTouched())
@@ -48,24 +48,6 @@ public class Player extends DynamicGameObject {
 			velocity.x += touch.x;
 			velocity.y += touch.y;
 
-			/*float ang = touch.angle();
-
-			if ((ang >= 0 && ang <= 60) || (ang >= 300))
-			{
-				velocity.x += ACCEL * deltaTime;
-			}
-			else if (ang >= 120 && ang <= 240)
-			{
-				velocity.x -= ACCEL * deltaTime;
-			}
-			if (ang >= 30 && ang <= 150)
-			{
-				velocity.y += ACCEL * deltaTime;
-			}
-			else if (ang >= 210 && ang <= 330)
-			{
-				velocity.y -= ACCEL * deltaTime;
-			}*/
 		}
 		velocity.clamp(0, VEL* (bloodStarted ? 1 : 1.5f));
 		velocity.x *= Math.pow(0.01, deltaTime);
