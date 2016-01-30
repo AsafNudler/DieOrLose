@@ -181,7 +181,7 @@ public class World {
 
 	private void lineCompleted()
 	{
-		System.out.print("Line completed!");
+		lifebar.addLife();
 	}
 	
 	private void initCandlePoints(Levels level) {
@@ -553,7 +553,6 @@ public class World {
 			shapeRenderer.end();
 		}
 		if (whiteFade > 0) {
-			System.out.println("fade="+fade);
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		    Gdx.gl.glEnable(GL20.GL_BLEND);
 			shapeRenderer.begin(ShapeType.Filled);

@@ -58,4 +58,10 @@ public class LifeBar {
 		stateTime = 0;
 		blinking = true;
 	}
+
+	public void addLife() {
+		life += 0.2f;
+		//////// TODO: blink line
+		
+	}
 }
