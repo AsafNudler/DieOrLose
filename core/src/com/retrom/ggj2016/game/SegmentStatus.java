@@ -16,6 +16,9 @@ public class SegmentStatus {
     public ArrayList<SegmentProjs> projs = new ArrayList<SegmentProjs>();
     private float cover = 0;
 
+    public int doneAnimationFrame = 0;
+    public ArrayList<FireEffect> fires;
+
     public void mergeProjs()
     {
         Collections.sort(projs, new CustomComparator());
