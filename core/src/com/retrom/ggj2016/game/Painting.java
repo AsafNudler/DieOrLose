@@ -1,5 +1,9 @@
 package com.retrom.ggj2016.game;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
@@ -12,6 +16,7 @@ public class Painting {
     private ArrayList<PaintingNode> m_allLines;
     private ArrayList<SegmentStatus> m_target;
     private float m_precision;
+    private ArrayList<LineSegment> m_projects = new ArrayList<LineSegment>();
 
 
     private final float MAX_X = 1080;
@@ -26,10 +31,55 @@ public class Painting {
         for (LineSegment lineSegment : target) {
             SegmentStatus seg = new SegmentStatus();
             seg.segment = lineSegment;
-            seg.isDone = false;
             m_target.add(seg);
         }
         m_precision = precision;
+    }
+
+    // projection of a on b
+    private Vector2 project(Vector2 a, Vector2 b)
+    {
+        float scalarProj = a.len() * (float)Math.cos(a.angleRad(b));
+        Vector2 res = b.cpy();
+        res.nor();
+        res.scl(scalarProj);
+        return res;
+    }
+
+    private void drawLine(ShapeRenderer renderer, SegmentStatus lineSegment, float start, float end, float r, float g, float b, float a)
+    {
+        Vector2 seg = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
+        Vector2 pt1 = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY).add(seg.cpy().scl(start));
+        Vector2 pt2 = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY).add(seg.cpy().scl(end));
+
+        Gdx.gl.glLineWidth(5);
+        Gdx.gl.glEnable(GL20.GL_BLEND);
+        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        renderer.begin(ShapeType.Line);
+
+        renderer.setColor(r, g, b, a);
+
+        renderer.line(pt1.x, pt1.y - 6, pt2.x, pt2.y - 6);
+        renderer.end();
+    }
+
+    public void render(ShapeRenderer renderer) {
+        for (SegmentStatus lineSegment : m_target) {
+            float pos = 0;
+            for (SegmentProjs proj : lineSegment.projs) {
+                if (pos < proj.start)
+                {
+                    drawLine(renderer, lineSegment, pos, proj.start, 1, 0.2f, 0.2f, 0.3f);
+                }
+                drawLine(renderer, lineSegment, proj.start, proj.end, 1, 0.2f, 0.2f, 0.9f);
+                pos = proj.end;
+            }
+            if (pos < 1.0)
+            {
+                drawLine(renderer, lineSegment, pos, 1.0f, 1, 0.2f, 0.2f, 0.3f);
+            }
+        }
+
     }
 
     public void addLine(PaintingLine obj, float startX, float startY, float endX, float endY)
@@ -44,6 +94,37 @@ public class Painting {
                 obj.onPath = true;
                 isRelated = true;
                 relatedTo.add(lineSegment);
+
+                Vector2 walkStart = new Vector2(startX, startY);
+                Vector2 walkEnd = new Vector2(endX, endY);
+                Vector2 segStart = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY);
+                Vector2 segEnd = new Vector2(lineSegment.segment.endX, lineSegment.segment.endY);
+
+                Vector2 ac = walkStart.cpy().sub(segStart);
+                Vector2 ab = segEnd.cpy().sub(segStart);
+                Vector2 projStart = segStart.cpy().add(project(ac, ab));
+                Vector2 cd = walkEnd.cpy().sub(walkStart);
+                Vector2 projDiff = project(cd, ab);
+                Vector2 projEnd = projStart.cpy().add(projDiff);
+
+                if (ab.dot(projDiff) < 0)
+                {
+                    Vector2 temp = projStart;
+                    projStart = projEnd;
+                    projEnd = temp;
+                }
+
+                projStart.sub(segStart);
+                projStart.scl(1 / ab.len());
+                projEnd.sub(segStart);
+                projEnd.scl(1 / ab.len());
+
+                SegmentProjs segProj = new SegmentProjs();
+                segProj.start = projStart.len();
+                segProj.end = projEnd.len();
+
+                lineSegment.projs.add(segProj);
+                lineSegment.mergeProjs();
             }
         }
         if (!isRelated)
@@ -51,114 +132,8 @@ public class Painting {
             obj.onPath = false;
             return;
         }
-        PaintingNode pn = new PaintingNode();
-        pn.obj = obj;
-        pn.startX = startX;
-        pn.endX = endX;
-        pn.startY = startY;
-        pn.endY = endY;
-        pn.relatedTo = relatedTo;
-        m_allLines.add(pn);
-        addLine(pn, startX, startY);
-        addLine(pn, endX, endY);
-
-        for (SegmentStatus segmentStatus : relatedTo) {
-            if ( !segmentStatus.isDone)
-            {
-                LineSegment line = segmentStatus.segment;
-                ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, segmentStatus, null, null, 350);
-                if (!path.isEmpty()) {
-                    segmentStatus.isDone = true;
-                    for (PaintingNode paintingNode : path) {
-                        paintingNode.obj.pathDone = true;
-                    }
-                }
-            }
-        }
     }
 
-
-    private void addLine(PaintingNode obj, float x, float y)
-    {
-        PaintingTreeNode curr = m_pt;
-        boolean splitHor = true;
-        float minX = -MAX_X/2;
-        float maxX = MAX_X/2;
-        float minY = -MAX_Y/2;
-        float maxY = MAX_Y/2;
-        int depth = 0;
-        while (true)
-        {
-            depth++;
-            if (depth >= 15) // a little bug to make the game faster
-            {
-                return;
-            }
-            if (curr.obj == null)
-            {
-                curr.x = x;
-                curr.y = y;
-                curr.obj = obj;
-                return;
-            }
-            if (splitHor)
-            {
-                if (x >= (minX+maxX)/2)
-                {
-                    minX = (minX+maxX)/2;
-                    if (curr.right == null)
-                    {
-                        curr.right = new PaintingTreeNode();
-                    }
-                    curr = curr.right;
-                }
-                else
-                {
-                    maxX = (minX+maxX - ((minX+maxX)/2));
-                    if (curr.left == null)
-                    {
-                        curr.left = new PaintingTreeNode();
-                    }
-                    curr = curr.left;
-                }
-            }
-            else
-            {
-                if (y >= (minY+maxY)/2)
-                {
-                    minY = (minY+maxY)/2;
-                    if (curr.right == null)
-                    {
-                        curr.right = new PaintingTreeNode();
-                    }
-                    curr = curr.right;
-                }
-                else
-                {
-                    maxY = (minY+maxY - ((minY+maxY)/2));
-                    if (curr.left == null)
-                    {
-                        curr.left = new PaintingTreeNode();
-                    }
-                    curr = curr.left;
-                }
-            }
-            splitHor = !splitHor;
-        }
-    }
-
-    public ArrayList<PaintingNode> findLines(float x, float y, float radius)
-    {
-        ArrayList<PaintingNode> res = new ArrayList<PaintingNode>();
-        float minX = -MAX_X/2;
-        float maxX = MAX_X/2;
-        float minY = -MAX_Y/2;
-        float maxY = MAX_Y/2;
-        boolean splitHor = true;
-        PaintingTreeNode curr = m_pt;
-        findLines(x, y, radius, curr, minX, maxX, minY, maxY, splitHor, res);
-        return res;
-    }
 
     private float dist(float segX1, float segY1, float segX2, float segY2, float x, float y)
     {
@@ -177,76 +152,12 @@ public class Painting {
         }
     }
 
-    public void findLines(float x, float y, float radius, PaintingTreeNode curr, float minX, float maxX, float minY, float maxY, boolean splitHor, ArrayList<PaintingNode> res)
-    {
-        if (curr.obj != null)
-        {
-            if (dist(curr.obj.startX, curr.obj.startY, curr.obj.endX, curr.obj.endY, x, y) <= radius)
-            {
-                res.add(curr.obj);
-            }
-        }
 
-        if (splitHor)
-        {
-            if (x+radius >= (minX+maxX)/2)
-            {
-                if (curr.right != null)
-                {
-                    findLines(x, y, radius, curr.right, (minX+maxX)/2, maxX, minY, maxY, !splitHor, res);
-                }
-            }
-            if (!(x-radius >= (minX+maxX)/2))
-            {
-                if (curr.left != null)
-                {
-                    findLines(x, y, radius, curr.left, minX, (minX+maxX - ((minX+maxX)/2)), minY, maxY, !splitHor, res);
-                }
-            }
-        }
-        else
-        {
-            if (y+radius >= (minY+maxY)/2)
-            {
-                if (curr.right != null)
-                {
-                    findLines(x, y, radius, curr.right, minX, maxX, (minY+maxY)/2, maxY, !splitHor, res);
-                }
-            }
-            if (!(y-radius >= (minY+maxY)/2))
-            {
-                if (curr.left != null)
-                {
-                    findLines(x, y, radius, curr.left, minX, maxX, minY, (minY+maxY - ((minY+maxY)/2)), !splitHor, res);
-                }
-            }
-        }
-    }
-    
-    public void step()
-    {
-
-        /*for (int i = 0; i < m_target.size(); i++) {
-            if ( !m_target.get(i).isDone)
-            {
-                LineSegment line = m_target.get(i).segment;
-                ArrayList<PaintingNode> path = isBloodedPath(line.startX, line.startY, line.endX, line.endY, line, null, null);
-                if (path.isEmpty()) {
-                    m_target.get(i).isDone = false;
-                } else {
-                    m_target.get(i).isDone = true;
-                    for (PaintingNode paintingNode : path) {
-                        paintingNode.obj.pathDone = true;
-                    }
-                }
-            }
-        }*/
-    }
 
     public boolean isDone()
     {
         for (SegmentStatus targetStatus : m_target) {
-            if (!targetStatus.isDone)
+            if (!targetStatus.isDone())
             {
                 return false;
             }
@@ -254,40 +165,5 @@ public class Painting {
         return true;
     }
 
-    private ArrayList<PaintingNode> isBloodedPath(float startX, float startY, float endX, float endY, SegmentStatus relatedTo, ArrayList<PaintingNode> used, ArrayList<PaintingNode> end, int maxDepth)
-    {
-        if (maxDepth <= 0)
-        {
-            return new ArrayList<PaintingNode>();
-        }
-        if (null == used) {
-            used = new ArrayList<PaintingNode>();
-        }
-        if (null == end) {
-            end = findLines(endX, endY, MAX_GAP);
-        }
-        ArrayList<PaintingNode> potentioals = findLines(startX, startY, MAX_GAP);
-        for (PaintingNode potentioal : potentioals) {
-            if (end.contains(potentioal)) {
-                ArrayList<PaintingNode> res = new ArrayList<PaintingNode>();
-                res.add(potentioal);
-                return res;
-            }
-            if (used.contains(potentioal) || !potentioal.relatedTo.contains(relatedTo)) {
-                continue;
-            }
-            used.add(potentioal);
-            ArrayList<PaintingNode> try1 = isBloodedPath(potentioal.startX, potentioal.startY, endX, endY, relatedTo, used, end, maxDepth-1);
-            if (!try1.isEmpty()) {
-                try1.add(potentioal);
-                return try1;
-            }
-            try1 = isBloodedPath(potentioal.endX, potentioal.endY, endX, endY, relatedTo, used, end, maxDepth-1);
-            if (!try1.isEmpty()) {
-                try1.add(potentioal);
-                return try1;
-            }
-        }
-        return new ArrayList<PaintingNode>();
-    }
+
 }

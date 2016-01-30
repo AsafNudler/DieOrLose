@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.Enemy;
+import com.retrom.ggj2016.objects.FollowerEnemy;
 import com.retrom.ggj2016.objects.Player;
 import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
@@ -130,8 +131,7 @@ public class World {
 		
 		player.update(deltaTime);
 		lifebar.life -= BLOOD_LOSE_RATE * deltaTime * player.velocity.len();
-		
-		painting.step();
+
 		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
 			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
 			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y, lineGlow);
@@ -198,10 +198,8 @@ public class World {
 		utils.drawCenter(batch, Assets.bg, 0, 0);
 		batch.end();
 
-		for (LineSegment line : path) {
-			renderLineSegment(shapeRenderer, line);
-		}
-//		PaintBloodPath(shapeRenderer);
+		painting.render(shapeRenderer);
+
 		batch.begin();
 		for (PaintingLine line : bloodLines) {
 			line.render(batch);
@@ -210,6 +208,7 @@ public class World {
 		for (Candle candle : candles) {
 			if (!candle.overPlayer()) candle.render(batch);
 		}
+
 		player.render(batch);
 		for (Candle candle : candles) {
 			if (candle.overPlayer()) candle.render(batch);
