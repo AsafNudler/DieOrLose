@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.game.LifeBar;
 import com.retrom.ggj2016.game.World;
 import com.retrom.ggj2016.utils.TouchToPoint;
 import com.retrom.ggj2016.utils.utils;
@@ -23,9 +24,12 @@ public class Player extends DynamicGameObject {
 	private float stateTime = 0;
 	public boolean knife = false;
 	public boolean dies = false;
+	
+	private LifeBar lifebar;
 
-	public Player() {
+	public Player(LifeBar lifebar) {
 		super(0, 0, 50, 50);
+		this.lifebar = lifebar;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -40,30 +44,30 @@ public class Player extends DynamicGameObject {
 		}
 		controlled = false;
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			velocity.y -= ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
 			controlled = true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			velocity.y += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			velocity.y += ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
 			controlled = true;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			velocity.x -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			velocity.x -= ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
 			controlled = true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			velocity.x += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			velocity.x += ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
 			controlled = true;
 		}
 		if (Gdx.input.isTouched())
 		{
 			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
 			touch.sub(position);
-			touch.scl(ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f));
+			touch.scl(ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f));
 			velocity.x += touch.x;
 			velocity.y += touch.y;
 			controlled = true;
 
 		}
-		velocity.clamp(0, VEL* (bloodStarted ? 1 : 1.5f));
+		velocity.clamp(0, VEL* (lifebar.life < 0.25 ? 1 : 1.5f));
 		velocity.x *= Math.pow(0.0001, deltaTime);
 		velocity.y *= Math.pow(0.0001, deltaTime);
 		

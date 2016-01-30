@@ -51,9 +51,8 @@ public class World {
 
 	public static final float BOUNDS = 450;
 	
-	private Player player = new Player();
-	
 	private LifeBar lifebar = new LifeBar();
+	private Player player = new Player(lifebar);
 
 	private Painting painting;
 	
@@ -103,7 +102,7 @@ public class World {
 			bloodLine.onPath = false;
 		}
 		lifebar = new LifeBar();
-		player = new Player();
+		player = new Player(lifebar);
 		lastPosition = player.position.cpy();
 		buildLevel();
 	}
