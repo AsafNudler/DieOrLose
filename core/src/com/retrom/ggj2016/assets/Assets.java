@@ -50,6 +50,7 @@ public class Assets {
 
 	public static Array<Sprite> enemyFollower;
 	public static Array<Sprite> enemyFollowerFire;
+	public static Sprite enemyFollowerEyes;
 	
 	public static Sprite altar;
 	public static Sprite altar_glow;
@@ -63,6 +64,8 @@ public class Assets {
 	public static Array<Sprite> playerComplete;
 	
 	public static Array<Sprite> fireParticles;
+
+	public static Array<Sprite> candleFire;
 
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -96,6 +99,8 @@ public class Assets {
 		candlePointUI = basicSheet.createSprite("items_candleslot_UX");
 		candleBlank = basicSheet.createSprite("items_candleslot_nocandle");
 		
+		candleFire = basicSheet.createSprites("candle_fire");
+		
 		lifeBarOver = basicSheet.createSprite("hud_healthbar");
 		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
 		
@@ -107,6 +112,7 @@ public class Assets {
 		
 		enemyFollower = basicSheet.createSprites("enemies_stalker_frame");
 		enemyFollowerFire = basicSheet.createSprites("enemies_fire_green");
+		enemyFollowerEyes = basicSheet.createSprite("enemies_stalker_eyesglow");
 		
 		altar = basicSheet.createSprite("exitaltar_base");
 		altar_glow = basicSheet.createSprite("exitaltar_base_glow");

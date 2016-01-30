@@ -29,6 +29,16 @@ public class CandlePoint extends GameObject {
 		}
 	}
 	
+	public void renderFire(SpriteBatch batch) {
+		if (state != State.ON) {
+			return;
+		}
+		BatchUtils.setBlendFuncAdd(batch);
+		Sprite s = utils.getFrameLoop(Assets.candleFire, stateTime);
+		utils.drawCenter(batch, s, position.x, position.y+60);
+		BatchUtils.setBlendFuncNormal(batch);
+	}
+	
 	public void render(SpriteBatch batch) {
 		Sprite s = null;
 		switch (state) {
@@ -50,17 +60,29 @@ public class CandlePoint extends GameObject {
 		
 		if (state == State.ON) {
 			BatchUtils.setBlendFuncAdd(batch);
-			utils.drawCenter(batch, Assets.candlePointGlow, position.x, position.y);
+			Sprite glow = Assets.candlePointGlow;
+			float tint = Math.min(1, stateTime * 2);
+			glow.setColor(tint,tint,tint,1);
+			utils.drawCenter(batch, glow, position.x, position.y);
+			if (tint == 1) {
+				float tintOn = (float) ((Math.sin((stateTime - 0.5f) * 5f) + 1) / 2);
+				glow.setColor(tintOn,tintOn,tintOn,1);
+				utils.drawCenter(batch, glow, position.x, position.y);
+			}
 			BatchUtils.setBlendFuncNormal(batch);
 		}
 		
 		if (state == State.NOCANDLE && player.candle != null && level <= 0) {
 			utils.drawCenter(batch, Assets.candlePointUI, position.x, (float) (position.y + 50 + 5 * Math.sin(stateTime * 6)));
 		}
+		
+//		IF (state == )
 	}
 
 	public void update(float deltaTime) {
-		stateTime += deltaTime;
+//		if (state == State.ON) {
+			stateTime += deltaTime;
+//		}
 	}
 	
 	public void putCandle() {
@@ -69,8 +91,10 @@ public class CandlePoint extends GameObject {
 	}
 	
 	public void turnOnCandle() {
-		if (state != State.BLANK)
+		if (state != State.BLANK && state != State.ON) {
 			state = State.ON;
+			stateTime = 0;
+		}
 	}
 	
 }
