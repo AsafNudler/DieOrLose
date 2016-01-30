@@ -16,6 +16,7 @@ public class Player extends DynamicGameObject {
 	private static final float VEL = 250f;
 	private static final float ACCEL = 2000f;
 	public static final float TIME_BEFORE_EXPLODE = 1f;
+	public static final float SLOW_DOWN_HP = 0.25f;
 
 	private static TouchToPoint ttp = TouchToPoint.create();
 	public Candle candle = null;
@@ -44,30 +45,30 @@ public class Player extends DynamicGameObject {
 		}
 		controlled = false;
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.UP)) {
-			velocity.y -= ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
+			velocity.y -= ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f));
 			controlled = true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			velocity.y += ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
+			velocity.y += ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f));
 			controlled = true;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			velocity.x -= ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
+			velocity.x -= ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f));
 			controlled = true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			velocity.x += ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f);
+			velocity.x += ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f));
 			controlled = true;
 		}
 		if (Gdx.input.isTouched())
 		{
 			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
 			touch.sub(position);
-			touch.scl(ACCEL * deltaTime * (lifebar.life < 0.25 ? 1 : 1.5f));
+			touch.scl(ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted ? 1.25f : 1.5f)));
 			velocity.x += touch.x;
 			velocity.y += touch.y;
 			controlled = true;
 
 		}
-		velocity.clamp(0, VEL* (lifebar.life < 0.25 ? 1 : 1.5f));
+		velocity.clamp(0, VEL* (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f)));
 		velocity.x *= Math.pow(0.0001, deltaTime);
 		velocity.y *= Math.pow(0.0001, deltaTime);
 		

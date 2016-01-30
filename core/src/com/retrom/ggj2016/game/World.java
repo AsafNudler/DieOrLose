@@ -491,11 +491,12 @@ public class World {
 		}
 		if (state == GameState.CANDLES_ON) {
 			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
-			System.out.println("set slash master alpha="+painting.master_alpha);
+			System.out.println("set slash master alpha=" + painting.master_alpha);
 			if (painting.isDone()) {
 				painting.master_alpha = Math.max(0, Math.min(altar.stateTime, 1));
 			}
 			painting.render(shapeRenderer);
+
 		}
 
 
@@ -503,6 +504,8 @@ public class World {
 		for (PaintingLine line : bloodLines) {
 			line.render(batch);
 		}
+
+
 
 		altar.render(batch);
 
@@ -513,6 +516,11 @@ public class World {
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && !candle.overPlayer()) candle.render(batch);
 		}
+
+		if (state == GameState.AFTER_CANDLES || state == GameState.CANDLES_ON) {
+			painting.renderFire(batch);
+		}
+
 		for (Enemy enemy : enemies) {
 			if (enemy.position.y >= player.position.y)
 				enemy.render(batch);

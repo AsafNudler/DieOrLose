@@ -2,9 +2,14 @@ package com.retrom.ggj2016.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
+import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.utils.BatchUtils;
+import com.retrom.ggj2016.utils.utils;
 
 import java.util.ArrayList;
 
@@ -92,7 +97,7 @@ public class Painting {
                 Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
                 renderer.begin(ShapeType.Line);
 
-                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha);
+                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha * a);
 
                 renderer.line(pt11.x, pt11.y - 6, pt12.x, pt12.y - 6);
                 renderer.end();
@@ -105,7 +110,7 @@ public class Painting {
                 Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
                 renderer.begin(ShapeType.Line);
 
-                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha);
+                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha * a);
 
                 renderer.line(pt21.x, pt21.y - 6, pt22.x, pt22.y - 6);
                 renderer.end();
@@ -115,7 +120,6 @@ public class Painting {
     }
 
     public void render(ShapeRenderer renderer) {
-    	System.out.println("master_alpha="+master_alpha);
         for (SegmentStatus lineSegment : m_target) {
             float pos = 0;
             for (SegmentProjs proj : lineSegment.projs) {
@@ -124,6 +128,10 @@ public class Painting {
                     drawLine(renderer, lineSegment, pos, proj.start, 1, 0.2f, 0.2f, 0.15f, 0);
                 }
                 drawLine(renderer, lineSegment, proj.start, proj.end, 1, 0.2f, 0.2f, 0.9f, 20);
+                if (lineSegment.isDone())
+                {
+                    drawLine(renderer, lineSegment, proj.start, proj.end, 0.86f, 0.32f, 0f, (lineSegment.doneAnimationFrame/7.0f) * 1f, 20);
+                }
                 pos = proj.end;
             }
             if (pos < 1.0)
@@ -132,6 +140,58 @@ public class Painting {
             }
         }
 
+    }
+
+    public void renderFire(SpriteBatch batch)
+    {
+        for (SegmentStatus lineSegment : m_target) {
+            if (lineSegment.isDone())
+            {
+                if (lineSegment.doneAnimationFrame < 7)
+                {
+                    lineSegment.doneAnimationFrame++;
+                }
+                while (Math.random() < 0.25)
+                {
+                    FireEffect f = new FireEffect();
+                    f.ySpeed = 0.7f + (float)Math.random() * 0.8f;
+                    f.xCurrElement = (float)(Math.random() * 2 * Math.PI);
+                    Vector2 fpos = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
+                    fpos.scl((float)Math.random());
+                    fpos.add(new Vector2(lineSegment.segment.startX, lineSegment.segment.startY));
+                    f.pos = fpos;
+                    lineSegment.fires.add(f);
+                    f.ass.setScale(0.7f);
+                }
+                ArrayList<FireEffect> remove = new ArrayList<FireEffect>();
+                BatchUtils.setBlendFuncAdd(batch);
+                for (FireEffect fire : lineSegment.fires) {
+                    Sprite s = fire.ass;
+                    s.setColor(master_alpha*fire.alpha, master_alpha*fire.alpha, master_alpha*fire.alpha, 1);
+                    utils.drawCenter(batch, s, fire.pos.x + 3.0f*(float)Math.cos(fire.xCurrElement), fire.pos.y);
+
+                    fire.frames++;
+                    if (fire.frames <= 5)
+                    {
+                        fire.alpha += 0.2;
+                    }
+                    else if (fire.frames >= 15)
+                    {
+                        fire.alpha -= 0.1;
+                    }
+                    if (fire.frames >= 25)
+                    {
+                        remove.add(fire);
+                    }
+                    fire.pos.y += fire.ySpeed;
+                    fire.xCurrElement += 0.2;
+                }
+                for (FireEffect fireEffect : remove) {
+                    lineSegment.fires.remove(fireEffect);
+                }
+                BatchUtils.setBlendFuncNormal(batch);
+            }
+        }
     }
 
     public void addLine(PaintingLine obj, float startX, float startY, float endX, float endY)
@@ -184,6 +244,8 @@ public class Painting {
                 if (!wasDone && lineSegment.isDone())
                 {
                     m_lineCompleteSignaller.signale();
+                    lineSegment.doneAnimationFrame = 0;
+                    lineSegment.fires = new ArrayList<FireEffect>();
                 }
             }
         }

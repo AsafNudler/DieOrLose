@@ -62,7 +62,7 @@ public class LifeBar {
 	}
 
 	public void addLife() {
-		life += 0.3f;
+		life += 0.15f;
 		life = Math.min(1, life);
 		
 		addLifeBlinkTime = 0.1f;
