@@ -47,10 +47,15 @@ public class Assets {
 
 	public static Sprite knifeFlare;
 
+	public static Array<Sprite> enemyFollower;
+	public static Array<Sprite> enemyFollowerFire;
+	
+	public static Sprite altar;
+	public static Sprite altar_glow;
+	public static Sprite altar_ux;
+
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
-		
-		bg = basicSheet.createSprite("bg");
 		
 		playerHead = basicSheet.createSprite("Player_head_front");
 		playerHeadBack = basicSheet.createSprite("Player_head_back");
@@ -87,5 +92,17 @@ public class Assets {
 		
 		slash = basicSheet.createSprites("blood_slash");
 		knifeFlare = basicSheet.createSprite("Player_body_front_knife_knifeflare");
+		
+		enemyFollower = basicSheet.createSprites("enemies_stalker_frame");
+		enemyFollowerFire = basicSheet.createSprites("enemies_fire_green");
+		
+		altar = basicSheet.createSprite("exitaltar_base");
+		altar_glow = basicSheet.createSprite("exitaltar_base_glow");
+		altar_ux = basicSheet.createSprite("exitaltar_base_UX");
+		
+		
+		
+		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
+		bg = bgSheet.createSprite("bg");
 	}
 }

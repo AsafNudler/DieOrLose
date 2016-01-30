@@ -39,7 +39,7 @@ public class World {
 	
 	GameState state = GameState.BEFORE_CANDLES;
 	
-	private static final float BLOOD_SEGMENT_LENGTH = 5f;
+	private static final float BLOOD_SEGMENT_LENGTH = 2f;
 
 	private static final float BLOOD_LOSE_RATE = 15e-5f;
 
@@ -72,8 +72,11 @@ public class World {
 	private float gameTime = 0;
 	private float slashTime = 0;
 
+	private Altar altar;
+
 	private void restartLevel()
 	{
+		altar = new Altar(level);
 		state = GameState.BEFORE_CANDLES;
 		enemies.clear();
 		candles.clear();
@@ -91,6 +94,7 @@ public class World {
 		this.listener_ = listener;
 		this.level = level;
 		lastPosition = player.position.cpy();
+		altar = new Altar(level);
 		buildLevel();
 	}
 
@@ -150,7 +154,6 @@ public class World {
 		for (Vector2 candle : level.candles) {
 			tryAddCandlePoint(candle.x, candle.y);
 		}
-		
 	}
 	
 	private void tryAddCandlePoint(float x, float y) {
@@ -170,6 +173,9 @@ public class World {
 
 	public void update(float deltaTime) {
 		gameTime += deltaTime;
+		
+		altar.update(deltaTime);
+		
 		if (state == GameState.CANDLES_ON) {
 			updateCandlesOn(deltaTime);
 			return;
@@ -219,7 +225,7 @@ public class World {
 		
 
 		if (painting.isDone()) {
-			if (player.position.len() < 30)
+			if (player.position.len() < 60)
 				listener_.nextLevel();
 		}
 		
@@ -323,9 +329,15 @@ public class World {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
+		altar.render(batch);
 		batch.end();
 
 		if (state == GameState.AFTER_CANDLES) {
+			painting.master_alpha = 1;
+			painting.render(shapeRenderer);
+		}
+		if (state == GameState.CANDLES_ON) {
+			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
 			painting.render(shapeRenderer);
 		}
 
@@ -359,7 +371,7 @@ public class World {
 		BatchUtils.setBlendFuncAdd(batch);
 		batch.begin();
 		if (painting.isDone()) {
-			utils.drawCenter(batch, Assets.centerGlow, 0, 0);
+			altar.show();
 		}
 		if (GameState.CANDLES_ON == state) {
 			float anim_time = slashTime - 0.5f;
@@ -372,9 +384,10 @@ public class World {
 			{
 				BatchUtils.setBlendFuncAdd(batch);
 				Sprite s = Assets.knifeFlare;
-				float tint = Math.max(0,Math.min(1, Math.min(slashTime, 1.5f - slashTime))); 
+				s.setRotation(slashTime * 60);
+				float tint = Math.max(0,Math.min(1, Math.min(slashTime*2, 1.5f - slashTime*2))); 
 				s.setColor(tint, tint, tint, 1);
-				utils.drawCenter(batch, s, player.position.x-30, player.position.y + 10+ slashTime * 20);
+				utils.drawCenter(batch, s, player.position.x-30, player.position.y + 10);
 				BatchUtils.setBlendFuncNormal(batch);
 			}
 		}

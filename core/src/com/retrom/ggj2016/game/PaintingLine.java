@@ -31,7 +31,7 @@ public class PaintingLine {
 	float rotation = (float) (Math.random() * 360);
 	float opacity = 1;
 	
-	private static final float TOTAL_OFFTIME = 8;
+	private static final float TOTAL_OFFTIME = 4;
 	float offTime = TOTAL_OFFTIME;
 	private float darken;
 	

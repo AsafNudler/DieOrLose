@@ -17,7 +17,7 @@ public class Enemy extends DynamicGameObject {
 	
 	protected float stateTime = 0;
 
-	private float alpha = 0;
+	protected float alpha = 0;
 
 	public Enemy(float x, float y) {
 		super(x, y, ENEMY_SIZE, ENEMY_SIZE);
