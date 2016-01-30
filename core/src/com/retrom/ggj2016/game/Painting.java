@@ -23,7 +23,15 @@ public class Painting {
     private final float MAX_Y = 1080;
     private final float MAX_GAP = 18;
 
-    public Painting(ArrayList<LineSegment> target, float precision)
+    public interface LineComplete
+    {
+        public void signale();
+    }
+
+    private LineComplete m_lineCompleteSignaller;
+
+
+    public Painting(ArrayList<LineSegment> target, float precision, LineComplete signaller)
     {
         m_pt = new PaintingTreeNode();
         m_allLines = new ArrayList<PaintingNode>();
@@ -34,6 +42,7 @@ public class Painting {
             m_target.add(seg);
         }
         m_precision = precision;
+        m_lineCompleteSignaller = signaller;
     }
 
     // projection of a on b
@@ -46,7 +55,7 @@ public class Painting {
         return res;
     }
 
-    private void drawLine(ShapeRenderer renderer, SegmentStatus lineSegment, float start, float end, float r, float g, float b, float a)
+    private void drawLine(ShapeRenderer renderer, SegmentStatus lineSegment, float start, float end, float r, float g, float b, float a, int glow)
     {
         Vector2 seg = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
         Vector2 pt1 = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY).add(seg.cpy().scl(start));
@@ -61,6 +70,46 @@ public class Painting {
 
         renderer.line(pt1.x, pt1.y - 6, pt2.x, pt2.y - 6);
         renderer.end();
+        if (glow > 0)
+        {
+            Vector2 norm = new Vector2(seg.y, -seg.x).nor();
+            Vector2 startPt = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY);
+            Vector2 seg1 = startPt.cpy();
+            Vector2 seg2 = startPt.cpy();
+            norm.scl(1.5f);
+            for (int i=0; i < glow; ++i)
+            {
+                seg1.add(norm);
+                seg2.sub(norm);
+
+                Vector2 pt11 = seg1.cpy().add(seg.cpy().scl(start));
+                Vector2 pt12 = seg1.cpy().add(seg.cpy().scl(end));
+
+                Gdx.gl.glLineWidth(0.02f);
+                Gdx.gl.glEnable(GL20.GL_BLEND);
+                Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+                renderer.begin(ShapeType.Line);
+
+                renderer.setColor(r, g, b, 0.12f - 0.12f * ((float)i / (float) glow));
+
+                renderer.line(pt11.x, pt11.y - 6, pt12.x, pt12.y - 6);
+                renderer.end();
+
+                Vector2 pt21 = seg2.cpy().add(seg.cpy().scl(start));
+                Vector2 pt22 = seg2.cpy().add(seg.cpy().scl(end));
+
+                Gdx.gl.glLineWidth(0.02f);
+                Gdx.gl.glEnable(GL20.GL_BLEND);
+                Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+                renderer.begin(ShapeType.Line);
+
+                renderer.setColor(r, g, b, 0.12f - 0.12f * ((float) i / (float) glow));
+
+                renderer.line(pt21.x, pt21.y - 6, pt22.x, pt22.y - 6);
+                renderer.end();
+
+            }
+        }
     }
 
     public void render(ShapeRenderer renderer) {
@@ -69,14 +118,14 @@ public class Painting {
             for (SegmentProjs proj : lineSegment.projs) {
                 if (pos < proj.start)
                 {
-                    drawLine(renderer, lineSegment, pos, proj.start, 1, 0.2f, 0.2f, 0.3f);
+                    drawLine(renderer, lineSegment, pos, proj.start, 1, 0.2f, 0.2f, 0.15f, 0);
                 }
-                drawLine(renderer, lineSegment, proj.start, proj.end, 1, 0.2f, 0.2f, 0.9f);
+                drawLine(renderer, lineSegment, proj.start, proj.end, 1, 0.2f, 0.2f, 0.9f, 20);
                 pos = proj.end;
             }
             if (pos < 1.0)
             {
-                drawLine(renderer, lineSegment, pos, 1.0f, 1, 0.2f, 0.2f, 0.3f);
+                drawLine(renderer, lineSegment, pos, 1.0f, 1, 0.2f, 0.2f, 0.15f, 0);
             }
         }
 
@@ -123,8 +172,16 @@ public class Painting {
                 segProj.start = projStart.len();
                 segProj.end = projEnd.len();
 
+                boolean wasDone = lineSegment.isDone();
+
                 lineSegment.projs.add(segProj);
+
                 lineSegment.mergeProjs();
+
+                if (!wasDone && lineSegment.isDone())
+                {
+                    m_lineCompleteSignaller.signale();
+                }
             }
         }
         if (!isRelated)
