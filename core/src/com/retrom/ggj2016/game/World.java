@@ -233,7 +233,7 @@ public class World {
 
 	private void updateCandlesOn(float deltaTime) {
 		slashTime += deltaTime;
-		if (slashTime > 1) {
+		if (slashTime > 1.3) {
 			startCandlePhase();
 		}
 	}
@@ -278,16 +278,16 @@ public class World {
 	
 	private void startCandleOn() {
 		state = GameState.CANDLES_ON;
+		candles.clear();
+		for (CandlePoint cp : candlePoints) {
+			cp.turnOnCandle();
+		}
 		player.knife = true;
 	}
 
 	private void startCandlePhase() {
 		state = GameState.AFTER_CANDLES;
 		player.knife = false;
-		candles.clear();
-		for (CandlePoint cp : candlePoints) {
-			cp.turnOnCandle();
-		}
 		lastPosition = player.position.cpy();
 		player.startBlood();
 	}
@@ -363,7 +363,7 @@ public class World {
 			{
 				BatchUtils.setBlendFuncAdd(batch);
 				Sprite s = Assets.knifeFlare;
-				float tint = Math.min(1, Math.min(slashTime, 1 - slashTime)); 
+				float tint = Math.max(0,Math.min(1, Math.min(slashTime, 1.5f - slashTime))); 
 				s.setColor(tint, tint, tint, 1);
 				utils.drawCenter(batch, s, player.position.x-30, player.position.y + 10+ slashTime * 20);
 				BatchUtils.setBlendFuncNormal(batch);
@@ -372,46 +372,5 @@ public class World {
 		batch.end();
 		
 		lifebar.render(shapeRenderer, batch);
-		
-		
-	}
-
-	private void renderFloorSegments(ShapeRenderer shapeRenderer) {
-		if (state == GameState.AFTER_CANDLES) {
-			for (LineSegment line : path) {
-				renderLineSegment(shapeRenderer, line);
-			}
-		}
-	}
-
-	private void PaintBloodPath(ShapeRenderer shapeRenderer) {
-		for (PaintingLine line : bloodLines) {
-			if (!line.onPath) {
-				line.render(shapeRenderer);
-			}
-		}
-
-		for (PaintingLineGlow line : glowLines) {
-			line.render(shapeRenderer);
-		}
-
-		for (PaintingLine line : bloodLines) {
-			if (line.onPath) {
-				line.render(shapeRenderer);
-			}
-		}
-	}
-
-	private void renderLineSegment(ShapeRenderer renderer, LineSegment line) {
-		// TODO: try to call these once and not in every segment.
-		Gdx.gl.glLineWidth(5);
-		Gdx.gl.glEnable(GL20.GL_BLEND);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-		renderer.begin(ShapeType.Line);
-		
-		renderer.setColor(1, 0.2f, 0.2f, 0.3f);
-		
-		renderer.line(line.startX, line.startY - 6, line.endX, line.endY - 6);
-		renderer.end();
 	}
 }

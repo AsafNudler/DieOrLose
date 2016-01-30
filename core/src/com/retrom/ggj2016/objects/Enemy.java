@@ -28,9 +28,9 @@ public class Enemy extends DynamicGameObject {
 		if (time_till_start > 0) {
 			time_till_start -= deltaTime;
 			return;
-		} else if (time_till_start > -1) {
+		} else if (time_till_start > -0.5) {
 			time_till_start -= deltaTime;
-			alpha  = -time_till_start;
+			alpha  = -time_till_start*2;
 			alpha = Math.min(1, alpha);
 		} else {
 			alpha = 1;
