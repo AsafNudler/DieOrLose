@@ -1,7 +1,5 @@
 package com.retrom.ggj2016.game;
 
-import java.sql.BatchUpdateException;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -18,6 +16,9 @@ public class LifeBar {
 	private static final float X = -MAX_WIDTH / 2;
 	private static final float Y = - GameScreen.FRUSTUM_HEIGHT/2 + 80;
 	
+	private float stateTime;
+	private boolean blinking;
+	
 	public float life = 1;
 	public void render(ShapeRenderer renderer, SpriteBatch batch) {
 		BatchUtils.setBlendFuncNormal(batch);
@@ -25,13 +26,36 @@ public class LifeBar {
 		utils.drawCenter(batch, Assets.lifeBarBg, 0, Y);
 		batch.end();
 		
-		renderer.begin(ShapeType.Filled);
-		renderer.setColor(0.33f, 0, 0, 1);
-		renderer.rect(X, Y - 44f, MAX_WIDTH * life, HEIGHT);
-		renderer.end();
+		drawColor(renderer);
 		
 		batch.begin();
 		utils.drawCenter(batch, Assets.lifeBarOver, 0, Y);
 		batch.end();
+	}
+
+	private void drawColor(ShapeRenderer renderer) {
+		renderer.begin(ShapeType.Filled);
+		
+		if (blinking && stateTime > 1.8f) {
+			blinking = false;
+			stateTime = 0;
+		}
+		if (blinking  && stateTime > 0.4f && (stateTime % 0.3f > 0.15f)) {
+			renderer.setColor(1, 0.15f, 0.1f, 1);
+		} else {
+			renderer.setColor(0.33f, 0, 0, 1);
+		}
+		
+		renderer.rect(X, Y - 44f, MAX_WIDTH * life, HEIGHT);
+		renderer.end();
+	}
+	
+	public void update(float dateTime) {
+		stateTime += dateTime;
+	}
+	
+	public void blink() {
+		stateTime = 0;
+		blinking = true;
 	}
 }

@@ -37,6 +37,7 @@ public class Assets {
 	public static Sprite candlePointOn;
 	public static Sprite candlePointGlow;
 	public static Sprite candlePointUI;
+	public static Sprite candleBlank;
 	
 	public static Sprite lifeBarOver;
 	public static Sprite lifeBarBg;
@@ -53,6 +54,11 @@ public class Assets {
 	public static Sprite altar;
 	public static Sprite altar_glow;
 	public static Sprite altar_ux;
+
+	public static Array<Sprite> playerExplode;
+
+	public static Sprite playerHeadDies;
+	public static Sprite playerBodyDies;
 
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -83,6 +89,7 @@ public class Assets {
 		candlePointOn = basicSheet.createSprite("items_candleslot_light");
 		candlePointGlow = basicSheet.createSprite("items_candleslot_light_glow");
 		candlePointUI = basicSheet.createSprite("items_candleslot_UX");
+		candleBlank = basicSheet.createSprite("items_candleslot_nocandle");
 		
 		lifeBarOver = basicSheet.createSprite("hud_healthbar");
 		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
@@ -100,9 +107,13 @@ public class Assets {
 		altar_glow = basicSheet.createSprite("exitaltar_base_glow");
 		altar_ux = basicSheet.createSprite("exitaltar_base_UX");
 		
-		
+		playerHeadDies = basicSheet.createSprite("Player_head_front_die");
+		playerBodyDies = basicSheet.createSprite("Player_body_front_die");
 		
 		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
 		bg = bgSheet.createSprite("bg");
+		
+		TextureAtlas explodeSheet = new TextureAtlas("explode.txt");
+		playerExplode = explodeSheet.createSprites("blood_explotion");
 	}
 }

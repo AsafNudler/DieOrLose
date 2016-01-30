@@ -9,6 +9,7 @@ import com.retrom.ggj2016.utils.utils;
 public class CandlePoint extends GameObject {
 	
 	public enum State {
+		BLANK,
 		NOCANDLE,
 		OFF,
 		ON;
@@ -19,10 +20,13 @@ public class CandlePoint extends GameObject {
 	private float stateTime = 0;
 	private int level;
 
-	public CandlePoint(float x, float y, Player player, int level) {
+	public CandlePoint(float x, float y, Player player, int level, boolean withCandle) {
 		super(x, y, 20, 20);
 		this.player = player;
 		this.level = level;
+		if (!withCandle) {
+			state = State.BLANK;
+		}
 	}
 	
 	public void render(SpriteBatch batch) {
@@ -36,6 +40,9 @@ public class CandlePoint extends GameObject {
 			break;
 		case ON:
 			s = Assets.candlePointOn;
+			break;
+		case BLANK:
+			s = Assets.candleBlank;
 			break;
 		
 		}
@@ -57,11 +64,13 @@ public class CandlePoint extends GameObject {
 	}
 	
 	public void putCandle() {
-		state = State.OFF;
+		if (state != State.BLANK)
+			state = State.OFF;
 	}
 	
 	public void turnOnCandle() {
-		state = State.ON;
+		if (state != State.BLANK)
+			state = State.ON;
 	}
 	
 }

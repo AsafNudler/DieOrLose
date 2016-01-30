@@ -14,6 +14,7 @@ public class Player extends DynamicGameObject {
 	
 	private static final float VEL = 250f;
 	private static final float ACCEL = 2000f;
+	public static final float TIME_BEFORE_EXPLODE = 1f;
 
 	private static TouchToPoint ttp = TouchToPoint.create();
 	public Candle candle = null;
@@ -21,6 +22,7 @@ public class Player extends DynamicGameObject {
 	
 	private float stateTime = 0;
 	public boolean knife = false;
+	public boolean dies = false;
 
 	public Player() {
 		super(0, 0, 50, 50);
@@ -29,6 +31,10 @@ public class Player extends DynamicGameObject {
 	
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
+		
+		if (dies) {
+			return;
+		}
 		
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
@@ -113,12 +119,31 @@ public class Player extends DynamicGameObject {
 			body = Assets.playerBodyKnife;
 		}
 		
+		if (dies) {
+			if (stateTime > TIME_BEFORE_EXPLODE) {
+				return;
+			}
+			head = Assets.playerHeadDies;
+			body = Assets.playerBodyDies;
+			utils.drawCenter(batch, body, position.x, position.y);
+			utils.drawCenter(batch, head, position.x, position.y + 57 + (float)Math.random()*5-3);
+			return;
+		}
+		
 		utils.drawCenter(batch, body, position.x, position.y);
 		utils.drawCenter(batch, head, position.x, position.y + 57);
 	}
 
 	public void startBlood() {
 		bloodStarted  = true;
+	}
+
+	public void die() {
+		if (dies == true) {
+			return;
+		}
+		dies = true;
+		stateTime = 0;
 	}
 
 }

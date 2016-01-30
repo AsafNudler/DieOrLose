@@ -46,7 +46,11 @@ public class Altar extends GameObject {
 	}
 
 	public void show() {
+		if (shown) {
+			return;
+		}
 		shown = true;
+		stateTime = 0;
 	}
 
 }
