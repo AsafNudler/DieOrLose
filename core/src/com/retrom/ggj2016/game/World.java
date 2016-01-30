@@ -1,17 +1,10 @@
 package com.retrom.ggj2016.game;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.objects.Candle;
@@ -24,6 +17,11 @@ import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
 import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.utils;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 public class World {
 	
@@ -457,11 +455,30 @@ public class World {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
-		altar.render(batch);
 		batch.end();
 		
 		if (state == GameState.AFTER_CANDLES) {
-			painting.master_alpha = 1;
+			if (!painting.isDone()) {
+				painting.master_alpha = 1;
+			}
+			else {
+				if (painting.master_alpha > 0) {
+					painting.master_alpha -= 0.025;
+					if (painting.master_alpha < 0)
+					{
+						painting.master_alpha = 0;
+					}
+				}
+
+				if (painting.master_alpha < 0.7) {
+					if (altar.master_alpha < 1) {
+						altar.master_alpha += 0.03f;
+						if (altar.master_alpha > 1) {
+							altar.master_alpha = 1;
+						}
+					}
+				}
+			}
 			painting.render(shapeRenderer);
 		}
 		if (state == GameState.CANDLES_ON) {
@@ -473,11 +490,14 @@ public class World {
 			painting.render(shapeRenderer);
 		}
 
+
 		batch.begin();
 		for (PaintingLine line : bloodLines) {
 			line.render(batch);
 		}
-		
+
+		altar.render(batch);
+
 		for (CandlePoint cp : candlePoints) {
 			cp.render(batch);
 		}

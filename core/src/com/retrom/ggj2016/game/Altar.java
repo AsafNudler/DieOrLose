@@ -13,6 +13,7 @@ public class Altar extends GameObject {
 	
 	private static float ALTAR_COLLIDER = 60f;
 	private int level;
+	public float master_alpha = 0;
 
 	public Altar(int level) {
 		super(0, 0, ALTAR_COLLIDER, ALTAR_COLLIDER);
@@ -28,18 +29,21 @@ public class Altar extends GameObject {
 		if (!shown) {
 			return;
 		}
-		utils.drawCenter(batch, Assets.altar, 0, 0);
+		Sprite base = Assets.altar;
+		base.setAlpha(master_alpha);
+		utils.drawCenter(batch, base, 0, 0);
 		{
 			Sprite s = Assets.altar_glow;
-			s.setAlpha(1);
+			s.setAlpha(1 * master_alpha);
 			utils.drawCenter(batch, s, 0, 0);
-			s.setAlpha((float) (0.4f * (Math.sin(stateTime* 5) + 1)));
+			s.setAlpha(master_alpha * (float) (0.4f * (Math.sin(stateTime* 5) + 1)));
 			utils.drawCenter(batch, s, 0, 0);
 		}
 		if (level == 0) {
 			Sprite s = Assets.altar_ux;
 			float diff = (float) Math.abs(Math.sin(stateTime * 3));
 			s.setScale(0.8f + 0.2f * diff);
+			s.setAlpha(1 * master_alpha);
 			utils.drawCenter(batch, s, 0, 0);
 		}
 		
