@@ -72,8 +72,11 @@ public class World {
 	private float gameTime = 0;
 	private float slashTime = 0;
 
+	private Altar altar;
+
 	private void restartLevel()
 	{
+		altar = new Altar(level);
 		state = GameState.BEFORE_CANDLES;
 		enemies.clear();
 		candles.clear();
@@ -91,6 +94,7 @@ public class World {
 		this.listener_ = listener;
 		this.level = level;
 		lastPosition = player.position.cpy();
+		altar = new Altar(level);
 		buildLevel();
 	}
 
@@ -140,7 +144,6 @@ public class World {
 		for (Vector2 candle : level.candles) {
 			tryAddCandlePoint(candle.x, candle.y);
 		}
-		
 	}
 	
 	private void tryAddCandlePoint(float x, float y) {
@@ -160,6 +163,9 @@ public class World {
 
 	public void update(float deltaTime) {
 		gameTime += deltaTime;
+		
+		altar.update(deltaTime);
+		
 		if (state == GameState.CANDLES_ON) {
 			updateCandlesOn(deltaTime);
 			return;
@@ -313,6 +319,7 @@ public class World {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
+		altar.render(batch);
 		batch.end();
 
 		if (state == GameState.AFTER_CANDLES) {
@@ -354,7 +361,7 @@ public class World {
 		BatchUtils.setBlendFuncAdd(batch);
 		batch.begin();
 		if (painting.isDone()) {
-			utils.drawCenter(batch, Assets.centerGlow, 0, 0);
+			altar.show();
 		}
 		if (GameState.CANDLES_ON == state) {
 			float anim_time = slashTime - 0.5f;

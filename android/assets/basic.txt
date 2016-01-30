@@ -927,100 +927,121 @@ enemies_stalker_frame
   orig: 69, 115
   offset: 0, 0
   index: 2
-hud_healthbar
+exitaltar_base
   rotate: false
   xy: 334, 1020
+  size: 296, 291
+  orig: 296, 291
+  offset: 0, 0
+  index: -1
+exitaltar_base_UX
+  rotate: false
+  xy: 632, 1020
+  size: 405, 405
+  orig: 405, 405
+  offset: 0, 0
+  index: -1
+exitaltar_base_glow
+  rotate: false
+  xy: 1039, 1020
+  size: 393, 393
+  orig: 393, 393
+  offset: 0, 0
+  index: -1
+hud_healthbar
+  rotate: false
+  xy: 1434, 1020
   size: 295, 107
   orig: 295, 107
   offset: 0, 0
   index: -1
 hud_healthbar_bg
   rotate: false
-  xy: 631, 1020
+  xy: 1731, 1020
   size: 295, 107
   orig: 295, 107
   offset: 0, 0
   index: -1
 hud_healthbar_color
   rotate: false
-  xy: 928, 1020
+  xy: 2, 1427
   size: 263, 22
   orig: 263, 22
   offset: 0, 0
   index: -1
 items_candle
   rotate: false
-  xy: 1193, 1020
+  xy: 267, 1427
   size: 45, 65
   orig: 45, 65
   offset: 0, 0
   index: 1
 items_candle
   rotate: false
-  xy: 1240, 1020
+  xy: 314, 1427
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: 2
 items_candle_glow
   rotate: false
-  xy: 1283, 1020
+  xy: 357, 1427
   size: 45, 65
   orig: 45, 65
   offset: 0, 0
   index: 1
 items_candle_glow
   rotate: false
-  xy: 1330, 1020
+  xy: 404, 1427
   size: 41, 56
   orig: 41, 56
   offset: 0, 0
   index: 2
 items_candleslot_UX
   rotate: false
-  xy: 1373, 1020
+  xy: 447, 1427
   size: 40, 89
   orig: 40, 89
   offset: 0, 0
   index: -1
 items_candleslot_empty
   rotate: false
-  xy: 1415, 1020
+  xy: 489, 1427
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_full
   rotate: false
-  xy: 1473, 1020
+  xy: 547, 1427
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_light
   rotate: false
-  xy: 1531, 1020
+  xy: 605, 1427
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_light_glow
   rotate: false
-  xy: 1589, 1020
+  xy: 663, 1427
   size: 139, 118
   orig: 139, 118
   offset: 0, 0
   index: -1
 items_candleslot_nocandle
   rotate: false
-  xy: 1730, 1020
+  xy: 804, 1427
   size: 57, 58
   orig: 57, 58
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 2, 1140
+  xy: 863, 1427
   size: 686, 304
   orig: 686, 304
   offset: 0, 0
