@@ -26,19 +26,25 @@ public class Player extends DynamicGameObject {
 		super(0, 0, 50, 50);
 		// TODO Auto-generated constructor stub
 	}
+
+	private boolean controlled = false;
 	
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
-		
+		controlled = false;
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) && !Gdx.input.isKeyPressed(Input.Keys.UP)) {
 			velocity.y -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			controlled = true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
 			velocity.y += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			controlled = true;
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
 			velocity.x -= ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			controlled = true;
 		} else if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) && !Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			velocity.x += ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f);
+			controlled = true;
 		}
 		if (Gdx.input.isTouched())
 		{
@@ -47,11 +53,12 @@ public class Player extends DynamicGameObject {
 			touch.scl(ACCEL * deltaTime * (bloodStarted ? 1 : 1.5f));
 			velocity.x += touch.x;
 			velocity.y += touch.y;
+			controlled = true;
 
 		}
 		velocity.clamp(0, VEL* (bloodStarted ? 1 : 1.5f));
-		velocity.x *= Math.pow(0.01, deltaTime);
-		velocity.y *= Math.pow(0.01, deltaTime);
+		velocity.x *= Math.pow(0.0001, deltaTime);
+		velocity.y *= Math.pow(0.0001, deltaTime);
 		
 		position.x += velocity.x * deltaTime;
 		position.y += velocity.y * deltaTime;
@@ -82,7 +89,7 @@ public class Player extends DynamicGameObject {
 		} else {
 			head = Assets.playerHead;
 		}
-		if (velocity.len() > 30) {
+		if (velocity.len() > 30 && controlled) {
 			if (velocity.y > 10) {
 				body = utils.getFrameLoop(Assets.playerWalkBack, stateTime, 10);
 			} else {
