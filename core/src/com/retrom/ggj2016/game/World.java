@@ -132,14 +132,13 @@ public class World {
 		path = lvl.getPath();
 		painting = new Painting(path, 17);
 		
-		initCandlePoints(path);
+		initCandlePoints(lvl);
 	}
 	
-	private void initCandlePoints(ArrayList<LineSegment> path) {
+	private void initCandlePoints(Levels level) {
 		candlePoints.clear();
-		for (LineSegment segment : path) {
-			tryAddCandlePoint(segment.startX, segment.startY);
-			tryAddCandlePoint(segment.endX, segment.endY);
+		for (Vector2 candle : level.candles) {
+			tryAddCandlePoint(candle.x, candle.y);
 		}
 		
 	}

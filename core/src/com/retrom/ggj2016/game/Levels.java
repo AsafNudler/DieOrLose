@@ -16,6 +16,7 @@ public class Levels {
 	private static float RADIUS = 350;
 	
 	ArrayList<LineSegment> path = new ArrayList<LineSegment>();
+	ArrayList<Vector2> candles = new ArrayList<Vector2>();
 	private int level;
 
 	public int RandomWalkEnemy = 0;
@@ -64,6 +65,10 @@ public class Levels {
 					{
 						nextLevel.FollowerEnemy = Integer.parseInt(action[1]);
 					}
+					else if (action[0].equals("Candle"))
+					{
+						nextLevel.candles.add(GetCandle(Float.parseFloat(action[1])));
+					}
 					else
 					{
 						throw new IOException("Wrong format: " + action[0]);
@@ -96,6 +101,7 @@ public class Levels {
 		path = lvl.path;
 		RandomWalkEnemy = lvl.RandomWalkEnemy;
 		FollowerEnemy = lvl.FollowerEnemy;
+		candles = lvl.candles;
 		
 
 	}
@@ -109,6 +115,14 @@ public class Levels {
 		Vector2 vec2 = utils.dirVec(rad2, RADIUS);
 		
 		return new LineSegment(vec1.x, vec1.y, vec2.x, vec2.y);
+	}
+
+	private Vector2 GetCandle(float angle1) {
+		float rad1 = (float) (angle1 / 180 * Math.PI);
+
+		Vector2 vec1 = utils.dirVec(rad1, RADIUS);
+
+		return vec1;
 	}
 	
 	public ArrayList<LineSegment> getPath() {
