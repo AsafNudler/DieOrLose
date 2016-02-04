@@ -14,6 +14,7 @@ import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.CandlePoint;
 import com.retrom.ggj2016.objects.Enemy;
 import com.retrom.ggj2016.objects.FollowerEnemy;
+import com.retrom.ggj2016.objects.Heart;
 import com.retrom.ggj2016.objects.Player;
 import com.retrom.ggj2016.objects.PlayerExplode;
 import com.retrom.ggj2016.objects.RandomWalkEnemy;
@@ -51,9 +52,12 @@ public class World {
 	private static final int WALL_WIDTH = 67;
 
 	public static final float BOUNDS = 450;
+
+	private static final float PAIN_EFFECT_TIME = 1;
 	
 	private LifeBar lifebar = new LifeBar();
 	private Player player = new Player(lifebar);
+	private Heart heart = null;
 
 	private Painting painting;
 	
@@ -76,6 +80,8 @@ public class World {
 	private float gameTime = 0;
 	private float slashTime = 0;
 	private float endTime = 0;
+	
+	private float painTime = 0;
 	
 	private boolean newlevel = true;
 
@@ -102,6 +108,7 @@ public class World {
 		deathTime = 0;
 		slashTime = 0;
 		gameTime = 0;
+		whiteFade = 0;
 		for (PaintingLine bloodLine : bloodLines) {
 			bloodLine.pathDone = false;
 			bloodLine.onPath = false;
@@ -186,6 +193,7 @@ public class World {
 	{
 		SoundAssets.playSound(SoundAssets.lineComplete);
 		lifebar.addLife();
+		heart = new Heart(player.position.x, player.position.y);
 	}
 	
 	private void initCandlePoints(Levels level) {
@@ -224,6 +232,10 @@ public class World {
 		
 		gameTime += deltaTime;
 		
+		if (painTime > 0) {
+			painTime -= deltaTime;
+		}
+		
 		if (gameTime < 0.5f) {
 			float val = 1-(gameTime * 2);
 			if (newlevel) {
@@ -257,6 +269,10 @@ public class World {
 		if (state == GameState.AFTER_CANDLES) {
 			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * Math.max(player.velocity.len(), 50f);
 		}
+		
+		if (heart != null) {
+			heart.update(deltaTime);
+		}
 
 		dropBlood();
 		
@@ -274,10 +290,17 @@ public class World {
 		for (Enemy enemy : enemies) {
 			enemy.update(deltaTime);
 			if (enemy.bounds.overlaps(player.bounds)) {
+				enemy.onPlayer = true;
 				lifebar.life -= deltaTime * 0.4;
 				for (int i=0; i < deltaTime * 500; i++) {
 					splashBlood();
 				}
+				if (painTime <= 0) {
+					painTime = PAIN_EFFECT_TIME;
+					// TODO: play enemy hit sound effect.
+				}	
+			} else {
+				enemy.onPlayer = false;
 			}
 		}
 		
@@ -340,6 +363,9 @@ public class World {
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
 			listener_.nextLevel();
+		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+			heart = new Heart(player.position.x, player.position.y);
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
 			listener_.restartGame();
@@ -556,7 +582,7 @@ public class World {
 			if (enemy.position.y >= player.position.y)
 				enemy.render(batch);
 		}
-
+		
 		if (!showLogo()) {
 			player.render(batch);
 		}
@@ -581,7 +607,9 @@ public class World {
 			explosion.render(batch);
 		}
 		
-		
+		if (heart != null) {
+			heart.render(batch);
+		}
 		batch.end();
 		
 		BatchUtils.setBlendFuncAdd(batch);
@@ -635,6 +663,14 @@ public class World {
 	}
 
 	private void renderFade(ShapeRenderer shapeRenderer) {
+		if (painTime > 0) {
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		    Gdx.gl.glEnable(GL20.GL_BLEND);
+			shapeRenderer.begin(ShapeType.Filled);
+			shapeRenderer.setColor(1, 0, 0, painTime / PAIN_EFFECT_TIME * 0.3f);
+			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
+			shapeRenderer.end();
+		}
 		if (fade > 0) {
 			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		    Gdx.gl.glEnable(GL20.GL_BLEND);

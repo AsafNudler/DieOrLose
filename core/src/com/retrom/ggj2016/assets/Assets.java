@@ -47,6 +47,7 @@ public class Assets {
 	public static Array<Sprite> slash;
 
 	public static Sprite knifeFlare;
+	public static Sprite heart;
 
 	public static Array<Sprite> enemyFollower;
 	public static Array<Sprite> enemyFollowerFire;
@@ -107,6 +108,7 @@ public class Assets {
 		
 		slash = basicSheet.createSprites("blood_slash");
 		knifeFlare = basicSheet.createSprite("Player_body_front_knife_knifeflare");
+		heart = basicSheet.createSprite("heart_icon");
 		
 		enemyFollower = basicSheet.createSprites("enemies_stalker_frame");
 		enemyFollowerFire = basicSheet.createSprites("enemies_fire_green");

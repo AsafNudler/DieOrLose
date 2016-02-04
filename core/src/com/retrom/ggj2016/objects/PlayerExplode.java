@@ -25,11 +25,9 @@ public class PlayerExplode {
 	}
 	
 	public void render(SpriteBatch batch) {
-		BatchUtils.setBlendFuncAdd(batch);
 		Sprite s = utils.getFrameUntilDone(Assets.playerExplode, stateTime, 30);
 		if (s == null) return;
 		utils.drawCenter(batch, s, position.x, position.y);
-		BatchUtils.setBlendFuncNormal(batch);
 	}
 	
 	public boolean getStarted() {

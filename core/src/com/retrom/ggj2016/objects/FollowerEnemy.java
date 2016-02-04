@@ -13,6 +13,8 @@ public class FollowerEnemy extends Enemy {
 
 	private Player player;
 	
+	private float stateTime;
+	
 	private static final float VEL = 60;
 
 	private ArrayList<FollowerEnemy> followers;
@@ -25,6 +27,7 @@ public class FollowerEnemy extends Enemy {
 	
 	@Override
 	public void update(float deltaTime) {
+		stateTime += deltaTime;
 		this.velocity.x = - this.position.x + player.position.x;
 		this.velocity.y = - this.position.y + player.position.y;
 		velocity.limit(VEL);
@@ -54,15 +57,17 @@ public class FollowerEnemy extends Enemy {
 		
 		BatchUtils.setBlendFuncNormal(batch);
 		{
-		Sprite s = utils.getFrameLoop(Assets.enemyFollower, stateTime, 2);
+			float fps = onPlayer ? 5 : 2;
+		Sprite s = utils.getFrameLoop(Assets.enemyFollower, stateTime, fps);
 		s.setAlpha(alpha);
 		utils.drawCenter(batch, s, position.x, position.y);
 		}
 		
 		BatchUtils.setBlendFuncAdd(batch);
 		{
+			float alpha_eyes = alpha * (0.5f + 0.5f * ((float)Math.sin(stateTime * 5) + 1) / 2);
 			Sprite s = Assets.enemyFollowerEyes;
-			s.setColor(alpha,alpha,alpha,1);
+			s.setColor(alpha_eyes, alpha_eyes, alpha_eyes, 1);
 			utils.drawCenter(batch, s, position.x, position.y);
 		}
 		BatchUtils.setBlendFuncNormal(batch);

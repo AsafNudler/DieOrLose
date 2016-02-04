@@ -19,6 +19,8 @@ public class Enemy extends DynamicGameObject {
 
 	protected float alpha = 0;
 
+	public boolean onPlayer;
+
 	public Enemy(float x, float y) {
 		super(x, y, ENEMY_SIZE, ENEMY_SIZE);
 		time_till_start = (float) (MIN_START_TIME + Math.random() * (MAX_START_TIME - MIN_START_TIME));
@@ -55,9 +57,10 @@ public class Enemy extends DynamicGameObject {
 		
 		BatchUtils.setBlendFuncNormal(batch);
 		{
-		Sprite s = utils.getFrameLoop(Assets.enemy, stateTime, 2);
-		s.setAlpha(alpha);
-		utils.drawCenter(batch, s, position.x, position.y);
+			float fps = onPlayer ? 5 : 2;
+			Sprite s = utils.getFrameLoop(Assets.enemy, stateTime, fps);
+			s.setAlpha(alpha);
+			utils.drawCenter(batch, s, position.x, position.y);
 		}
 	}
 }

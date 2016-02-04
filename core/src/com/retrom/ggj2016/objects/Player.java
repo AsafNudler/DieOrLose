@@ -61,11 +61,18 @@ public class Player extends DynamicGameObject {
 		if (Gdx.input.isTouched())
 		{
 			Vector2 touch = ttp.toPoint(Gdx.input.getX(), Gdx.input.getY());
-			touch.sub(position);
-			touch.scl(ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted ? 1.25f : 1.5f)));
-			velocity.x += touch.x;
-			velocity.y += touch.y;
-			controlled = true;
+			if (touch.dst(position) > 10) {
+				touch.sub(position);
+				touch.scl(ACCEL * deltaTime * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted ? 1.25f : 1.5f)));
+				velocity.x += touch.x;
+				velocity.y += touch.y;
+				controlled = true;
+			} else {
+				// I know this is not deltaTime dependant; but it is good enough
+				// to prevent the player from dancing on the mouse cursor or finger.
+				velocity.x *= 0.7f;
+				velocity.y *= 0.7f;
+			}
 
 		}
 		velocity.clamp(0, VEL* (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f)));
