@@ -14,10 +14,14 @@ public class SoundAssets {
 	public static Sound flamethrowerEnd;
 	
 	public static Sound opening;
-	public static Sound blood_slashes;
+	public static Sound lineComplete;
+	public static Sound levelComplete;
+	public static Sound bloodSlashes;
 	public static Sound bloody_steps;
-	public static Sound candle_pick;
-	public static Sound candle_place;
+	public static Sound candlePick;
+	public static Sound candlePlace;
+	public static Sound playerDie;
+	public static Sound exitAppear;
 	public static Sound[] enemyHit;
 	
 	
@@ -29,7 +33,16 @@ public class SoundAssets {
 //		music.setVolume(0.5f);
 //		if (Settings.soundEnabled) music.play();
 		
-//		opening = newSound("opening.wav");
+		opening = newSound("opening.wav");
+		lineComplete = newSound("line_complete.wav");
+		levelComplete = newSound("level_complete.wav");
+		bloodSlashes = newSound("blood_slashes.wav");
+		
+		candlePick = newSound("collect_candle.wav");
+		candlePlace = newSound("place_candle.wav");
+		playerDie = newSound("player_die.wav");
+		exitAppear = newSound("exit_appearing.wav");
+		
 //		blood_slashes = newSound("blood_slashes.wav");
 //		bloody_steps = newSound("bloody_steps.wav");
 		

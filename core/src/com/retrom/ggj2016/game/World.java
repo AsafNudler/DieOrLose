@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.assets.SoundAssets;
 import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.CandlePoint;
 import com.retrom.ggj2016.objects.Enemy;
@@ -86,6 +87,10 @@ public class World {
 
 	private float fade = 0;
 	private float whiteFade = 0;
+
+	private boolean gameStarted = false;
+
+	private boolean endLevelSoundStarted = false;
 
 	private void restartLevel()
 	{
@@ -179,6 +184,7 @@ public class World {
 
 	private void lineCompleted()
 	{
+		SoundAssets.playSound(SoundAssets.lineComplete);
 		lifebar.addLife();
 	}
 	
@@ -245,7 +251,9 @@ public class World {
 			return;
 		}
 		
-		player.update(deltaTime);
+		if (canStart()) {
+			player.update(deltaTime);
+		}
 		if (state == GameState.AFTER_CANDLES) {
 			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * Math.max(player.velocity.len(), 50f);
 		}
@@ -277,6 +285,7 @@ public class World {
 			if (player.candle == null && !candle.taken && candle.bounds.overlaps(player.bounds)) {
 				candle.taken = true;
 				player.candle = candle;
+				SoundAssets.playSound(SoundAssets.candlePick);
 			}
 			candle.update(deltaTime);
 		}
@@ -291,6 +300,11 @@ public class World {
 				state = GameState.LEVEL_END; 
 		}
 		
+		if (!gameStarted && !showLogo() && level == 0) {
+			SoundAssets.startMusic();
+			gameStarted = true;
+		}
+		
 	}
 
 	private void updateLevelEnd(float deltaTime) {
@@ -301,6 +315,11 @@ public class World {
 		
 		player.bounds.x = player.position.x - player.bounds.width / 2;
 		player.bounds.y = player.position.y - player.bounds.height / 2;
+		
+		if (!endLevelSoundStarted) {
+			endLevelSoundStarted = true;
+			SoundAssets.playSound(SoundAssets.levelComplete);
+		}
 		
 		endTime += deltaTime;
 		if (endTime > 0.5) {
@@ -343,6 +362,7 @@ public class World {
 		if (explosion == null) {
 			explosion = new PlayerExplode(player.position);
 			player.die();
+			SoundAssets.playSound(SoundAssets.playerDie);
 		}
 		if (explosion.getStarted()) {
 			for (int i=0; i < 600; i++) {
@@ -417,6 +437,7 @@ public class World {
 					cp.putCandle();
 					removeCandle(player.candle);
 					player.candle = null;
+					SoundAssets.playSound(SoundAssets.candlePlace);
 				}
 			}
 		}
@@ -428,6 +449,7 @@ public class World {
 	private void startCandleOn() {
 		state = GameState.CANDLES_ON;
 		candles.clear();
+		SoundAssets.playSound(SoundAssets.bloodSlashes);
 		for (CandlePoint cp : candlePoints) {
 			cp.turnOnCandle();
 		}
@@ -495,11 +517,12 @@ public class World {
 			painting.render(shapeRenderer);
 		}
 		if (state == GameState.CANDLES_ON) {
-			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);			if (painting.isDone()) {
-				painting.master_alpha = Math.max(0, Math.min(altar.stateTime, 1));
+			painting.master_alpha = Math.min((slashTime - 0.9f) * 5, 1);
+			if (painting.isDone()) {
+				painting.master_alpha = Math.max(0,
+						Math.min(altar.stateTime, 1));
 			}
 			painting.render(shapeRenderer);
-
 		}
 
 
@@ -600,6 +623,11 @@ public class World {
 			utils.drawCenter(batch, Assets.logo, 0, 0);
 			batch.end();
 		}
+	}
+	
+	// Condition for the logo can disappear and start the game.
+	private boolean canStart() {
+		return level != 0 || gameTime > 5;
 	}
 
 	private boolean showLogo() {

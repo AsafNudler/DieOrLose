@@ -45,9 +45,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	public void show() {
 		if (!openingPlayed) {
 			openingPlayed = true;
-//			SoundAssets.playSound(SoundAssets.opening);
-			SoundAssets.startMusic();
-			
+			SoundAssets.playSound(SoundAssets.opening);
 		}
 		world_ = new World(new WorldListener() {
 			

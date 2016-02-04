@@ -3,6 +3,7 @@ package com.retrom.ggj2016.game;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.retrom.ggj2016.assets.Assets;
+import com.retrom.ggj2016.assets.SoundAssets;
 import com.retrom.ggj2016.objects.GameObject;
 import com.retrom.ggj2016.utils.utils;
 
@@ -52,6 +53,7 @@ public class Altar extends GameObject {
 		if (shown) {
 			return;
 		}
+		SoundAssets.playSound(SoundAssets.exitAppear);
 		shown = true;
 		stateTime = 0;
 	}
