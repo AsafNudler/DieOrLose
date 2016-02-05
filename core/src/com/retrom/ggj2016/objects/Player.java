@@ -38,6 +38,10 @@ public class Player extends DynamicGameObject {
 	private boolean horns = false;
 	private boolean eyes;
 	
+	public float maxVel() {
+		return VEL * (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted ? 1.2f : 1.5f));
+	}
+	
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
 		if (dies) {
@@ -75,7 +79,7 @@ public class Player extends DynamicGameObject {
 			}
 
 		}
-		velocity.clamp(0, VEL* (lifebar.life < SLOW_DOWN_HP ? 1 : (bloodStarted?1.2f:1.5f)));
+		velocity.clamp(0, maxVel());
 		velocity.x *= Math.pow(0.0001, deltaTime);
 		velocity.y *= Math.pow(0.0001, deltaTime);
 		

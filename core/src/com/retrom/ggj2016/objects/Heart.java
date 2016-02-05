@@ -2,6 +2,7 @@ package com.retrom.ggj2016.objects;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.utils.utils;
 
@@ -13,11 +14,11 @@ public class Heart extends GameObject {
 	private static float GROW_IN_TIME = 0.15f;
 	
 	private float stateTime = 0;
-
-	public Heart(float x, float y) {
-		super(x, y, 0, 0);
-	}
 	
+	public Heart(Vector2 position) {
+		super(position.x, position.y, 0, 0);
+	}
+
 	public void update(float deltaTime) {
 		if (stateTime >DURATION) {
 			return;

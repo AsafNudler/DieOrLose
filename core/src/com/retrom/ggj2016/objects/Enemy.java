@@ -8,7 +8,7 @@ import com.retrom.ggj2016.utils.utils;
 
 public class Enemy extends DynamicGameObject {
 	
-	private static final float ENEMY_SIZE = 108;
+	private static final float ENEMY_SIZE = 60;
 	
 	private static final float MAX_START_TIME = 3;
 	private static final float MIN_START_TIME = 1;
@@ -57,7 +57,7 @@ public class Enemy extends DynamicGameObject {
 		
 		BatchUtils.setBlendFuncNormal(batch);
 		{
-			float fps = onPlayer ? 5 : 2;
+			float fps = onPlayer ? 8 : 2;
 			Sprite s = utils.getFrameLoop(Assets.enemy, stateTime, fps);
 			s.setAlpha(alpha);
 			utils.drawCenter(batch, s, position.x, position.y);

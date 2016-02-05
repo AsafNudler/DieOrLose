@@ -100,6 +100,7 @@ public class World {
 
 	private void restartLevel()
 	{
+		SoundAssets.stopBloodSteps();
 		altar = new Altar(level);
 		state = GameState.BEFORE_CANDLES;
 		enemies.clear();
@@ -193,7 +194,7 @@ public class World {
 	{
 		SoundAssets.playSound(SoundAssets.lineComplete);
 		lifebar.addLife();
-		heart = new Heart(player.position.x, player.position.y);
+		heart = new Heart(player.position);
 	}
 	
 	private void initCandlePoints(Levels level) {
@@ -224,7 +225,7 @@ public class World {
 		x = y = 380 * (Math.random() > 0.5 ? 1 : -1);
 		x += Math.random() * 80 - 40;
 		y += Math.random() * 80 - 40;
-		candles.add(new Candle(x, y, player));
+		candles.add(new Candle(x, y, player, level));
 	}
 
 	public void update(float deltaTime) {
@@ -265,6 +266,8 @@ public class World {
 		
 		if (canStart()) {
 			player.update(deltaTime);
+			updateBloodstepsVolume();
+			dropRandomBlood(deltaTime);
 		}
 		if (state == GameState.AFTER_CANDLES) {
 			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * Math.max(player.velocity.len(), 50f);
@@ -297,6 +300,7 @@ public class World {
 				}
 				if (painTime <= 0) {
 					painTime = PAIN_EFFECT_TIME;
+					SoundAssets.playRandomSound(SoundAssets.enemyHit);
 					// TODO: play enemy hit sound effect.
 				}	
 			} else {
@@ -328,6 +332,15 @@ public class World {
 			gameStarted = true;
 		}
 		
+	}
+
+	private void updateBloodstepsVolume() {
+		if (state == GameState.AFTER_CANDLES) {
+			float vol = Math.min(1, player.velocity.len() / player.maxVel() / 0.8f);
+			SoundAssets.setBloodStepsVolume(vol);
+		} else {
+			SoundAssets.setBloodStepsVolume(0);
+		}
 	}
 
 	private void updateLevelEnd(float deltaTime) {
@@ -365,7 +378,7 @@ public class World {
 			listener_.nextLevel();
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
-			heart = new Heart(player.position.x, player.position.y);
+			heart = new Heart(player.position);
 		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.Q)) {
 			listener_.restartGame();
@@ -428,7 +441,20 @@ public class World {
 		}
 	}
 
-
+	// Drops blood all the time (after slash, even when player does not move).
+	private void dropRandomBlood(float deltaTime) {
+		if (state != GameState.AFTER_CANDLES) {
+			return;
+		}
+		if (Math.random() < deltaTime * 100) {
+			Vector2 bloodDir = utils.randomDir((float) (Math.random()*10));
+			PaintingLine line = new PaintingLine(player.position.x,
+					player.position.y, player.position.x + bloodDir.x,
+					player.position.y + bloodDir.y, null);
+			bloodLines.add(line);
+			
+		}
+	}
 
 	private void dropBlood() {
 		if (state == GameState.BEFORE_CANDLES) {
@@ -488,6 +514,7 @@ public class World {
 		player.knife = false;
 		lastPosition = player.position.cpy();
 		player.startBlood();
+		SoundAssets.playBloodSteps();
 	}
 
 	private void removeCandle(Candle c) {
@@ -528,15 +555,6 @@ public class World {
 					if (painting.master_alpha < 0)
 					{
 						painting.master_alpha = 0;
-					}
-				}
-
-				if (painting.master_alpha < 0.7) {
-					if (altar.master_alpha < 1) {
-						altar.master_alpha += 0.03f;
-						if (altar.master_alpha > 1) {
-							altar.master_alpha = 1;
-						}
 					}
 				}
 			}

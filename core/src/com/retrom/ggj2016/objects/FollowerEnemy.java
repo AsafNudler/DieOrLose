@@ -57,7 +57,7 @@ public class FollowerEnemy extends Enemy {
 		
 		BatchUtils.setBlendFuncNormal(batch);
 		{
-			float fps = onPlayer ? 5 : 2;
+			float fps = onPlayer ? 8 : 2;
 		Sprite s = utils.getFrameLoop(Assets.enemyFollower, stateTime, fps);
 		s.setAlpha(alpha);
 		utils.drawCenter(batch, s, position.x, position.y);

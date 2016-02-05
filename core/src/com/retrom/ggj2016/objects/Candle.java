@@ -14,14 +14,19 @@ public class Candle extends DynamicGameObject {
 	
 	private final Sprite sprite;
 	private final Sprite glowSprite;
+	
+	private final float groundRotation = (float) (Math.random() * 100 - 50);
 
 	private final Player player;
 	
 	private float stateTime = 0;
 
-	public Candle(float x, float y, Player player) {
+	private int level;
+
+	public Candle(float x, float y, Player player, int level) {
 		super(x, y, SIZE, SIZE);
 		this.player = player;
+		this.level = level;
 		
 		int spriteindex = Math.random() > 0.5 ? 0 : 1;
 		 sprite = Assets.candle.get(spriteindex);
@@ -30,9 +35,18 @@ public class Candle extends DynamicGameObject {
 	}
 	
 	public void render(SpriteBatch batch) {
+		float rotation;
+		if (player.candle != this) {
+			rotation = groundRotation;
+		} else {
+			rotation = 0;
+		}
+		
+		sprite.setRotation(rotation);
 		utils.drawCenter(batch, sprite, position.x, position.y);
-		if (player.candle == null) {
+		if (player.candle == null && level == 0) {
 			glowSprite.setAlpha((float) ((Math.sin(stateTime * 6) + 1)/4+0.5f));
+			glowSprite.setRotation(rotation);
 			utils.drawCenter(batch, glowSprite, position.x, position.y);
 		}
 	}

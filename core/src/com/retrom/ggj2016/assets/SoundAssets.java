@@ -8,7 +8,7 @@ import com.badlogic.gdx.audio.Sound;
 
 public class SoundAssets {
 	
-	public static Music gameMusic;
+	public static Sound gameMusic;
 	public static long musicid;
 	
 	public static Sound flamethrowerEnd;
@@ -24,12 +24,14 @@ public class SoundAssets {
 	public static Sound exitAppear;
 	public static Sound[] enemyHit;
 	
+	public static Sound bloodSteps;
+	public static long bloodStepsId = 0;
+	
 	
 	private static Random rand = new Random();
 
 	public static void load() {
-		gameMusic = Gdx.audio.newMusic(Gdx.files.internal("music.wav"));
-		gameMusic.setLooping(true);
+		gameMusic = Gdx.audio.newSound(Gdx.files.internal("music.wav"));
 //		music.setVolume(0.5f);
 //		if (Settings.soundEnabled) music.play();
 		
@@ -42,6 +44,14 @@ public class SoundAssets {
 		candlePlace = newSound("place_candle.wav");
 		playerDie = newSound("player_die.wav");
 		exitAppear = newSound("exit_appearing.wav");
+		
+		bloodSteps = newSound("bloody_steps.wav");
+		
+		enemyHit = new Sound[] { newSound("hit_enemies_1.wav"),
+				newSound("hit_enemies_2.wav"),
+				newSound("hit_enemies_3.wav"),
+				newSound("hit_enemies_4.wav"),
+				newSound("hit_enemies_5.wav") };
 		
 //		blood_slashes = newSound("blood_slashes.wav");
 //		bloody_steps = newSound("bloody_steps.wav");
@@ -80,19 +90,21 @@ public class SoundAssets {
 
 	public static void startMusic() {
 		gameMusic.stop();
-		gameMusic.play();
+		musicid = gameMusic.play();
+		gameMusic.setLooping(musicid, true);
 	}
 
-	public static void pauseMusic() {
-		gameMusic.pause();
+	public static void stopBloodSteps() {
+		bloodSteps.stop();
 	}
 	
-	public static void resumeMusic() {
-		gameMusic.play();
+	public static void playBloodSteps() {
+		bloodSteps.stop();
+		bloodStepsId = bloodSteps.play();
+		bloodSteps.setLooping(bloodStepsId, true);
 	}
 	
-	public static void resumeMusicAt(float position) {
-		gameMusic.setPosition(position);
-		gameMusic.play();
+	public static void setBloodStepsVolume(float volume) {
+		bloodSteps.setVolume(bloodStepsId, volume);
 	}
 }

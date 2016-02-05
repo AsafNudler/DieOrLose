@@ -68,6 +68,8 @@ public class Assets {
 
 	public static Array<Sprite> candleFire;
 
+	public static Array<Sprite> dust;
+	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
 		
@@ -131,5 +133,16 @@ public class Assets {
 		
 		TextureAtlas titleSheet = new TextureAtlas("title.txt");
 		logo = titleSheet.createSprite("title");
+		
+		TextureAtlas dustSheet1 = new TextureAtlas("dust1.txt");
+		TextureAtlas dustSheet2 = new TextureAtlas("dust2.txt");
+		TextureAtlas dustSheet3 = new TextureAtlas("dust3.txt");
+		TextureAtlas dustSheet4 = new TextureAtlas("dust4.txt");
+		dust = dustSheet1.createSprites("altar_dustwave");
+		dust.addAll(dustSheet2.createSprites("altar_dustwave"));
+		dust.addAll(dustSheet3.createSprites("altar_dustwave"));
+		dust.addAll(dustSheet4.createSprites("altar_dustwave"));
+		
+		System.out.println("dust="+dust.size);
 	}
 }
