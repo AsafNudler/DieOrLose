@@ -11,16 +11,13 @@ import com.retrom.ggj2016.utils.utils;
 
 public class PaintingLine {
 	
-	public PaintingLine(float x1, float y1, float x2, float y2, PaintingLineGlow glow) {
+	public PaintingLine(float x1, float y1, float x2, float y2) {
 		pt1 = new Vector2(x1, y1);
 		pt2 = new Vector2(x2, y2);
-		myGlow = glow;
 	}
 	
 	public boolean onPath;
 	public boolean pathDone;
-
-	private PaintingLineGlow myGlow;
 	
 	final public Vector2 pt1;
 	final public Vector2 pt2;
@@ -48,16 +45,6 @@ public class PaintingLine {
 			renderer.circle(pt1.x + (pt2.x - pt1.x)*(((float)i)/((float)circles)), pt1.y + (pt2.y - pt1.y)*(((float)i)/((float)circles)), 4f);
 		}
 		renderer.end();
-
-
-		if (pathDone)
-		{
-			myGlow.display = true;
-		}
-		else
-		{
-			myGlow.display = false;
-		}
 	}
 	
 	private Sprite setupSprite() {

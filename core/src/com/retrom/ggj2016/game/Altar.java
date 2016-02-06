@@ -40,7 +40,7 @@ public class Altar extends GameObject {
 			return;
 		}
 		
-		float dustTime = stateTime - 0.7f;
+		float dustTime = stateTime - 0.6f;
 		Sprite ds = utils.getFrameUntilDone(Assets.dust, dustTime, 30);
 		if (ds != null) {
 			BatchUtils.setBlendFuncScreen(batch);

@@ -41,6 +41,8 @@ public class CandlePoint extends GameObject {
 	
 	public void render(SpriteBatch batch) {
 		Sprite s = null;
+		float offsetY = 0;
+		
 		switch (state) {
 		case NOCANDLE:
 			s = Assets.candlePointNo;
@@ -53,10 +55,11 @@ public class CandlePoint extends GameObject {
 			break;
 		case BLANK:
 			s = Assets.candleBlank;
+			offsetY = -6;
 			break;
 		
 		}
-		utils.drawCenter(batch, s, position.x, position.y);
+		utils.drawCenter(batch, s, position.x, position.y + offsetY);
 		
 		if (state == State.ON) {
 			BatchUtils.setBlendFuncAdd(batch);

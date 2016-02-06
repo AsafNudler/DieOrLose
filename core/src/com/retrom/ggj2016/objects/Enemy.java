@@ -8,7 +8,7 @@ import com.retrom.ggj2016.utils.utils;
 
 public class Enemy extends DynamicGameObject {
 	
-	private static final float ENEMY_SIZE = 60;
+	private static final float ENEMY_SIZE = 80;
 	
 	private static final float MAX_START_TIME = 3;
 	private static final float MIN_START_TIME = 1;

@@ -62,7 +62,6 @@ public class World {
 	private Painting painting;
 	
 	private List<PaintingLine> bloodLines = new ArrayList<PaintingLine>();
-	private List<PaintingLineGlow> glowLines = new ArrayList<PaintingLineGlow>();
 	
 	private List<Candle> candles = new ArrayList<Candle>();
 	private List<CandlePoint> candlePoints = new ArrayList<CandlePoint>();
@@ -450,7 +449,7 @@ public class World {
 			Vector2 bloodDir = utils.randomDir((float) (Math.random()*10));
 			PaintingLine line = new PaintingLine(player.position.x,
 					player.position.y, player.position.x + bloodDir.x,
-					player.position.y + bloodDir.y, null);
+					player.position.y + bloodDir.y);
 			bloodLines.add(line);
 			
 		}
@@ -461,11 +460,11 @@ public class World {
 			return;
 		}
 		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
-			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
-			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y, lineGlow);
+//			PaintingLineGlow lineGlow = new PaintingLineGlow(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
+			PaintingLine line = new PaintingLine(lastPosition.x, lastPosition.y, player.position.x, player.position.y);
 			painting.addLine(line, lastPosition.x, lastPosition.y, player.position.x, player.position.y);
 			bloodLines.add(line);
-			glowLines.add(lineGlow);
+//			glowLines.add(lineGlow);
 			lastPosition = player.position.cpy();
 		}
 	}
@@ -533,10 +532,8 @@ public class World {
 		Vector2 newPos = utils.randomDir((float) (Math.random()*radius));
 		newPos.add(player.position);
 		
-		PaintingLineGlow lineGlow = new PaintingLineGlow(player.position.x, player.position.y, newPos.x, newPos.y);
-		PaintingLine line = new PaintingLine(player.position.x, player.position.y, newPos.x, newPos.y, lineGlow);
+		PaintingLine line = new PaintingLine(player.position.x, player.position.y, newPos.x, newPos.y);
 		bloodLines.add(line);
-		glowLines.add(lineGlow);
 	}
 
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {

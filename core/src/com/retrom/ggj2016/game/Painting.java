@@ -62,7 +62,7 @@ public class Painting {
         return res;
     }
 
-    private void drawLine(ShapeRenderer renderer, SegmentStatus lineSegment, float start, float end, float r, float g, float b, float a, int glow)
+    private void drawLine(ShapeRenderer renderer, SegmentStatus lineSegment, float start, float end, float r, float g, float b, float a)
     {
         Vector2 seg = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
         Vector2 pt1 = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY).add(seg.cpy().scl(start));
@@ -77,46 +77,6 @@ public class Painting {
 
         renderer.line(pt1.x, pt1.y - 6, pt2.x, pt2.y - 6);
         renderer.end();
-        if (glow > 0)
-        {
-            Vector2 norm = new Vector2(seg.y, -seg.x).nor();
-            Vector2 startPt = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY);
-            Vector2 seg1 = startPt.cpy();
-            Vector2 seg2 = startPt.cpy();
-            norm.scl(1.5f);
-            for (int i=0; i < glow; ++i)
-            {
-                seg1.add(norm);
-                seg2.sub(norm);
-                // TODO: master alpha
-                Vector2 pt11 = seg1.cpy().add(seg.cpy().scl(start));
-                Vector2 pt12 = seg1.cpy().add(seg.cpy().scl(end));
-
-                Gdx.gl.glLineWidth(0.02f);
-                Gdx.gl.glEnable(GL20.GL_BLEND);
-                Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-                renderer.begin(ShapeType.Line);
-
-                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha * a);
-
-                renderer.line(pt11.x, pt11.y - 6, pt12.x, pt12.y - 6);
-                renderer.end();
-
-                Vector2 pt21 = seg2.cpy().add(seg.cpy().scl(start));
-                Vector2 pt22 = seg2.cpy().add(seg.cpy().scl(end));
-
-                Gdx.gl.glLineWidth(0.02f);
-                Gdx.gl.glEnable(GL20.GL_BLEND);
-                Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-                renderer.begin(ShapeType.Line);
-
-                renderer.setColor(r, g, b, (0.12f - 0.12f * ((float)i / (float) glow)) * master_alpha * a);
-
-                renderer.line(pt21.x, pt21.y - 6, pt22.x, pt22.y - 6);
-                renderer.end();
-
-            }
-        }
     }
 
     public void render(ShapeRenderer renderer) {
@@ -125,18 +85,17 @@ public class Painting {
             for (SegmentProjs proj : lineSegment.projs) {
                 if (pos < proj.start)
                 {
-                    drawLine(renderer, lineSegment, pos, proj.start, 1, 0.2f, 0.2f, 0.15f, 0);
+                    drawLine(renderer, lineSegment, pos, proj.start, 1, 0.2f, 0.2f, 0.15f);
                 }
-                drawLine(renderer, lineSegment, proj.start, proj.end, 1, 0.2f, 0.2f, 0.9f, 20);
-                if (lineSegment.isDone())
-                {
-                    drawLine(renderer, lineSegment, proj.start, proj.end, 0.86f, 0.32f, 0f, (lineSegment.doneAnimationFrame/7.0f) * 1f, 20);
-                }
+                drawLine(renderer, lineSegment, proj.start, proj.end, 1, 0.2f, 0.2f, 0.9f);
                 pos = proj.end;
             }
             if (pos < 1.0)
             {
-                drawLine(renderer, lineSegment, pos, 1.0f, 1, 0.2f, 0.2f, 0.15f, 0);
+                drawLine(renderer, lineSegment, pos, 1.0f, 1, 0.2f, 0.2f, 0.15f);
+            }
+            if (lineSegment.isDone()) {
+            	drawLine(renderer, lineSegment, 0, 1, 0.86f, 0.32f, 0f, (lineSegment.doneAnimationFrame/7.0f) * 1f);
             }
         }
 
