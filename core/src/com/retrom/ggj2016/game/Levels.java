@@ -1,10 +1,12 @@
 package com.retrom.ggj2016.game;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -36,9 +38,11 @@ public class Levels {
 				levels = new ArrayList<Levels>();
 				FileHandle fl = Gdx.files.internal("levels.txt");
 				String cont = fl.readString();
-				String[] lines = cont.replace("\r", "").split("\n");
 				Levels nextLevel = null;
-				for (String line : lines) {
+				Scanner scanner = new Scanner(cont);
+				while (scanner.hasNextLine()) {
+					String line = scanner.nextLine();
+					System.out.println("line: "+line);
 					if (line.trim().equals(""))
 					{
 						if (null != nextLevel)
@@ -71,9 +75,12 @@ public class Levels {
 					}
 					else
 					{
+						scanner.close();
 						throw new IOException("Wrong format: " + action[0]);
 					}
 				}
+				scanner.close();
+				scanner = null;
 				if (null != nextLevel)
 				{
 					levels.add(nextLevel);
@@ -85,7 +92,7 @@ public class Levels {
 			}
 		}
 		this.level = level;
-
+		
 		if (level >= levels.size())
 		{
 			for (int i=0; i < level; i++) {

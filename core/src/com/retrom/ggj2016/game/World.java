@@ -22,6 +22,7 @@ import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
 import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.utils;
+import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,6 +56,8 @@ public class World {
 	public static final float BOUNDS = 450;
 
 	private static final float PAIN_EFFECT_TIME = 1;
+
+	private static final int PENTAGRAM_LEVEL = 8;
 
 	private LevelNumberHud lnh;
 	private LifeBar lifebar = new LifeBar();
@@ -104,6 +107,11 @@ public class World {
 	private boolean bookIsOpen;
 
 	private float bookOpenTime;
+
+	private ArrayList<Vector2> pentagramLevelPoses = getEnemyRandomPos(100);
+	private int pentagramLevelEnemyIndex = 0;
+
+	private ArrayList<FollowerEnemy> followers;
 
 	private void restartLevel()
 	{
@@ -179,12 +187,10 @@ public class World {
 			Vector2 pos = poses.get(j++);
 			enemies.add(new RandomWalkEnemy(pos.x, pos.y));
 		}
-		ArrayList<FollowerEnemy> followers = new ArrayList<FollowerEnemy>();
+		followers = new ArrayList<FollowerEnemy>();
 		for (int i=0; i < lvl.FollowerEnemy; i++) {
 			Vector2 pos = poses.get(j++);
-			FollowerEnemy en = new FollowerEnemy(pos.x, pos.y, player, followers);
-			enemies.add(en);
-			followers.add(en);
+			createFollowerEnemy(pos);
 		}
 		
 		path = lvl.getPath();
@@ -201,11 +207,25 @@ public class World {
 		initCandlePoints(lvl);
 	}
 
+	private Enemy createFollowerEnemy(Vector2 pos) {
+		FollowerEnemy en = new FollowerEnemy(pos.x, pos.y, player, followers);
+		enemies.add(en);
+		followers.add(en);
+		return en;
+	}
+
 	private void lineCompleted()
 	{
 		SoundAssets.playSound(SoundAssets.lineComplete);
 		lifebar.addLife();
 		heart = new Heart(player.position);
+		if (level == PENTAGRAM_LEVEL) {
+			for (int i=0; i < 3; i++) {
+				Vector2 pos = pentagramLevelPoses.get(pentagramLevelEnemyIndex++);
+				Enemy en = createFollowerEnemy(pos);
+				en.startNow();
+			}
+		}
 	}
 	
 	private void initCandlePoints(Levels level) {
@@ -243,6 +263,14 @@ public class World {
 		updateHotkeys();
 		
 		gameTime += deltaTime;
+//		if (level == PENTAGRAM_LEVEL && state == GameState.AFTER_CANDLES) {
+//			if (Math.random() < deltaTime / 4) {
+//				Vector2 pos = pentagramLevelPoses.get(pentagramLevelEnemyIndex++);
+//				Enemy en = createFollowerEnemy(pos);
+//				en.startNow();
+//				
+//			}
+//		}
 		
 		if (painTime > 0) {
 			painTime -= deltaTime;
@@ -389,9 +417,25 @@ public class World {
 		if (endTime > 0.8f) {
 			player.putHorns();
 		}
-		if (endTime > 1.2f) {
+		if (endTime > 1.2f && level != PENTAGRAM_LEVEL) {
 			listener_.nextLevel();
 		}
+		
+		if (endTime > 3 && level == PENTAGRAM_LEVEL) {
+			finishGame();
+		}
+		
+		if (level == PENTAGRAM_LEVEL) {
+			for (FollowerEnemy enemy : followers) {
+				enemy.position.limit((float) (Math.pow(0.01f, deltaTime) * enemy.position.len()));
+				enemy.setAlpha(Math.min(1, enemy.position.len() / 100));
+			}
+		}
+	}
+
+	private void finishGame() {
+		restartLevel();
+		whiteFade = 100;
 	}
 
 	private void updateHotkeys() {
@@ -673,6 +717,9 @@ public class World {
 		BatchUtils.setBlendFuncAdd(batch);
 		batch.begin();
 		if (painting.isDone()) {
+			if (!altar.shown) {
+				painting.makeManyParticles();
+			}
 			altar.show();
 			if (book != null) book.destroy();
 		}

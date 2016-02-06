@@ -14,4 +14,9 @@ public class FireEffect {
     public float xCurrElement;
     public float alpha = 0;
     public int frames = 0;
+    public float scale = (float)Math.random() * 0.5f + 0.5f;
+    public float rotationRate = (float) (Math.random() * 18 - 9);
+	public float lifetime = (float) (Math.random() * 2 + 1);
+	public float amplitude = (float) (Math.random() * 9);
+	public float phase = (float) (Math.random() * Math.PI * 2);
 }

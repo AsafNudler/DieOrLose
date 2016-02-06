@@ -89,6 +89,14 @@ public class Painting {
         }
 
     }
+    
+    public void makeManyParticles() {
+    	for (SegmentStatus lineSegment : m_target) {
+    		for (int i=0; i < 100; i++) {
+    			makeNewParticle(lineSegment);
+    		}
+    	}
+    }
 
     public void renderFire(SpriteBatch batch)
     {
@@ -99,41 +107,35 @@ public class Painting {
                 {
                     lineSegment.doneAnimationFrame++;
                 }
-                while (Math.random() < 0.25)
+                while (Math.random() < 0.10 && !isDone())
                 {
-                    FireEffect f = new FireEffect();
-                    System.out.println("f.ass="+f.ass);
-                    f.ySpeed = 0.4f + (float)Math.random() * 0.4f;
-                    f.xCurrElement = (float)(Math.random() * 2 * Math.PI);
-                    Vector2 fpos = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
-                    fpos.scl((float)Math.random());
-                    fpos.add(new Vector2(lineSegment.segment.startX, lineSegment.segment.startY));
-                    f.pos = fpos;
-                    lineSegment.fires.add(f);
-                    f.ass.setScale(0.7f);
+                    makeNewParticle(lineSegment);
                 }
                 ArrayList<FireEffect> remove = new ArrayList<FireEffect>();
                 BatchUtils.setBlendFuncAdd(batch);
                 for (FireEffect fire : lineSegment.fires) {
                     Sprite s = fire.ass;
-                    s.setColor(master_alpha*fire.alpha, master_alpha*fire.alpha, master_alpha*fire.alpha, 1);
-                    utils.drawCenter(batch, s, fire.pos.x + 3.0f*(float)Math.cos(fire.xCurrElement), fire.pos.y);
-
+                    s.setColor(fire.alpha, fire.alpha, fire.alpha, 1);
+                    s.setRotation(fire.rotationRate * fire.frames);
+                    s.setScale(fire.scale * fire.alpha); ///
+                    utils.drawCenter(batch, s, fire.pos.x + fire.amplitude*(float)Math.cos(fire.xCurrElement + fire.phase), fire.pos.y);
+                    
                     fire.frames++;
-                    if (fire.frames <= 5)
+                    if (fire.frames <= 10)
                     {
-                        fire.alpha += 0.2;
+                        fire.alpha = fire.frames / 10f;
                     }
-                    else if (fire.frames >= 15)
+                    else if (fire.frames >= 30 * fire.lifetime)
                     {
-                        fire.alpha -= 0.1;
+                        fire.alpha -= 0.05 / fire.lifetime;
+                        fire.alpha = Math.max(0, fire.alpha);
                     }
-                    if (fire.frames >= 25)
+                    if (fire.frames >= 50f * fire.lifetime)
                     {
                         remove.add(fire);
                     }
                     fire.pos.y += fire.ySpeed;
-                    fire.xCurrElement += 0.2;
+                    fire.xCurrElement += 0.05;
                 }
                 for (FireEffect fireEffect : remove) {
                     lineSegment.fires.remove(fireEffect);
@@ -142,6 +144,19 @@ public class Painting {
             }
         }
     }
+
+	private void makeNewParticle(SegmentStatus lineSegment) {
+		FireEffect f = new FireEffect();
+		System.out.println("f.ass="+f.ass);
+		f.ySpeed = 0.2f + (float)Math.random() * 0.2f;
+		f.xCurrElement = (float)(Math.random() * 2 * Math.PI);
+		Vector2 fpos = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
+		fpos.scl((float)Math.random());
+		fpos.add(new Vector2(lineSegment.segment.startX, lineSegment.segment.startY));
+		f.pos = fpos;
+		lineSegment.fires.add(f);
+		f.ass.setScale(0.7f);
+	}
 
     public void addLine(PaintingLine obj, float startX, float startY, float endX, float endY)
     {

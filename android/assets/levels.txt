@@ -91,3 +91,16 @@ Candle:180
 Candle:270
 RandomWalkEnemy:5
 FollowerEnemy:3
+
+Segment:90:234
+Segment:234:18
+Segment:18:162
+Segment:162:306
+Segment:306:90
+Candle:18
+Candle:90
+Candle:162
+Candle:234
+Candle:306
+RandomWalkEnemy:0
+FollowerEnemy:0

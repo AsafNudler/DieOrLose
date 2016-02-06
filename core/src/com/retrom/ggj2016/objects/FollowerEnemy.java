@@ -19,6 +19,8 @@ public class FollowerEnemy extends Enemy {
 
 	private ArrayList<FollowerEnemy> followers;
 
+	private float masterAlpha = 1;
+
 	public FollowerEnemy(float x, float y, Player player, ArrayList<FollowerEnemy> followers) {
 		super(x, y);
 		this.player = player;
@@ -51,7 +53,7 @@ public class FollowerEnemy extends Enemy {
 		BatchUtils.setBlendFuncAdd(batch);
 		{
 			Sprite s = utils.getFrameLoop(Assets.enemyFollowerFire, stateTime, 30);
-			s.setColor(alpha,alpha,alpha,1);
+			s.setColor(myAlpha(), myAlpha(), myAlpha(), 1);
 			utils.drawCenter(batch, s, position.x, position.y + 40);
 		}
 		
@@ -59,18 +61,26 @@ public class FollowerEnemy extends Enemy {
 		{
 			float fps = onPlayer ? 8 : 2;
 		Sprite s = utils.getFrameLoop(Assets.enemyFollower, stateTime, fps);
-		s.setAlpha(alpha);
+		s.setAlpha(myAlpha());
 		utils.drawCenter(batch, s, position.x, position.y);
 		}
 		
 		BatchUtils.setBlendFuncAdd(batch);
 		{
-			float alpha_eyes = alpha * (0.5f + 0.5f * ((float)Math.sin(stateTime * 5) + 1) / 2);
+			float alpha_eyes = myAlpha() * (0.5f + 0.5f * ((float)Math.sin(stateTime * 5) + 1) / 2);
 			Sprite s = Assets.enemyFollowerEyes;
 			s.setColor(alpha_eyes, alpha_eyes, alpha_eyes, 1);
 			utils.drawCenter(batch, s, position.x, position.y);
 		}
 		BatchUtils.setBlendFuncNormal(batch);
+	}
+	
+	public void setAlpha(float a) {
+		masterAlpha = a;
+	}
+	
+	private float myAlpha() {
+		return alpha * masterAlpha;
 	}
 
 }

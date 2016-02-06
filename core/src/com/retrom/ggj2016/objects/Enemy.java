@@ -26,6 +26,10 @@ public class Enemy extends DynamicGameObject {
 		time_till_start = (float) (MIN_START_TIME + Math.random() * (MAX_START_TIME - MIN_START_TIME));
 	}
 	
+	public void startNow() {
+		time_till_start = 0;
+	}
+	
 	public void update(float deltaTime) {
 		if (time_till_start > 0) {
 			time_till_start -= deltaTime;
@@ -51,7 +55,7 @@ public class Enemy extends DynamicGameObject {
 		BatchUtils.setBlendFuncAdd(batch);
 		{
 			Sprite s = utils.getFrameLoop(Assets.enemyFire, stateTime, 30);
-			s.setColor(alpha,alpha,alpha,1);
+			s.setColor(alpha, alpha, alpha, 1);
 			utils.drawCenter(batch, s, position.x, position.y + 40);
 		}
 		
