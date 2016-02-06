@@ -89,6 +89,13 @@ public class GameScreen extends ScreenAdapter implements Screen {
 					update(delta);
 				}
 			}
+			if (Gdx.input.isKeyPressed(Input.Keys.F)) {
+				if (Gdx.graphics.isFullscreen()) {
+					Gdx.graphics.setWindowedMode(800, 800);
+				} else {
+					Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode(Gdx.graphics.getMonitor()));
+				}
+			}
 			update(delta);
 		}
 	}
@@ -136,9 +143,13 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	}
 
 	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-
+	public void pause () {
+		isPaused_ = true;
+	}
+	
+	@Override
+	public void resume() {
+		isPaused_ = false;
 	}
 
 }

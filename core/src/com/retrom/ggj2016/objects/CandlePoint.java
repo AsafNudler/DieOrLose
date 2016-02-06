@@ -19,6 +19,7 @@ public class CandlePoint extends GameObject {
 	private final Player player;
 	private float stateTime = 0;
 	private int level;
+	private float uialpha;
 
 	public CandlePoint(float x, float y, Player player, int level, boolean withCandle) {
 		super(x, y, 20, 20);
@@ -74,18 +75,26 @@ public class CandlePoint extends GameObject {
 			}
 			BatchUtils.setBlendFuncNormal(batch);
 		}
-		
-		if (state == State.NOCANDLE && player.candle != null && level <= 0) {
-			utils.drawCenter(batch, Assets.candlePointUI, position.x, (float) (position.y + 50 + 5 * Math.sin(stateTime * 6)));
+		if (state == State.NOCANDLE) {
+			if (player.candle != null && level <= 0) {
+				uialpha = Math.min(1, stateTime * 3);
+			} else {
+				uialpha = Math.max(0, uialpha);
+				stateTime = 0;
+			}
+			Assets.candlePointUI.setAlpha(uialpha);
+			utils.drawCenter(batch, Assets.candlePointUI, position.x,
+					(float) (position.y + 50 + 5 * Math.sin(stateTime * 6)));
 		}
 		
 //		IF (state == )
 	}
 
 	public void update(float deltaTime) {
-//		if (state == State.ON) {
-			stateTime += deltaTime;
-//		}
+		stateTime += deltaTime;
+		if (state == State.NOCANDLE && player.candle == null && level <= 0) {
+			uialpha -= deltaTime * 3;
+		}
 	}
 	
 	public void putCandle() {

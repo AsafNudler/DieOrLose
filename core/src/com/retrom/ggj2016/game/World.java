@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.assets.SoundAssets;
+import com.retrom.ggj2016.objects.Book;
 import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.CandlePoint;
 import com.retrom.ggj2016.objects.Enemy;
@@ -54,10 +55,12 @@ public class World {
 	public static final float BOUNDS = 450;
 
 	private static final float PAIN_EFFECT_TIME = 1;
-	
+
+	private LevelNumberHud lnh;
 	private LifeBar lifebar = new LifeBar();
 	private Player player = new Player(lifebar);
 	private Heart heart = null;
+	private Book book;
 
 	private Painting painting;
 	
@@ -81,6 +84,7 @@ public class World {
 	private float endTime = 0;
 	
 	private float painTime = 0;
+	private float lowHealthFade = 0;
 	
 	private boolean newlevel = true;
 
@@ -96,6 +100,10 @@ public class World {
 	private boolean gameStarted = false;
 
 	private boolean endLevelSoundStarted = false;
+
+	private boolean bookIsOpen;
+
+	private float bookOpenTime;
 
 	private void restartLevel()
 	{
@@ -164,6 +172,7 @@ public class World {
 	
 	private void buildLevel() {
 		Levels lvl = new Levels(level);
+		lnh = new LevelNumberHud(level);
 		ArrayList<Vector2> poses = getEnemyRandomPos(lvl.RandomWalkEnemy + lvl.FollowerEnemy);
 		int j = 0;
 		for (int i=0; i < lvl.RandomWalkEnemy; i++) {
@@ -185,6 +194,9 @@ public class World {
 				lineCompleted();
 			}
 		});
+		if (level == 0) {
+			book = new Book(-270, 400, player);
+		}
 		
 		initCandlePoints(lvl);
 	}
@@ -249,6 +261,7 @@ public class World {
 		
 		lifebar.update(deltaTime);
 		altar.update(deltaTime);
+		if (book != null) book.update(deltaTime);
 		
 		if (state == GameState.CANDLES_ON) {
 			updateCandlesOn(deltaTime);
@@ -263,7 +276,7 @@ public class World {
 			return;
 		}
 		
-		if (canStart()) {
+		if (canStart() && !bookIsOpen) {
 			player.update(deltaTime);
 			updateBloodstepsVolume();
 			dropRandomBlood(deltaTime);
@@ -320,13 +333,25 @@ public class World {
 			state = GameState.DEATH;
 		}
 		
-
-		if (painting.isDone()) {
-			if (player.position.len() < 60)
-				state = GameState.LEVEL_END; 
+		if (lifebar.isLowHealth()) {
+			if (lowHealthFade == 0)
+			SoundAssets.startHeartBeat();
+			lowHealthFade += deltaTime;
+			
+		} else {
+			lowHealthFade = 0;
+			SoundAssets.stopHeartBeat();
 		}
 		
-		if (!gameStarted && !showLogo() && level == 0) {
+
+		if (painting.isDone()) {
+			if (player.position.len() < 60) {
+				state = GameState.LEVEL_END;
+				altar.stopUi();
+			}
+		}
+		
+		if (!gameStarted && !shouldShowLogo() && level == 0) {
 			SoundAssets.startMusic();
 			gameStarted = true;
 		}
@@ -373,6 +398,9 @@ public class World {
 		if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
 			listener_.restart();
 		}
+		if (Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+			lifebar.life -= 0.1;
+		}
 		if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
 			listener_.nextLevel();
 		}
@@ -399,6 +427,7 @@ public class World {
 	private void updateDeath(float deltaTime) {
 		if (explosion == null) {
 			explosion = new PlayerExplode(player.position);
+			SoundAssets.stopHeartBeat();
 			player.die();
 			SoundAssets.playSound(SoundAssets.playerDie);
 		}
@@ -506,6 +535,7 @@ public class World {
 		}
 		player.knife = true;
 		lifebar.blink();
+		lifebar.startEyeBlink();
 	}
 
 	private void startCandlePhase() {
@@ -583,7 +613,7 @@ public class World {
 			}
 		}
 		
-		if (!showLogo()) {
+		if (!shouldShowLogo()) {
 		for (Candle candle : candles) {
 			if (state == GameState.BEFORE_CANDLES && !candle.overPlayer()) candle.render(batch);
 		}
@@ -598,14 +628,27 @@ public class World {
 				enemy.render(batch);
 		}
 		
-		if (!showLogo()) {
+		if (!shouldShowLogo()) {
+			if (book != null) book.render(batch);
 			player.render(batch);
 		}
-		if (!showLogo()) {
-		for (Candle candle : candles) {
-			if (state == GameState.BEFORE_CANDLES && candle.overPlayer()) candle.render(batch);
+		if (!shouldShowLogo()) {
+			for (Candle candle : candles) {
+				if (state == GameState.BEFORE_CANDLES && candle.overPlayer())
+					candle.render(batch);
+			}
+			if ((gameTime - bookOpenTime > 2f)
+					&& bookIsOpen
+					&& (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) || Gdx.input
+							.justTouched())) {
+				closeBook();
+			}
+			if (!bookIsOpen && book != null
+					&& player.bounds.overlaps(book.bounds) && player.candle == null) {
+				openBook();
+			}
 		}
-		}
+		
 		
 		for (CandlePoint cp : candlePoints) {
 			if (cp.position.y <= player.position.y - 40) {
@@ -631,6 +674,7 @@ public class World {
 		batch.begin();
 		if (painting.isDone()) {
 			altar.show();
+			if (book != null) book.destroy();
 		}
 		if (GameState.CANDLES_ON == state) {
 			float anim_time = slashTime - 0.5f;
@@ -651,16 +695,22 @@ public class World {
 			}
 		}
 		
+		if (bookIsOpen) {
+			BatchUtils.setBlendFuncNormal(batch);
+			utils.drawCenter(batch, Assets.page, 0, 0);
+		}
+		if (lnh != null) lnh.render(batch);
 		batch.end();
 		
-		if (!showLogo()) {
+		if (!shouldShowLogo() && !bookIsOpen) {
 			lifebar.render(shapeRenderer, batch);
 		}
+		
 		
 		renderFade(shapeRenderer);
 		
 		
-		if (showLogo()) {
+		if (shouldShowLogo()) {
 			BatchUtils.setBlendFuncNormal(batch);
 			batch.begin();
 			utils.drawCenter(batch, Assets.logo, 0, 0);
@@ -668,12 +718,26 @@ public class World {
 		}
 	}
 	
+	private void openBook() {
+		bookIsOpen = true;
+		player.velocity.x = player.velocity.y = 0;
+		book = null;
+		fade = 0.3f;
+		bookOpenTime = gameTime;
+		SoundAssets.playSound(SoundAssets.bookOpen);
+	}
+	private void closeBook() {
+		bookIsOpen = false;
+		fade = 0f;
+		SoundAssets.playSound(SoundAssets.bookClose);
+	}
+
 	// Condition for the logo can disappear and start the game.
 	private boolean canStart() {
 		return level != 0 || gameTime > 5;
 	}
 
-	private boolean showLogo() {
+	private boolean shouldShowLogo() {
 		return level == 0 && player.position.x == 0 && player.position.y == 0;
 	}
 
@@ -683,6 +747,16 @@ public class World {
 		    Gdx.gl.glEnable(GL20.GL_BLEND);
 			shapeRenderer.begin(ShapeType.Filled);
 			shapeRenderer.setColor(1, 0, 0, painTime / PAIN_EFFECT_TIME * 0.3f);
+			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
+			shapeRenderer.end();
+		}
+		if (lowHealthFade > 0) {
+			Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+		    Gdx.gl.glEnable(GL20.GL_BLEND);
+			shapeRenderer.begin(ShapeType.Filled);
+			float alpha = 1 - (float) ((Math.cos(lowHealthFade * 6) + 1) / 2);
+			alpha *= 0.15f;
+			shapeRenderer.setColor(1, 0, 0, alpha);
 			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
 			shapeRenderer.end();
 		}

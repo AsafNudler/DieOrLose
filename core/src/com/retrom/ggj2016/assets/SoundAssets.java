@@ -24,9 +24,14 @@ public class SoundAssets {
 	public static Sound exitAppear;
 	public static Sound[] enemyHit;
 	
+	public static Sound bookOpen;
+	public static Sound bookClose;
+	
 	public static Sound bloodSteps;
 	public static long bloodStepsId = 0;
 	
+	private static Sound heartBeat;
+	private static long heartBeatId = 0;
 	
 	private static Random rand = new Random();
 
@@ -45,7 +50,11 @@ public class SoundAssets {
 		playerDie = newSound("player_die.wav");
 		exitAppear = newSound("exit_appearing.wav");
 		
+		bookOpen = newSound("book_open.wav");
+		bookClose = newSound("book_close.wav");
+		
 		bloodSteps = newSound("bloody_steps.wav");
+		heartBeat = newSound("player_abouttodieloop.wav");
 		
 		enemyHit = new Sound[] { newSound("hit_enemies_1.wav"),
 				newSound("hit_enemies_2.wav"),
@@ -106,5 +115,14 @@ public class SoundAssets {
 	
 	public static void setBloodStepsVolume(float volume) {
 		bloodSteps.setVolume(bloodStepsId, volume);
+	}
+
+	public static void startHeartBeat() {
+		stopHeartBeat();
+		heartBeatId = heartBeat.play();
+		heartBeat.setLooping(heartBeatId, true);
+	}
+	public static void stopHeartBeat() {
+		heartBeat.stop();
 	}
 }

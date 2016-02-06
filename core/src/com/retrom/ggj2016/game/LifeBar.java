@@ -1,5 +1,6 @@
 package com.retrom.ggj2016.game;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
@@ -21,6 +22,12 @@ public class LifeBar {
 	
 	public float life = 1;
 	private float addLifeBlinkTime = 0;
+	private float eyesAlpha = 0;
+	
+	private float cutTime = -1;
+	
+	private static final float LOW_HEALTH_MARKER = 0.2f;
+	
 	public void render(ShapeRenderer renderer, SpriteBatch batch) {
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
@@ -31,7 +38,16 @@ public class LifeBar {
 		
 		batch.begin();
 		utils.drawCenter(batch, Assets.lifeBarOver, 0, Y);
+		{
+			Sprite s = Assets.lifeBarEyes;
+			s.setAlpha(eyesAlpha);
+			utils.drawCenter(batch, s, 0, Y);
+		}
 		batch.end();
+	}
+	
+	public boolean isLowHealth() {
+		return life < LOW_HEALTH_MARKER;
 	}
 
 	private void drawColor(ShapeRenderer renderer) {
@@ -54,6 +70,19 @@ public class LifeBar {
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
 		addLifeBlinkTime -= deltaTime;
+		if (cutTime >= 0) {
+			cutTime += deltaTime;
+			if (cutTime < 1.5f) {
+				eyesAlpha = Math.min(cutTime * 5, 1); 
+			} else {
+				eyesAlpha = (float) (Math.cos((cutTime - 1.5f) * 4) + 1) / 2;
+			}
+			
+		}
+	}
+	
+	public void startEyeBlink() {
+		if (cutTime < 0) cutTime = 0;
 	}
 	
 	public void blink() {

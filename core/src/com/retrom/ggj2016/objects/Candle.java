@@ -36,6 +36,9 @@ public class Candle extends DynamicGameObject {
 	
 	public void render(SpriteBatch batch) {
 		float rotation;
+		if (player.candle != null) {
+			stateTime = 0;
+		}
 		if (player.candle != this) {
 			rotation = groundRotation;
 		} else {
@@ -45,7 +48,7 @@ public class Candle extends DynamicGameObject {
 		sprite.setRotation(rotation);
 		utils.drawCenter(batch, sprite, position.x, position.y);
 		if (player.candle == null && level == 0) {
-			glowSprite.setAlpha((float) ((Math.sin(stateTime * 6) + 1)/4+0.5f));
+			glowSprite.setAlpha((float) ((Math.sin(stateTime * 6) + 1)/4+0.5f) * Math.min(1,stateTime*3));
 			glowSprite.setRotation(rotation);
 			utils.drawCenter(batch, glowSprite, position.x, position.y);
 		}

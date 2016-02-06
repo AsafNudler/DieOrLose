@@ -19,6 +19,7 @@ public class Altar extends GameObject {
 	private static float ALTAR_COLLIDER = 60f;
 	private int level;
 	public float master_alpha = 0;
+	private boolean stopUi_;
 
 	public Altar(int level) {
 		super(0, 0, ALTAR_COLLIDER, ALTAR_COLLIDER);
@@ -62,7 +63,7 @@ public class Altar extends GameObject {
 		utils.drawCenter(batch, base, 0, 0);
 		{
 			Sprite s = Assets.altar_glow;
-			float a = Math.min(1, Math.max(0, stateTime * 3 - 0.66f));
+			float a = Math.min(1, Math.max(0, stateTime * 3 - 2f));
 			s.setAlpha(a * master_alpha);
 			s.setRotation(rotation);
 			utils.drawCenter(batch, s, 0, 0);
@@ -72,7 +73,7 @@ public class Altar extends GameObject {
 				utils.drawCenter(batch, s, 0, 0);
 			}
 		}
-		if (level == 0) {
+		if (level == 0 && !stopUi_) {
 			Sprite s = Assets.altar_ux;
 			float diff = (float) Math.abs(Math.sin(stateTime * 3));
 			s.setScale(0.8f + 0.2f * diff);
@@ -96,6 +97,11 @@ public class Altar extends GameObject {
 		reallyShown = true;
 		SoundAssets.playSound(SoundAssets.exitAppear);
 		stateTime = 0;
+	}
+
+	public void stopUi() {
+		// TODO Auto-generated method stub
+		stopUi_ = true;
 	}
 
 }

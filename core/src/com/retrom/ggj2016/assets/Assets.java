@@ -41,6 +41,7 @@ public class Assets {
 	
 	public static Sprite lifeBarOver;
 	public static Sprite lifeBarBg;
+	public static Sprite lifeBarEyes;
 
 	public static Array<Sprite> enemyFire;
 	
@@ -69,6 +70,14 @@ public class Assets {
 	public static Array<Sprite> candleFire;
 
 	public static Array<Sprite> dust;
+
+	public static Sprite book;
+	public static Sprite bookGlow;
+
+	public static Sprite page;
+
+	public static Sprite stageNumberBg;
+	public static Array<Sprite> stageNumberNum;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -104,6 +113,7 @@ public class Assets {
 		
 		lifeBarOver = basicSheet.createSprite("hud_healthbar");
 		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
+		lifeBarEyes = basicSheet.createSprite("hud_healthbar_lowhealthglow");
 		
 		playerWalkFront = basicSheet.createSprites("Player_body_front_walking");
 		playerWalkBack = basicSheet.createSprites("Player_body_back_walking");
@@ -125,8 +135,15 @@ public class Assets {
 		
 		fireParticles = basicSheet.createSprites("particles_burnpiece");
 		
+		book = basicSheet.createSprite("items_book");
+		bookGlow = basicSheet.createSprite("items_book_glow");
+		
+		stageNumberBg = basicSheet.createSprite("hud_stagenumber_slot");
+		stageNumberNum = basicSheet.createSprites("hud_stagenumber");
+		
 		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
 		bg = bgSheet.createSprite("bg");
+		page = bgSheet.createSprite("items_book_UX");
 		
 		TextureAtlas explodeSheet = new TextureAtlas("explode.txt");
 		playerExplode = explodeSheet.createSprites("blood_explotion");

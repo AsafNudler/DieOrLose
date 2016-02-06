@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
-import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.utils;
 
@@ -17,18 +16,10 @@ import java.util.ArrayList;
  * Created by Asaf on 28/01/2016.
  */
 public class Painting {
-    private PaintingTreeNode m_pt;
-    private ArrayList<PaintingNode> m_allLines;
     private ArrayList<SegmentStatus> m_target;
     private float m_precision;
-    private ArrayList<LineSegment> m_projects = new ArrayList<LineSegment>();
     
      public float master_alpha = 1;
-
-
-    private final float MAX_X = 1080;
-    private final float MAX_Y = 1080;
-    private final float MAX_GAP = 18;
 
     public interface LineComplete
     {
@@ -40,8 +31,6 @@ public class Painting {
 
     public Painting(ArrayList<LineSegment> target, float precision, LineComplete signaller)
     {
-        m_pt = new PaintingTreeNode();
-        m_allLines = new ArrayList<PaintingNode>();
         m_target = new ArrayList<SegmentStatus>();
         for (LineSegment lineSegment : target) {
             SegmentStatus seg = new SegmentStatus();
@@ -113,7 +102,8 @@ public class Painting {
                 while (Math.random() < 0.25)
                 {
                     FireEffect f = new FireEffect();
-                    f.ySpeed = 0.7f + (float)Math.random() * 0.8f;
+                    System.out.println("f.ass="+f.ass);
+                    f.ySpeed = 0.4f + (float)Math.random() * 0.4f;
                     f.xCurrElement = (float)(Math.random() * 2 * Math.PI);
                     Vector2 fpos = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);
                     fpos.scl((float)Math.random());
