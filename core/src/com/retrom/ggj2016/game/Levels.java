@@ -95,11 +95,11 @@ public class Levels {
 		
 		if (level >= levels.size())
 		{
-			for (int i=0; i < level; i++) {
-				path.add(GetLineSegment((float)Math.random() * 360, (float) (Math.random() * 360)));
-			}
-			RandomWalkEnemy = level - 1;
-			FollowerEnemy = 1;
+//			for (int i=0; i < level; i++) {
+//				path.add(GetLineSegment((float)Math.random() * 360, (float) (Math.random() * 360)));
+//			}
+//			RandomWalkEnemy = level - 1;
+//			FollowerEnemy = 1;
 			return;
 		}
 

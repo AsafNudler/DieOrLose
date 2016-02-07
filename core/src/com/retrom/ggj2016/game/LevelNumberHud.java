@@ -16,7 +16,7 @@ public class LevelNumberHud {
 	}
 	
 	public void render(SpriteBatch batch) {
-		if (level == 0) return;
+		if (level == 0 || level == World.PENTAGRAM_LEVEL) return;
 		BatchUtils.setBlendFuncNormal(batch);
 		utils.drawCenter(batch, Assets.stageNumberBg, 0, Y);
 		Sprite numberSprite = Assets.stageNumberNum.get(level-1);

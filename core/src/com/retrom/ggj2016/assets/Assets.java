@@ -77,7 +77,10 @@ public class Assets {
 	public static Sprite page;
 
 	public static Sprite stageNumberBg;
+	
 	public static Array<Sprite> stageNumberNum;
+	
+	public static Sprite hatchUX;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -140,6 +143,8 @@ public class Assets {
 		
 		stageNumberBg = basicSheet.createSprite("hud_stagenumber_slot");
 		stageNumberNum = basicSheet.createSprites("hud_stagenumber");
+		
+		hatchUX = basicSheet.createSprite("floorhatch_UX");
 		
 		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
 		bg = bgSheet.createSprite("bg");

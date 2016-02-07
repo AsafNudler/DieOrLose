@@ -24,6 +24,9 @@ public class SoundAssets {
 	public static Sound exitAppear;
 	public static Sound[] enemyHit;
 	
+	public static Sound levelCompleteFinal;
+	public static Sound hatchOpen;
+	
 	public static Sound bookOpen;
 	public static Sound bookClose;
 	
@@ -62,6 +65,9 @@ public class SoundAssets {
 				newSound("hit_enemies_4.wav"),
 				newSound("hit_enemies_5.wav") };
 		
+		levelCompleteFinal = newSound("level_final_complete.wav");
+		hatchOpen = newSound("level_final_floorhatch.wav");
+		
 //		blood_slashes = newSound("blood_slashes.wav");
 //		bloody_steps = newSound("bloody_steps.wav");
 		
@@ -96,11 +102,14 @@ public class SoundAssets {
 		sound.stop();
 	}
 	
-
 	public static void startMusic() {
 		gameMusic.stop();
 		musicid = gameMusic.play();
 		gameMusic.setLooping(musicid, true);
+	}
+	
+	public static void stopMusic() {
+		gameMusic.stop();
 	}
 
 	public static void stopBloodSteps() {

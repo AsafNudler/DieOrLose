@@ -30,6 +30,12 @@ public class Enemy extends DynamicGameObject {
 		time_till_start = 0;
 	}
 	
+	public void appearNow() {
+		alpha = 1;
+		time_till_start = 0;
+		stateTime = (float) (Math.random()*100f) + 50f;
+	}
+	
 	public void update(float deltaTime) {
 		if (time_till_start > 0) {
 			time_till_start -= deltaTime;

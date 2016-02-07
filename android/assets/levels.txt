@@ -89,7 +89,7 @@ Candle:0
 Candle:90
 Candle:180
 Candle:270
-RandomWalkEnemy:5
+RandomWalkEnemy:3
 FollowerEnemy:3
 
 Segment:90:234

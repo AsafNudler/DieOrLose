@@ -969,9 +969,16 @@ exitaltar_base_glow
   orig: 393, 393
   offset: 0, 0
   index: -1
-heart_icon
+floorhatch_UX
   rotate: false
   xy: 1715, 994
+  size: 98, 104
+  orig: 98, 104
+  offset: 0, 0
+  index: -1
+heart_icon
+  rotate: false
+  xy: 1815, 994
   size: 43, 37
   orig: 43, 37
   offset: 0, 0
@@ -979,15 +986,15 @@ heart_icon
 hud_healthbar
   rotate: false
   xy: 2, 1401
-  size: 295, 107
-  orig: 295, 107
+  size: 295, 111
+  orig: 295, 111
   offset: 0, 0
   index: -1
 hud_healthbar_bg
   rotate: false
   xy: 299, 1401
-  size: 295, 107
-  orig: 295, 107
+  size: 295, 111
+  orig: 295, 111
   offset: 0, 0
   index: -1
 hud_healthbar_color
@@ -1000,8 +1007,8 @@ hud_healthbar_color
 hud_healthbar_lowhealthglow
   rotate: false
   xy: 861, 1401
-  size: 295, 107
-  orig: 295, 107
+  size: 295, 111
+  orig: 295, 111
   offset: 0, 0
   index: -1
 hud_stagenumber
@@ -1118,63 +1125,63 @@ items_candle_glow
   index: 2
 items_candleslot_UX
   rotate: false
-  xy: 2, 1510
+  xy: 2, 1514
   size: 40, 89
   orig: 40, 89
   offset: 0, 0
   index: -1
 items_candleslot_empty
   rotate: false
-  xy: 44, 1510
+  xy: 44, 1514
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_full
   rotate: false
-  xy: 102, 1510
+  xy: 102, 1514
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_light
   rotate: false
-  xy: 160, 1510
+  xy: 160, 1514
   size: 56, 71
   orig: 56, 71
   offset: 0, 0
   index: -1
 items_candleslot_light_glow
   rotate: false
-  xy: 218, 1510
+  xy: 218, 1514
   size: 139, 118
   orig: 139, 118
   offset: 0, 0
   index: -1
 items_candleslot_nocandle
   rotate: false
-  xy: 359, 1510
+  xy: 359, 1514
   size: 57, 58
   orig: 57, 58
   offset: 0, 0
   index: -1
 particles_burnpiece
   rotate: false
-  xy: 418, 1510
+  xy: 418, 1514
   size: 49, 54
   orig: 49, 54
   offset: 0, 0
   index: 1
 particles_burnpiece
   rotate: false
-  xy: 469, 1510
+  xy: 469, 1514
   size: 49, 53
   orig: 49, 53
   offset: 0, 0
   index: 2
 particles_burnpiece
   rotate: false
-  xy: 520, 1510
+  xy: 520, 1514
   size: 53, 50
   orig: 53, 50
   offset: 0, 0

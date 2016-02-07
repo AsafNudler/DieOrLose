@@ -15,6 +15,7 @@ import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.CandlePoint;
 import com.retrom.ggj2016.objects.Enemy;
 import com.retrom.ggj2016.objects.FollowerEnemy;
+import com.retrom.ggj2016.objects.Hatch;
 import com.retrom.ggj2016.objects.Heart;
 import com.retrom.ggj2016.objects.Player;
 import com.retrom.ggj2016.objects.PlayerExplode;
@@ -57,7 +58,7 @@ public class World {
 
 	private static final float PAIN_EFFECT_TIME = 1;
 
-	private static final int PENTAGRAM_LEVEL = 8;
+	public static final int PENTAGRAM_LEVEL = 8;
 
 	private LevelNumberHud lnh;
 	private LifeBar lifebar = new LifeBar();
@@ -113,6 +114,14 @@ public class World {
 
 	private ArrayList<FollowerEnemy> followers;
 
+	private boolean finish = false;
+
+	private Hatch hatch = null;
+
+	private boolean enterHatch;
+
+	private boolean endScene;
+
 	private void restartLevel()
 	{
 		SoundAssets.stopBloodSteps();
@@ -132,7 +141,7 @@ public class World {
 		lifebar = new LifeBar();
 		player = new Player(lifebar);
 		lastPosition = player.position.cpy();
-		buildLevel();
+		if (!finish) buildLevel(); 
 	}
 	
 	public World(WorldListener listener, int level) {
@@ -207,7 +216,7 @@ public class World {
 		initCandlePoints(lvl);
 	}
 
-	private Enemy createFollowerEnemy(Vector2 pos) {
+	private FollowerEnemy createFollowerEnemy(Vector2 pos) {
 		FollowerEnemy en = new FollowerEnemy(pos.x, pos.y, player, followers);
 		enemies.add(en);
 		followers.add(en);
@@ -262,6 +271,17 @@ public class World {
 	public void update(float deltaTime) {
 		updateHotkeys();
 		
+		if (endScene) {
+			fade = Math.max(0, fade -= deltaTime);
+			return;
+		}
+		
+		if (enterHatch) {
+			fade += deltaTime;
+			if (fade >= 1) showEndScene();
+			return;
+		}
+		
 		gameTime += deltaTime;
 //		if (level == PENTAGRAM_LEVEL && state == GameState.AFTER_CANDLES) {
 //			if (Math.random() < deltaTime / 4) {
@@ -290,6 +310,15 @@ public class World {
 		lifebar.update(deltaTime);
 		altar.update(deltaTime);
 		if (book != null) book.update(deltaTime);
+		if (hatch != null) {
+			hatch.update(deltaTime);
+			if (hatch.bounds.overlaps(player.bounds)) {
+				enterHatch = true;
+				SoundAssets.stopMusic();
+				SoundAssets.playSound(SoundAssets.hatchOpen);
+				return;
+			}
+		}
 		
 		if (state == GameState.CANDLES_ON) {
 			updateCandlesOn(deltaTime);
@@ -384,6 +413,14 @@ public class World {
 			gameStarted = true;
 		}
 		
+		if (finish && gameTime > 1) {
+			if (hatch == null) hatch = new Hatch();
+		}
+		
+	}
+
+	private void showEndScene() {
+		endScene = true;
 	}
 
 	private void updateBloodstepsVolume() {
@@ -406,7 +443,9 @@ public class World {
 		
 		if (!endLevelSoundStarted) {
 			endLevelSoundStarted = true;
-			SoundAssets.playSound(SoundAssets.levelComplete);
+			SoundAssets.playSound(level == PENTAGRAM_LEVEL
+					? SoundAssets.levelCompleteFinal
+					: SoundAssets.levelComplete);
 		}
 		
 		endTime += deltaTime;
@@ -430,12 +469,24 @@ public class World {
 				enemy.position.limit((float) (Math.pow(0.01f, deltaTime) * enemy.position.len()));
 				enemy.setAlpha(Math.min(1, enemy.position.len() / 100));
 			}
+			if (endTime < 2.7f) {
+				if (Math.random() < deltaTime * 40) {
+					Enemy en = createFollowerEnemy(utils.randomDir(450f));
+					en.appearNow();
+				}
+			}
 		}
 	}
 
 	private void finishGame() {
+		finish = true;
 		restartLevel();
-		whiteFade = 100;
+		bloodLines.clear();
+		SoundAssets.stopMusic();
+		for (CandlePoint cp : candlePoints) {
+			cp.state = CandlePoint.State.OFF;
+		}
+//		whiteFade = 100;
 	}
 
 	private void updateHotkeys() {
@@ -565,7 +616,7 @@ public class World {
 				}
 			}
 		}
-		if (allHaveCandles && state == GameState.BEFORE_CANDLES) {
+		if (allHaveCandles && state == GameState.BEFORE_CANDLES && !finish) {
 			startCandleOn();
 		}
 	}
@@ -611,6 +662,11 @@ public class World {
 	}
 
 	public void render(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		if (endScene) {
+			renderEndScene(batch, shapeRenderer);
+			return;
+		}
+		
 		BatchUtils.setBlendFuncNormal(batch);
 		batch.begin();
 		utils.drawCenter(batch, Assets.bg, 0, 0);
@@ -674,6 +730,7 @@ public class World {
 		
 		if (!shouldShowLogo()) {
 			if (book != null) book.render(batch);
+			if (hatch != null) hatch.render(batch);
 			player.render(batch);
 		}
 		if (!shouldShowLogo()) {
@@ -765,6 +822,14 @@ public class World {
 		}
 	}
 	
+	private void renderEndScene(SpriteBatch batch, ShapeRenderer shapeRenderer) {
+		BatchUtils.setBlendFuncNormal(batch);
+		batch.begin();
+		utils.drawCenter(batch, Assets.altar, 0, 0);
+		batch.end();
+		renderFade(shapeRenderer);
+	}
+
 	private void openBook() {
 		bookIsOpen = true;
 		player.velocity.x = player.velocity.y = 0;
