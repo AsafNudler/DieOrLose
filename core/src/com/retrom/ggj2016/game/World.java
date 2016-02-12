@@ -23,7 +23,6 @@ import com.retrom.ggj2016.objects.RandomWalkEnemy;
 import com.retrom.ggj2016.screens.GameScreen;
 import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.utils;
-import com.sun.xml.internal.ws.dump.LoggingDumpTube.Position;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +36,8 @@ public class World {
 		CANDLES_ON,
 		AFTER_CANDLES,
 		DEATH,
-		LEVEL_END;
+		LEVEL_END,
+		GAME_END;
 	}
 	
 	public interface WorldListener {
@@ -227,7 +227,7 @@ public class World {
 	{
 		SoundAssets.playSound(SoundAssets.lineComplete);
 		lifebar.addLife();
-		heart = new Heart(player.position);
+		if (!finish) heart = new Heart(player.position);
 		if (level == PENTAGRAM_LEVEL) {
 			for (int i=0; i < 3; i++) {
 				Vector2 pos = pentagramLevelPoses.get(pentagramLevelEnemyIndex++);
@@ -272,6 +272,7 @@ public class World {
 		updateHotkeys();
 		
 		if (endScene) {
+			gameTime += deltaTime;
 			fade = Math.max(0, fade -= deltaTime);
 			return;
 		}
@@ -296,7 +297,7 @@ public class World {
 			painTime -= deltaTime;
 		}
 		
-		if (gameTime < 0.5f) {
+		if (gameTime < 0.5f && level > 0) {
 			float val = 1-(gameTime * 2);
 			if (newlevel) {
 				whiteFade = val;
@@ -305,6 +306,7 @@ public class World {
 			}
 		} else {
 			fade = 0;
+			whiteFade = 0;
 		}
 		
 		lifebar.update(deltaTime);
@@ -328,7 +330,7 @@ public class World {
 			updateDeath(deltaTime);
 			return;
 		}
-		if (state == GameState.LEVEL_END) {
+		if (state == GameState.LEVEL_END && !finish) {
 			updateLevelEnd(deltaTime);
 			return;
 		}
@@ -420,6 +422,7 @@ public class World {
 	}
 
 	private void showEndScene() {
+		restartLevel();
 		endScene = true;
 	}
 
@@ -462,6 +465,7 @@ public class World {
 		
 		if (endTime > 3 && level == PENTAGRAM_LEVEL) {
 			finishGame();
+			return;
 		}
 		
 		if (level == PENTAGRAM_LEVEL) {
@@ -470,7 +474,7 @@ public class World {
 				enemy.setAlpha(Math.min(1, enemy.position.len() / 100));
 			}
 			if (endTime < 2.7f) {
-				if (Math.random() < deltaTime * 40) {
+				if (Math.random() < deltaTime * 70 * endTime / 3f) {
 					Enemy en = createFollowerEnemy(utils.randomDir(450f));
 					en.appearNow();
 				}
@@ -479,6 +483,9 @@ public class World {
 	}
 
 	private void finishGame() {
+		state = GameState.GAME_END;
+//		endTime = 0; 
+		System.out.println("FINISH GAME!");
 		finish = true;
 		restartLevel();
 		bloodLines.clear();
@@ -580,7 +587,7 @@ public class World {
 	}
 
 	private void dropBlood() {
-		if (state == GameState.BEFORE_CANDLES) {
+		if (state == GameState.BEFORE_CANDLES || finish) {
 			return;
 		}
 		if (lastPosition.dst(player.position) > BLOOD_SEGMENT_LENGTH) {
@@ -773,7 +780,7 @@ public class World {
 		
 		BatchUtils.setBlendFuncAdd(batch);
 		batch.begin();
-		if (painting.isDone()) {
+		if (painting.isDone() && !finish) {
 			if (!altar.shown) {
 				painting.makeManyParticles();
 			}
@@ -824,10 +831,63 @@ public class World {
 	
 	private void renderEndScene(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		BatchUtils.setBlendFuncNormal(batch);
+		System.out.println("endscene");
 		batch.begin();
-		utils.drawCenter(batch, Assets.altar, 0, 0);
+		
+		Sprite note = Assets.endNote;
+		note.setAlpha(Math.min(1,gameTime * 2));
+		
+		System.out.println("gameTime="+gameTime);
+		
+		if (gameTime < 0.5f) {
+			float t = gameTime * 2;
+			t = 1 - (1-t) * (1-t);
+			note.setScale(0.5f*(1-t) + t * 0.9f);
+			note.setRotation((-2)*(1-t) + -5f * t);
+			note.setAlpha(1);
+		} else if (gameTime < 15f) {
+			float t = (gameTime - 0.5f) / 14.5f;
+			t = (float) Math.sqrt(t);
+			note.setScale(0.9f*(1-t) + 1 * t);
+			note.setRotation((-5)*(1-t) + 0f * t);
+			note.setAlpha(1);
+		} else if (gameTime < 20) {
+			float t = (gameTime - 15) / (20 - 15);
+			note.setAlpha(1-t);
+		} else {
+			note.setAlpha(0);
+		}
+		utils.drawCenter(batch, note, 0, 0);
+		
+		// First glow layer.
+		Sprite noteGlow = Assets.endNoteGlow;
+		if (gameTime < 15f) {
+			noteGlow.setAlpha(0);
+		} else if (gameTime < 18) {
+			float t = (gameTime - 15f) / 3;
+			noteGlow.setAlpha(t);
+		} else if (gameTime < 20.5f){
+			noteGlow.setAlpha(1);
+		} else {
+			float t = (gameTime - 23f) / (20.5f - 23f);
+			noteGlow.setAlpha(Math.min(1, Math.max(0, t)));
+		} 
+		utils.drawCenter(batch, noteGlow, 0, 0);
+		
+		// Second glow layer.
+		if (gameTime < 18) {
+			noteGlow.setAlpha(0);
+		} else if (gameTime < 20.5f) {
+			float t = (gameTime - 18) / (20.5f - 18f);
+			noteGlow.setAlpha((float) Math.sin(t * Math.PI));
+		} else if (gameTime < 23f) {
+			noteGlow.setAlpha(0);
+		}
+		utils.drawCenter(batch, noteGlow, 0, 0);
+		
+		
 		batch.end();
-		renderFade(shapeRenderer);
+//		renderFade(shapeRenderer);
 	}
 
 	private void openBook() {

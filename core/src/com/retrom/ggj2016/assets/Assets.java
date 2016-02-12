@@ -75,6 +75,9 @@ public class Assets {
 	public static Sprite bookGlow;
 
 	public static Sprite page;
+	
+	public static Sprite endNote;
+	public static Sprite endNoteGlow;
 
 	public static Sprite stageNumberBg;
 	
@@ -149,6 +152,10 @@ public class Assets {
 		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
 		bg = bgSheet.createSprite("bg");
 		page = bgSheet.createSprite("items_book_UX");
+		
+		TextureAtlas noteSheet = new TextureAtlas("note.txt");
+		endNote = noteSheet.createSprite("endingtext");
+		endNoteGlow = noteSheet.createSprite("endingtext_glow");
 		
 		TextureAtlas explodeSheet = new TextureAtlas("explode.txt");
 		playerExplode = explodeSheet.createSprites("blood_explotion");
