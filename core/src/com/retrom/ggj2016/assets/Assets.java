@@ -42,6 +42,7 @@ public class Assets {
 	public static Sprite lifeBarOver;
 	public static Sprite lifeBarBg;
 	public static Sprite lifeBarEyes;
+	public static Sprite lifeBarFlare;
 
 	public static Array<Sprite> enemyFire;
 	
@@ -82,8 +83,11 @@ public class Assets {
 	public static Sprite stageNumberBg;
 	
 	public static Array<Sprite> stageNumberNum;
+	public static Sprite stageNumberPentagram;
 	
 	public static Sprite hatchUX;
+
+	public static Array<Sprite> bones;
 	
 	public static void init() {
 		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
@@ -120,6 +124,7 @@ public class Assets {
 		lifeBarOver = basicSheet.createSprite("hud_healthbar");
 		lifeBarBg = basicSheet.createSprite("hud_healthbar_bg");
 		lifeBarEyes = basicSheet.createSprite("hud_healthbar_lowhealthglow");
+		lifeBarFlare = basicSheet.createSprite("hud_healthbar_flare");
 		
 		playerWalkFront = basicSheet.createSprites("Player_body_front_walking");
 		playerWalkBack = basicSheet.createSprites("Player_body_back_walking");
@@ -146,8 +151,11 @@ public class Assets {
 		
 		stageNumberBg = basicSheet.createSprite("hud_stagenumber_slot");
 		stageNumberNum = basicSheet.createSprites("hud_stagenumber");
+		stageNumberPentagram = basicSheet.createSprite("hud_stagenumber_final"); 
 		
 		hatchUX = basicSheet.createSprite("floorhatch_UX");
+		
+		bones = basicSheet.createSprites("Player_deadbones");
 		
 		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
 		bg = bgSheet.createSprite("bg");

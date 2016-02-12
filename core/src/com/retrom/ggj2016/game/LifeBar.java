@@ -40,8 +40,17 @@ public class LifeBar {
 		utils.drawCenter(batch, Assets.lifeBarOver, 0, Y);
 		{
 			Sprite s = Assets.lifeBarEyes;
-			s.setAlpha(eyesAlpha);
+			
 			utils.drawCenter(batch, s, 0, Y);
+			s.setAlpha(eyesAlpha);
+		}
+		{
+			BatchUtils.setBlendFuncAdd(batch);
+			Sprite s = Assets.lifeBarFlare;
+			float alpha = Math.min(1, 1 - (life - 0.95f) / 0.05f);
+			s.setColor(alpha, alpha, alpha, 1);
+			utils.drawCenter(batch, s,  MAX_WIDTH * life - MAX_WIDTH / 2, Y - 44f + HEIGHT / 2);
+			BatchUtils.setBlendFuncNormal(batch);
 		}
 		batch.end();
 	}
@@ -60,7 +69,11 @@ public class LifeBar {
 		if (addLifeBlinkTime > 0 || (blinking  && stateTime > 0.4f && (stateTime % 0.3f > 0.15f))) {
 			renderer.setColor(1, 0.15f, 0.1f, 1);
 		} else {
-			renderer.setColor(0.33f, 0, 0, 1);
+			float t = eyesAlpha * 0.4f;
+			float r = 0.33f * (1 - t) + 1 * t;
+			float g = 0 * (1 - t) + 0.15f * t;
+			float b = 0 * (1 - t) + 0.1f * t;
+			renderer.setColor(r, g, b, 1);
 		}
 		
 		renderer.rect(X, Y - 44f, MAX_WIDTH * life, HEIGHT);

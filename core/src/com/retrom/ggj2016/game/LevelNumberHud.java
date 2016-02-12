@@ -19,14 +19,12 @@ public class LevelNumberHud {
 		if (level == 0) return;
 		BatchUtils.setBlendFuncNormal(batch);
 		utils.drawCenter(batch, Assets.stageNumberBg, 0, Y);
-		if (level != World.PENTAGRAM_LEVEL) {
-			Sprite numberSprite = Assets.stageNumberNum.get(level-1);
+		if (level == World.PENTAGRAM_LEVEL) {
+			Sprite numberSprite = Assets.stageNumberPentagram;
 			utils.drawCenter(batch, numberSprite, 0, Y - 20);
 		} else {
-			Sprite numberSprite = Assets.stageNumberNum.get(6-1);
-			utils.drawCenter(batch, numberSprite, -30, Y - 20);
+			Sprite numberSprite = Assets.stageNumberNum.get(level-1);
 			utils.drawCenter(batch, numberSprite, 0, Y - 20);
-			utils.drawCenter(batch, numberSprite, 30, Y - 20);
 		}
 	}
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.assets.SoundAssets;
+import com.retrom.ggj2016.objects.Bone;
 import com.retrom.ggj2016.objects.Book;
 import com.retrom.ggj2016.objects.Candle;
 import com.retrom.ggj2016.objects.CandlePoint;
@@ -65,6 +66,7 @@ public class World {
 	private Player player = new Player(lifebar);
 	private Heart heart = null;
 	private Book book;
+	final private List<Bone> bones = new ArrayList<Bone>();
 
 	private Painting painting;
 	
@@ -129,6 +131,7 @@ public class World {
 		state = GameState.BEFORE_CANDLES;
 		enemies.clear();
 		candles.clear();
+		bones.clear();
 		explosion = null;
 		deathTime = 0;
 		slashTime = 0;
@@ -297,9 +300,11 @@ public class World {
 			painTime -= deltaTime;
 		}
 		
-		if (gameTime < 0.5f && level > 0) {
+		if (gameTime < 4 && finish) {
+			whiteFade = 1 - gameTime / 4;
+		} else if (gameTime < 0.5f) {
 			float val = 1-(gameTime * 2);
-			if (newlevel) {
+			if (newlevel && level > 0) {
 				whiteFade = val;
 			} else {
 				fade = val;
@@ -307,6 +312,10 @@ public class World {
 		} else {
 			fade = 0;
 			whiteFade = 0;
+		}
+		
+		for (Bone bone : bones) {
+			bone.update(deltaTime);
 		}
 		
 		lifebar.update(deltaTime);
@@ -532,6 +541,11 @@ public class World {
 			SoundAssets.stopHeartBeat();
 			player.die();
 			SoundAssets.playSound(SoundAssets.playerDie);
+			int numbones = (int) (Math.random() * 6 + 6);
+			for (int i=0; i < numbones; i++) {
+				bones.add(new Bone(player.position.cpy()));
+				System.out.println("new bone");
+			}
 		}
 		if (explosion.getStarted()) {
 			for (int i=0; i < 600; i++) {
@@ -740,6 +754,11 @@ public class World {
 			if (hatch != null) hatch.render(batch);
 			player.render(batch);
 		}
+		
+		for (Bone bone : bones) {
+			bone.render(batch);
+		}
+		
 		if (!shouldShowLogo()) {
 			for (Candle candle : candles) {
 				if (state == GameState.BEFORE_CANDLES && candle.overPlayer())
@@ -817,42 +836,47 @@ public class World {
 			lifebar.render(shapeRenderer, batch);
 		}
 		
-		
-		renderFade(shapeRenderer);
-		
-		
 		if (shouldShowLogo()) {
 			BatchUtils.setBlendFuncNormal(batch);
 			batch.begin();
 			utils.drawCenter(batch, Assets.logo, 0, 0);
 			batch.end();
 		}
+		renderFade(shapeRenderer);
 	}
 	
 	private void renderEndScene(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		BatchUtils.setBlendFuncNormal(batch);
 		System.out.println("endscene");
-		batch.begin();
 		
 		Sprite note = Assets.endNote;
 		note.setAlpha(Math.min(1,gameTime * 2));
 		
 		System.out.println("gameTime="+gameTime);
 		
-		if (gameTime < 0.5f) {
-			float t = gameTime * 2;
+		gameTime -= 1; // Hack: move time backwards and then forward.
+		if (gameTime < 0) {
+			gameTime += 1;
+			return;
+		}
+		
+		batch.begin();
+		if (gameTime < 1f) {
+			float t = gameTime;
 			t = 1 - (1-t) * (1-t);
 			note.setScale(0.5f*(1-t) + t * 0.9f);
-			note.setRotation((-2)*(1-t) + -5f * t);
-			note.setAlpha(1);
+			note.setRotation((-5)*(1-t) + -2f * t);
+			note.setAlpha(t);
 		} else if (gameTime < 15f) {
-			float t = (gameTime - 0.5f) / 14.5f;
+			float t = (gameTime - 1f) / (15 - 1);
 			t = (float) Math.sqrt(t);
 			note.setScale(0.9f*(1-t) + 1 * t);
-			note.setRotation((-5)*(1-t) + 0f * t);
+			note.setRotation((-2)*(1-t) + 0f * t);
 			note.setAlpha(1);
-		} else if (gameTime < 20) {
-			float t = (gameTime - 15) / (20 - 15);
+		} else if (gameTime < 25) {
+			note.setAlpha(1);
+		} else if (gameTime < 30) {
+			float t = (gameTime - 25) / (30 - 25);
 			note.setAlpha(1-t);
 		} else {
 			note.setAlpha(0);
@@ -861,33 +885,35 @@ public class World {
 		
 		// First glow layer.
 		Sprite noteGlow = Assets.endNoteGlow;
-		if (gameTime < 15f) {
+		if (gameTime < 20.5f){
 			noteGlow.setAlpha(0);
-		} else if (gameTime < 18) {
-			float t = (gameTime - 15f) / 3;
-			noteGlow.setAlpha(t);
-		} else if (gameTime < 20.5f){
+		} else if (gameTime < 23) {
+			float t = (gameTime - 20.5f) / (23f - 20.5f);
+			noteGlow.setAlpha(Math.min(1, Math.max(0, t)));
+		} else if (gameTime < 35){
 			noteGlow.setAlpha(1);
 		} else {
-			float t = (gameTime - 23f) / (20.5f - 23f);
-			noteGlow.setAlpha(Math.min(1, Math.max(0, t)));
-		} 
+			float t = (gameTime - 35f) / (40f - 35f);
+			noteGlow.setAlpha(Math.max(0,  1-t));
+		}
 		utils.drawCenter(batch, noteGlow, 0, 0);
 		
 		// Second glow layer.
-		if (gameTime < 18) {
+		if (gameTime < 25) {
 			noteGlow.setAlpha(0);
-		} else if (gameTime < 20.5f) {
-			float t = (gameTime - 18) / (20.5f - 18f);
+		} else if (gameTime < 35f) {
+			float t = (gameTime - 25) / (35f - 25f);
 			noteGlow.setAlpha((float) Math.sin(t * Math.PI));
-		} else if (gameTime < 23f) {
+		} else if (gameTime < 40f) {
+			noteGlow.setAlpha(0);
+		} else {
 			noteGlow.setAlpha(0);
 		}
 		utils.drawCenter(batch, noteGlow, 0, 0);
 		
+		gameTime += 1;
 		
 		batch.end();
-//		renderFade(shapeRenderer);
 	}
 
 	private void openBook() {
