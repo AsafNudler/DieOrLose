@@ -6,7 +6,7 @@ import com.retrom.ggj2016.assets.Assets;
 import com.retrom.ggj2016.assets.SoundAssets;
 import com.retrom.ggj2016.screens.GameScreen;
 
-public class GGJ2016 extends Game {
+public class ggj2016 extends Game {
 	SpriteBatch batch;
 	
 	@Override

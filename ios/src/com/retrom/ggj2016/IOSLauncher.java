@@ -5,13 +5,13 @@ import org.robovm.apple.uikit.UIApplication;
 
 import com.badlogic.gdx.backends.iosrobovm.IOSApplication;
 import com.badlogic.gdx.backends.iosrobovm.IOSApplicationConfiguration;
-import com.retrom.ggj2016.GGJ2016;
+import com.retrom.ggj2016.ggj2016;
 
 public class IOSLauncher extends IOSApplication.Delegate {
     @Override
     protected IOSApplication createApplication() {
         IOSApplicationConfiguration config = new IOSApplicationConfiguration();
-        return new IOSApplication(new GGJ2016(), config);
+        return new IOSApplication(new ggj2016(), config);
     }
 
     public static void main(String[] argv) {

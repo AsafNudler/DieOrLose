@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.Array;
 
 public class utils {
 	private static final float FPS = 30;
+	public static final boolean DEBUG_ENABLED = true;
 
 	public static void drawCenter(SpriteBatch batch, Sprite sprite, float x, float y) {
 		sprite.setPosition(x - sprite.getRegionWidth()/2, y - sprite.getRegionHeight()/2);

@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.retrom.ggj2016.game.World;
 import com.retrom.ggj2016.game.World.WorldListener;
-import com.retrom.ggj2016.game.WorldRenderer;
+import com.retrom.ggj2016.utils.utils;
 import com.retrom.ggj2016.assets.SoundAssets;
 
 
@@ -26,7 +26,6 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	SpriteBatch batch_ = new SpriteBatch();
 	ShapeRenderer shapeRenderer_ = new ShapeRenderer();
 	OrthographicCamera cam = new OrthographicCamera(FRUSTUM_WIDTH, FRUSTUM_HEIGHT);
-	WorldRenderer renderer = new WorldRenderer(batch_);
 	private Viewport viewport;
 	
 	World world_;
@@ -36,10 +35,11 @@ public class GameScreen extends ScreenAdapter implements Screen {
 	boolean isPaused_ = false;
 	
 	public GameScreen(int level) {
-		System.out.println("GameScreen level="+level);
 		level_ = level;
 		viewport = new FitViewport(FRUSTUM_WIDTH, FRUSTUM_HEIGHT, cam);
 	}
+	
+	boolean dontPerformPause;
 
 	@Override
 	public void show() {
@@ -51,11 +51,13 @@ public class GameScreen extends ScreenAdapter implements Screen {
 			
 			@Override
 			public void restart() {
+				dontPerformPause = true;
 				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(level_));
 			}
 
 			@Override
 			public void nextLevel() {
+				dontPerformPause = true;
 				((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(level_+1));
 			}
 
@@ -68,8 +70,7 @@ public class GameScreen extends ScreenAdapter implements Screen {
 
 	@Override
 	public void render(float delta) {
-//		System.out.println("fps="+(1/delta));
-		
+		checkPause();
 		cam.update();
 		batch_.setProjectionMatrix(cam.combined);
 		shapeRenderer_.setProjectionMatrix(cam.combined);
@@ -80,21 +81,24 @@ public class GameScreen extends ScreenAdapter implements Screen {
 		batch_.enableBlending();
 		world_.render(batch_, shapeRenderer_);
 		
-		if (Gdx.input.isKeyPressed(Input.Keys.TAB)) {
+		if (utils.DEBUG_ENABLED && Gdx.input.isKeyPressed(Input.Keys.TAB)) {
 			delta /= 10f;
 		}
 		if (!isPaused_) {
-			if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+			if (utils.DEBUG_ENABLED && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
 				for (int i = 0; i < 10; i++) {
 					update(delta);
 				}
 			}
-			if (Gdx.input.isKeyPressed(Input.Keys.F)) {
+			if (utils.DEBUG_ENABLED && Gdx.input.isKeyPressed(Input.Keys.F)) {
 				if (Gdx.graphics.isFullscreen()) {
 					Gdx.graphics.setWindowedMode(800, 800);
 				} else {
 					Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode(Gdx.graphics.getMonitor()));
 				}
+			}
+			if (Gdx.input.isKeyJustPressed(Input.Keys.S)) {
+				SoundAssets.toggleSound();
 			}
 			update(delta);
 		}
@@ -104,52 +108,48 @@ public class GameScreen extends ScreenAdapter implements Screen {
 //		deltaTime = Math.min(1/30f, deltaTime);
 		world_.update(deltaTime);
 		
-//		checkPause();
-		
 		if (Gdx.input.isKeyJustPressed(Input.Keys.HOME)) {
 		}
 	}
 	
-//	private void checkPause() {
-//		if (Gdx.input.isKeyJustPressed(Input.Keys.P) || hub_.isPauseAreaTouched()) {
-//			togglePause();
-//		}
-//	}
+	private void checkPause() {
+		if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+			togglePause();
+		}
+	}
+
+	private void togglePause() {
+		if (isPaused_) {
+			resume();
+		} else {
+			pause();
+		}
+		
+	}
 
 	@Override
 	public void resize(int width, int height) {
 		viewport.update(width, height);
 	}
 
-//	@Override
-//	public void pause() {
-//		isPaused_ = true;
-//		SoundAssets.pauseAllSounds();
-//		world_.pause();
-//	}
-//
-//	@Override
-//	public void resume() 
-//	{
-//		isPaused_ = false;
-//		SoundAssets.resumeAllSounds();
-//		world_.unpause();
-//	}
+	@Override
+	public void pause() {
+		if (dontPerformPause) return;
+		isPaused_ = true;
+		System.out.println("Pausing!");
+		SoundAssets.pauseMusic();
+	}
+
+	@Override
+	public void resume() 
+	{
+		isPaused_ = false;
+		if (world_.allowMusic())
+			SoundAssets.resumeMusic();
+	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		pause();
 	}
-
-	@Override
-	public void pause () {
-		isPaused_ = true;
-	}
-	
-	@Override
-	public void resume() {
-		isPaused_ = false;
-	}
-
 }

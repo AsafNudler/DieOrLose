@@ -1,5 +1,6 @@
 package com.retrom.ggj2016.assets;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Array;
@@ -90,7 +91,7 @@ public class Assets {
 	public static Array<Sprite> bones;
 	
 	public static void init() {
-		TextureAtlas basicSheet = new TextureAtlas("basic.txt");
+		TextureAtlas basicSheet = new TextureAtlas(Gdx.files.internal("img/basic.txt"));
 		
 		playerHead = basicSheet.createSprite("Player_head_front");
 		playerHeadBack = basicSheet.createSprite("Player_head_back");
@@ -157,29 +158,27 @@ public class Assets {
 		
 		bones = basicSheet.createSprites("Player_deadbones");
 		
-		TextureAtlas bgSheet = new TextureAtlas("bg.txt");
+		TextureAtlas bgSheet = new TextureAtlas("img/bg.txt");
 		bg = bgSheet.createSprite("bg");
 		page = bgSheet.createSprite("items_book_UX");
 		
-		TextureAtlas noteSheet = new TextureAtlas("note.txt");
+		TextureAtlas noteSheet = new TextureAtlas("img/note.txt");
 		endNote = noteSheet.createSprite("endingtext");
 		endNoteGlow = noteSheet.createSprite("endingtext_glow");
 		
-		TextureAtlas explodeSheet = new TextureAtlas("explode.txt");
+		TextureAtlas explodeSheet = new TextureAtlas("img/explode.txt");
 		playerExplode = explodeSheet.createSprites("blood_explotion");
 		
-		TextureAtlas titleSheet = new TextureAtlas("title.txt");
+		TextureAtlas titleSheet = new TextureAtlas("img/title.txt");
 		logo = titleSheet.createSprite("title");
 		
-		TextureAtlas dustSheet1 = new TextureAtlas("dust1.txt");
-		TextureAtlas dustSheet2 = new TextureAtlas("dust2.txt");
-		TextureAtlas dustSheet3 = new TextureAtlas("dust3.txt");
-		TextureAtlas dustSheet4 = new TextureAtlas("dust4.txt");
+		TextureAtlas dustSheet1 = new TextureAtlas("img/dust1.txt");
+		TextureAtlas dustSheet2 = new TextureAtlas("img/dust2.txt");
+		TextureAtlas dustSheet3 = new TextureAtlas("img/dust3.txt");
+		TextureAtlas dustSheet4 = new TextureAtlas("img/dust4.txt");
 		dust = dustSheet1.createSprites("altar_dustwave");
 		dust.addAll(dustSheet2.createSprites("altar_dustwave"));
 		dust.addAll(dustSheet3.createSprites("altar_dustwave"));
 		dust.addAll(dustSheet4.createSprites("altar_dustwave"));
-		
-		System.out.println("dust="+dust.size);
 	}
 }

@@ -11,12 +11,14 @@ import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.utils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Asaf on 28/01/2016.
  */
 public class Painting {
-    private ArrayList<SegmentStatus> m_target;
+    private static final float LINE_WIDTH = 6;
+	private List<SegmentStatus> m_target;
     private float m_precision;
     
      public float master_alpha = 1;
@@ -29,7 +31,7 @@ public class Painting {
     private LineComplete m_lineCompleteSignaller;
 
 
-    public Painting(ArrayList<LineSegment> target, float precision, LineComplete signaller)
+    public Painting(List<LineSegment> target, float precision, LineComplete signaller)
     {
         m_target = new ArrayList<SegmentStatus>();
         for (LineSegment lineSegment : target) {
@@ -57,14 +59,13 @@ public class Painting {
         Vector2 pt1 = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY).add(seg.cpy().scl(start));
         Vector2 pt2 = new Vector2(lineSegment.segment.startX, lineSegment.segment.startY).add(seg.cpy().scl(end));
 
-        Gdx.gl.glLineWidth(5);
         Gdx.gl.glEnable(GL20.GL_BLEND);
         Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        renderer.begin(ShapeType.Line);
+        renderer.begin(ShapeType.Filled);
 
         renderer.setColor(r, g, b, a * master_alpha);
 
-        renderer.line(pt1.x, pt1.y - 6, pt2.x, pt2.y - 6);
+        renderer.rectLine(pt1.x, pt1.y - 6, pt2.x, pt2.y - 6, LINE_WIDTH);
         renderer.end();
     }
 
@@ -147,7 +148,6 @@ public class Painting {
 
 	private void makeNewParticle(SegmentStatus lineSegment) {
 		FireEffect f = new FireEffect();
-		System.out.println("f.ass="+f.ass);
 		f.ySpeed = 0.2f + (float)Math.random() * 0.2f;
 		f.xCurrElement = (float)(Math.random() * 2 * Math.PI);
 		Vector2 fpos = new Vector2(lineSegment.segment.endX - lineSegment.segment.startX, lineSegment.segment.endY - lineSegment.segment.startY);

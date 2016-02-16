@@ -26,7 +26,6 @@ import com.retrom.ggj2016.utils.BatchUtils;
 import com.retrom.ggj2016.utils.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -77,7 +76,7 @@ public class World {
 	
 	private List<Enemy> enemies = new ArrayList<Enemy>();
 	
-	ArrayList<LineSegment> path = new ArrayList<LineSegment>();
+	List<LineSegment> path = new ArrayList<LineSegment>();
 	
 	private Vector2 lastPosition;
 
@@ -185,13 +184,22 @@ public class World {
 			res.add(loc);
 		}
 
-		Collections.shuffle(res);
+		shuffle(res);
 
 		return res;
 	}
 	
+	private void shuffle(ArrayList<Vector2> res) {
+		for (int i=0; i < res.size(); i++) {
+			int j = (int) Math.floor(Math.random() * res.size());
+			Vector2 tmp = res.get(i);
+			res.set(i, res.get(j));
+			res.set(j, tmp);
+		}
+	}
+
 	private void buildLevel() {
-		Levels lvl = new Levels(level);
+		Level lvl = Level.getLevel(level);
 		lnh = new LevelNumberHud(level);
 		ArrayList<Vector2> poses = getEnemyRandomPos(lvl.RandomWalkEnemy + lvl.FollowerEnemy);
 		int j = 0;
@@ -240,7 +248,7 @@ public class World {
 		}
 	}
 	
-	private void initCandlePoints(Levels level) {
+	private void initCandlePoints(Level level) {
 		candlePoints.clear();
 		for (Vector2 candle : level.candles) {
 			tryAddCandlePoint(candle.x, candle.y, true);
@@ -348,6 +356,8 @@ public class World {
 			player.update(deltaTime);
 			updateBloodstepsVolume();
 			dropRandomBlood(deltaTime);
+		} else {
+			SoundAssets.stopBloodSteps();
 		}
 		if (state == GameState.AFTER_CANDLES) {
 			lifebar.life -= BLOOD_LOSE_RATE * deltaTime * Math.max(player.velocity.len(), 50f);
@@ -493,8 +503,6 @@ public class World {
 
 	private void finishGame() {
 		state = GameState.GAME_END;
-//		endTime = 0; 
-		System.out.println("FINISH GAME!");
 		finish = true;
 		restartLevel();
 		bloodLines.clear();
@@ -502,7 +510,6 @@ public class World {
 		for (CandlePoint cp : candlePoints) {
 			cp.state = CandlePoint.State.OFF;
 		}
-//		whiteFade = 100;
 	}
 
 	private void updateHotkeys() {
@@ -544,7 +551,6 @@ public class World {
 			int numbones = (int) (Math.random() * 6 + 6);
 			for (int i=0; i < numbones; i++) {
 				bones.add(new Bone(player.position.cpy()));
-				System.out.println("new bone");
 			}
 		}
 		if (explosion.getStarted()) {
@@ -847,12 +853,9 @@ public class World {
 	
 	private void renderEndScene(SpriteBatch batch, ShapeRenderer shapeRenderer) {
 		BatchUtils.setBlendFuncNormal(batch);
-		System.out.println("endscene");
 		
 		Sprite note = Assets.endNote;
 		note.setAlpha(Math.min(1,gameTime * 2));
-		
-		System.out.println("gameTime="+gameTime);
 		
 		gameTime -= 1; // Hack: move time backwards and then forward.
 		if (gameTime < 0) {
@@ -974,5 +977,9 @@ public class World {
 			shapeRenderer.rect(- GameScreen.FRUSTUM_WIDTH / 2, - GameScreen.FRUSTUM_HEIGHT / 2, GameScreen.FRUSTUM_WIDTH, GameScreen.FRUSTUM_HEIGHT);
 			shapeRenderer.end();
 		}
+	}
+
+	public boolean allowMusic() {
+		return !endScene && canStart();
 	}
 }

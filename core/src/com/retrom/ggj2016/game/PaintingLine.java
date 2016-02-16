@@ -1,6 +1,5 @@
 package com.retrom.ggj2016.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -30,7 +29,6 @@ public class PaintingLine {
 	
 	private static final float TOTAL_OFFTIME = 4;
 	float offTime = TOTAL_OFFTIME;
-	private float darken;
 	
 	public void render(ShapeRenderer renderer) {
 
@@ -71,6 +69,5 @@ public class PaintingLine {
 			offTime -= deltaTime;
 		}
 		opacity = offTime / TOTAL_OFFTIME;
-		darken = Math.min(1, Math.max(0.5f, (TOTAL_OFFTIME - offTime)));
 	}
 }

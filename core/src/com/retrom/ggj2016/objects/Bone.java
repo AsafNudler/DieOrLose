@@ -26,7 +26,6 @@ public class Bone extends DynamicGameObject {
 	public void update(float deltaTime) {
 		stateTime += deltaTime;
 		if (stateTime < Player.TIME_BEFORE_EXPLODE) return;
-		System.out.println("after explode.");
 		position.x += velocity.x * deltaTime;
 		position.y += velocity.y * deltaTime;
 		

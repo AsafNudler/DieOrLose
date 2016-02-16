@@ -2,14 +2,18 @@ package com.retrom.ggj2016.assets;
 
 import java.util.Random;
 
+import javax.xml.stream.events.StartDocument;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
 public class SoundAssets {
 	
+	public static boolean soundEnabled = true;
+	
 	public static Sound gameMusic;
-	public static long musicid;
+	public static long musicid = 0;
 	
 	public static Sound flamethrowerEnd;
 	
@@ -39,7 +43,7 @@ public class SoundAssets {
 	private static Random rand = new Random();
 
 	public static void load() {
-		gameMusic = Gdx.audio.newSound(Gdx.files.internal("music.wav"));
+		gameMusic = Gdx.audio.newSound(Gdx.files.internal("sound/music.wav"));
 //		music.setVolume(0.5f);
 //		if (Settings.soundEnabled) music.play();
 		
@@ -67,21 +71,39 @@ public class SoundAssets {
 		
 		levelCompleteFinal = newSound("level_final_complete.wav");
 		hatchOpen = newSound("level_final_floorhatch.wav");
-		
-//		blood_slashes = newSound("blood_slashes.wav");
-//		bloody_steps = newSound("bloody_steps.wav");
-		
-//		playerJump = new Sound[] {newSound("player_jump_0a.wav"), newSound("player_jump_0b.wav")};
-//		playerJumpIntense = new Sound[] {newSound("player_jump_1.wav"), newSound("player_jump_2.wav"), newSound("player_jump_3.wav"), newSound("player_jump_4.wav")};
-//		
-//				
-//		shopClick = newSound("menus_shop_click.wav");
+	}
+	
+	public static void pauseMusic() {
+		gameMusic.pause();
+	}
+	public static void resumeMusic() {
+		if (!soundEnabled) return;
+		if (musicid == 0) {
+			startMusic();
+		} else {
+			gameMusic.resume();
+		}
+	}
+	
+	public static void toggleSound() {
+		if (soundEnabled) {
+			soundEnabled = false;
+			stopBloodSteps();
+			stopHeartBeat();
+			pauseMusic();
+			opening.stop();
+		} else {
+			soundEnabled = true;
+			resumeMusic();
+			startHeartBeat();
+			playBloodSteps();
+		}
 	}
 	
 	public static void playSound (Sound sound) {
-//		if (!Settings.soundEnabled)
-//			return 0;
 		sound.play(1);
+		if (!soundEnabled)
+			sound.pause();
 	}
 	
 	public static void playRandomSound(Sound[] sounds) {
@@ -90,10 +112,11 @@ public class SoundAssets {
 	}
 	
 	private static Sound newSound(String filename) {
-		return Gdx.audio.newSound(Gdx.files.internal(filename));
+		return Gdx.audio.newSound(Gdx.files.internal("sound/"+filename));
 	}
 
 	public static void loopSound(Sound sound) {
+		if (!soundEnabled) return;
 		sound.stop();
 		sound.loop(1);
 	}
@@ -104,6 +127,7 @@ public class SoundAssets {
 	
 	public static void startMusic() {
 		gameMusic.stop();
+		if (!soundEnabled) return;
 		musicid = gameMusic.play();
 		gameMusic.setLooping(musicid, true);
 	}
@@ -117,6 +141,7 @@ public class SoundAssets {
 	}
 	
 	public static void playBloodSteps() {
+		if (!soundEnabled) return;
 		bloodSteps.stop();
 		bloodStepsId = bloodSteps.play();
 		bloodSteps.setLooping(bloodStepsId, true);
@@ -127,6 +152,7 @@ public class SoundAssets {
 	}
 
 	public static void startHeartBeat() {
+		if (!soundEnabled) return;
 		stopHeartBeat();
 		heartBeatId = heartBeat.play();
 		heartBeat.setLooping(heartBeatId, true);
